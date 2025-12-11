@@ -1,0 +1,512 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'css/Perfil/perfil.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="perfil-wrapper container mt-4 mb-5">
+
+  <!-- CABECERA PERFIL - DASHBOARD -->
+  <div class="perfil-main-card card shadow-lg p-4 mb-4">
+    <form method="POST" enctype="multipart/form-data" class="w-100">
+      {% csrf_token %}
+      <div class="row g-4 align-items-start">
+
+        <!-- COLUMNA IZQUIERDA: AVATAR + INFO -->
+        <div class="col-lg-3 col-md-4 text-center perfil-left-col">
+
+          <div class="perfil-avatar-wrapper">
+    
+              <div class="perfil-avatar-clip">
+                  <img
+                    src="{% if user.foto %}{{ user.foto.url }}?v={{ user.last_login|date:'U' }}{% else %}/media/avatar.png{% endif %}"
+                    alt="Foto de perfil"
+                    class="perfil-avatar-img"
+                    id="avatarPreview"
+                  >
+              </div>
+
+              <input type="file" name="foto" id="id_foto" accept="image/*" class="d-none">
+
+              <label for="id_foto" class="avatar-edit-btn">
+                  <i class="bi bi-camera"></i>
+              </label>
+
+          </div>
+
+
+          <h4 class="mt-3 fw-bold perfil-name">
+            {{ user.first_name|default:user.username }}
+          </h4>
+          <p class="perfil-email mb-1">{{ user.email }}</p>
+
+          <div class="perfil-badges mt-2 mb-2">
+            <span class="perfil-badge">
+              <i class="bi bi-activity me-1"></i> AthletIA activo
+            </span>
+            {% if user.fecha_nacimiento %}
+              <span class="perfil-badge">🎂 {{ user.fecha_nacimiento|date:"d/m/Y" }}</span>
+            {% endif %}
+          </div>
+
+          <p class="perfil-tip">
+            Mantén tu perfil y progreso físico al día para que AthletIA ajuste mejor tus rutinas.
+          </p>
+
+          <a href="{% url 'editar_estilo_vida' %}" class="btn btn-estilo-vida mt-2 w-100">
+            🧘 Ajustar estilo de vida
+          </a>
+        </div>
+
+        <!-- COLUMNA CENTRAL: FORMULARIO -->
+        <div class="col-lg-6 col-md-8 perfil-right-col">
+
+          <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <div>
+              <h3 class="perfil-section-title mb-0">Editar información personal</h3>
+              <small class="perfil-section-subtitle">
+                Estos datos se usan para personalizar tus métricas y recomendaciones.
+              </small>
+            </div>
+
+            <span class="perfil-mini-indicador">
+              <span class="dot-online"></span> Perfil:
+              <span id="perfil-completo-text">—</span>
+            </span>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="perfil-label">Nombre</label>
+              {{ form.first_name|add_class:"form-control perfil-input" }}
+            </div>
+            <div class="col-md-6">
+              <label class="perfil-label">Apellidos</label>
+              {{ form.last_name|add_class:"form-control perfil-input" }}
+            </div>
+            <div class="col-md-6">
+              <label class="perfil-label">Correo electrónico</label>
+              {{ form.email|add_class:"form-control perfil-input" }}
+            </div>
+            <div class="col-md-6">
+              <label class="perfil-label">Fecha de nacimiento</label>
+              {{ form.fecha_nacimiento|add_class:"form-control perfil-input" }}
+            </div>
+            <div class="col-md-6">
+              <label class="perfil-label">Teléfono</label>
+              {{ form.telefono|add_class:"form-control perfil-input" }}
+            </div>
+            <div class="col-md-6">
+              <label class="perfil-label">Dirección</label>
+              {{ form.direccion|add_class:"form-control perfil-input" }}
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end mt-4 gap-2 flex-wrap">
+            <button type="submit" class="btn btn-guardar-perfil px-4">
+              <i class="bi bi-save me-2"></i> Guardar cambios
+            </button>
+          </div>
+          <a href="{% url 'detalle_perfil' request.user.pk %}" class="btn btn-guardar-perfil px-4">
+              Volver
+          </a>
+        </div>
+
+        <!-- COLUMNA DERECHA: KPIs + MINI GRÁFICO -->
+        <div class="col-lg-3 col-12 perfil-side-col mt-3 mt-lg-0">
+
+          <div class="side-kpi-card">
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="side-kpi-title">Resumen físico</span>
+              <small class="text-muted-ia" id="mini-kpi-fecha">—</small>
+            </div>
+            <div class="side-kpi-main">
+              <span id="mini-kpi-ultimo-peso">—</span><span class="fs-6"> kg</span>
+            </div>
+            <div class="side-kpi-grid">
+              <div class="side-kpi-tag">
+                Altura: <span id="mini-kpi-altura">—</span> cm
+              </div>
+              <div class="side-kpi-tag">
+                IMC: <span id="mini-kpi-imc">—</span>
+              </div>
+              <div class="side-kpi-tag">
+                Registros: <span id="mini-kpi-registros">0</span>
+              </div>
+              <div class="side-kpi-tag">
+                Tendencia: <span id="mini-kpi-tendencia">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <small class="text-muted-ia">Mini tendencia de peso</small>
+            </div>
+            <div class="chart-wrapper-mini">
+              <canvas id="miniTrackingChart"></canvas>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+  <!-- SEGUIMIENTO FÍSICO COMPLETO -->
+  <div class="card perfil-card-tracking shadow-lg p-4">
+
+    <!-- TITULO + KPIs -->
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <div>
+        <h4 class="fw-bold mb-0 tracking-title">📈 Seguimiento físico</h4>
+        <span class="tracking-subtitle text-muted-ia">
+          Registra tu peso y altura para monitorear tu progreso y el cálculo de IMC.
+        </span>
+      </div>
+
+      <div class="tracking-kpis d-flex flex-wrap gap-2">
+        <div class="kpi-pill">Último peso: <span id="kpi-ultimo-peso">—</span> kg</div>
+        <div class="kpi-pill">Altura actual: <span id="kpi-altura">—</span> cm</div>
+        <div class="kpi-pill">IMC estimado: <span id="kpi-imc">—</span></div>
+      </div>
+    </div>
+
+    <!-- FORM REGISTRO -->
+    <form method="POST" class="row g-3 tracking-form align-items-end">
+      {% csrf_token %}
+      <div class="col-md-4">
+        <label class="perfil-label">Peso (kg)</label>
+        <input type="number" name="peso_kg" step="0.1"
+               class="form-control perfil-input" placeholder="Ej: 77.5" required>
+      </div>
+      <div class="col-md-4">
+        <label class="perfil-label">Altura (cm)</label>
+        <input type="number" name="altura_cm"
+               class="form-control perfil-input" placeholder="Ej: 180" required>
+      </div>
+      <div class="col-md-4">
+        <label class="perfil-label">Comentario (opcional)</label>
+        <input type="text" name="comentario"
+               class="form-control perfil-input" placeholder="Ej: Semana 1, buen progreso">
+      </div>
+
+      <div class="col-12 text-end">
+        <button type="submit" name="guardar_progreso"
+                class="btn btn-registrar-progreso px-4">
+          <i class="bi bi-plus-circle me-2"></i> Registrar progreso
+        </button>
+      </div>
+    </form>
+
+    <!-- RESUMEN + GRÁFICO -->
+    <div class="row g-3 mt-4">
+
+      <!-- RESUMEN -->
+      <div class="col-lg-4">
+        <div class="tracking-summary-card h-100">
+          <h6 class="tracking-summary-title">Resumen rápido</h6>
+          <p id="tracking-resumen" class="tracking-summary-text">
+            Aún no hay suficientes datos para analizar tu progreso.
+          </p>
+          <ul class="tracking-summary-list list-unstyled small">
+            <li>🏋️ Entrenos registrados: <span id="kpi-registros">0</span></li>
+            <li>📆 Último registro: <span id="kpi-fecha">—</span></li>
+            <li>📉 Tendencia peso: <span id="kpi-tendencia">—</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- GRÁFICO PRINCIPAL -->
+      <div class="col-lg-8">
+        <div class="tracking-chart-card h-100">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="tracking-summary-title mb-0">Evolución de peso y altura</h6>
+            <small class="text-muted-ia">
+              Solo se usa para visualización.
+            </small>
+          </div>
+
+          <div class="chart-wrapper">
+            <canvas id="trackingChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="tracking-divider my-4">
+
+    <!-- TABLA HISTORIAL -->
+    <h5 class="fw-bold tracking-title mb-3">Historial reciente</h5>
+
+    <div class="table-responsive tracking-table-wrapper">
+      <table class="table table-borderless tracking-table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Peso (kg)</th>
+            <th>Altura (cm)</th>
+            <th>Comentario</th>
+          </tr>
+        </thead>
+        <tbody id="tracking-table-body">
+          {% for p in progresos %}
+            <tr data-progreso-row
+                data-fecha="{{ p.fecha }}"
+                data-peso="{{ p.peso_kg }}"
+                data-altura="{{ p.altura_cm }}">
+              <td>{{ p.fecha }}</td>
+              <td>{{ p.peso_kg }}</td>
+              <td>{{ p.altura_cm }}</td>
+              <td>{{ p.comentario|default:"-" }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="4" class="text-center text-muted-ia">
+                Sin registros de progreso aún.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  
+  /* =====================================================
+     1. PREVISUALIZACIÓN DE AVATAR
+  ===================================================== */
+  const avatarInput = document.getElementById("id_foto");
+  const avatarPreview = document.getElementById("avatarPreview");
+
+  if (avatarInput && avatarPreview) {
+    avatarInput.addEventListener("change", () => {
+      const file = avatarInput.files[0];
+      if (!file) return;
+      avatarPreview.src = URL.createObjectURL(file);
+    });
+  }
+
+  /* =====================================================
+     2. BARRA DE PROGRESO DEL PERFIL
+  ===================================================== */
+  (function calcularComplecionPerfil() {
+    const campos = [
+      "id_first_name", "id_last_name", "id_email",
+      "id_fecha_nacimiento", "id_telefono", "id_direccion"
+    ];
+    let completos = 0;
+
+    campos.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.value.trim() !== "") completos++;
+    });
+
+    const porcentaje = Math.round((completos / campos.length) * 100);
+    const lbl = document.getElementById("perfil-completo-text");
+
+    if (lbl) {
+        if (!porcentaje) {
+        lbl.textContent = "incompleto";
+        } else if (porcentaje < 60) {
+        lbl.textContent = porcentaje + "% · puedes completar más datos";
+        } else if (porcentaje < 90) {
+        lbl.textContent = porcentaje + "% · muy buen nivel";
+        } else {
+        lbl.textContent = "100% · listo para la IA";
+        }
+    }
+  })();
+
+  /* =====================================================
+     3. LÓGICA DE PESOS Y GRÁFICOS (CORREGIDA)
+  ===================================================== */
+  const filas = document.querySelectorAll("[data-progreso-row]");
+  
+  // KPIs Grandes
+  const kPeso = document.getElementById("kpi-ultimo-peso");
+  const kAltura = document.getElementById("kpi-altura");
+  const kImc = document.getElementById("kpi-imc");
+  const kRegistros = document.getElementById("kpi-registros");
+  const kFecha = document.getElementById("kpi-fecha");
+  const kTendencia = document.getElementById("kpi-tendencia");
+  const resumen = document.getElementById("tracking-resumen");
+
+  // Mini KPIs (Tarjeta Verde Oscura)
+  const miniPeso = document.getElementById("mini-kpi-ultimo-peso");
+  const miniAltura = document.getElementById("mini-kpi-altura");
+  const miniImc = document.getElementById("mini-kpi-imc");
+  const miniRegistros = document.getElementById("mini-kpi-registros");
+  const miniFecha = document.getElementById("mini-kpi-fecha");
+  const miniTendencia = document.getElementById("mini-kpi-tendencia");
+
+  let labels = [];
+  let pesos = [];
+  let alturas = [];
+
+  // Recorremos las filas de la tabla (asumiendo orden cronológico desde Django)
+  filas.forEach(row => {
+    const fecha = row.dataset.fecha;
+    // Aseguramos que lea bien decimales con punto o coma
+    const peso = parseFloat(row.dataset.peso.replace(',', '.'));
+    const altura = parseFloat(row.dataset.altura.replace(',', '.'));
+
+    if (!fecha || isNaN(peso) || isNaN(altura)) return;
+
+    // CORRECCIÓN: Usamos push para que el último dato quede al final del array
+    labels.push(fecha);
+    pesos.push(peso);
+    alturas.push(altura);
+  });
+
+  if (pesos.length > 0) {
+    // Obtenemos el ÚLTIMO dato insertado (el más actual)
+    const lastPeso = pesos[pesos.length - 1];
+    const lastAltura = alturas[alturas.length - 1];
+    const lastFecha = labels[labels.length - 1];
+
+    // Cálculo de IMC
+    const alturaM = lastAltura / 100;
+    const imc = (alturaM > 0) ? (lastPeso / (alturaM * alturaM)) : 0;
+
+    // --- Actualizar KPIs Grandes ---
+    if(kPeso) kPeso.textContent = lastPeso.toFixed(1);
+    if(kAltura) kAltura.textContent = lastAltura.toFixed(0);
+    if(kFecha) kFecha.textContent = lastFecha;
+    if(kRegistros) kRegistros.textContent = pesos.length;
+    if(kImc) kImc.textContent = imc.toFixed(1);
+
+    // --- Actualizar Mini KPIs (Tarjeta Resumen) ---
+    if (miniPeso) miniPeso.textContent = lastPeso.toFixed(1); // AQUI SE VERÁ EL 100.0
+    if (miniAltura) miniAltura.textContent = lastAltura.toFixed(0);
+    if (miniImc) miniImc.textContent = imc.toFixed(1);
+    if (miniRegistros) miniRegistros.textContent = pesos.length;
+    if (miniFecha) miniFecha.textContent = "al " + lastFecha;
+
+    // --- Calcular Tendencia ---
+    let tendencia = "≈ estable";
+    let iconoTendencia = "🟰";
+    
+    if (pesos.length >= 2) {
+      // Comparamos el último con el penúltimo
+      const penultimo = pesos[pesos.length - 2];
+      if (lastPeso > penultimo + 0.2) {
+        tendencia = "en aumento";
+        iconoTendencia = "↗";
+      } else if (lastPeso < penultimo - 0.2) {
+        tendencia = "en descenso";
+        iconoTendencia = "↘";
+      }
+    }
+    
+    if (kTendencia) kTendencia.textContent = `${iconoTendencia} ${tendencia}`;
+    if (miniTendencia) miniTendencia.innerHTML = `<i class="bi bi-graph-up"></i> ${iconoTendencia} ${tendencia}`;
+
+    // --- Texto Resumen ---
+    if (resumen) {
+      resumen.textContent = `Tienes ${pesos.length} registro(s). Último peso: ${lastPeso.toFixed(1)} kg, IMC: ${imc.toFixed(1)}.`;
+    }
+  }
+
+  /* =====================================================
+     4. GRÁFICO GRANDE
+  ===================================================== */
+  const ctx = document.getElementById("trackingChart");
+  if (ctx && pesos.length) {
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Peso (kg)",
+            data: pesos,
+            borderColor: "rgba(46,196,182,1)", // Cyan
+            backgroundColor: "rgba(46,196,182,0.18)",
+            tension: 0.35,
+            fill: true,
+            yAxisID: "y"
+          },
+          {
+            label: "Altura (cm)",
+            data: alturas,
+            borderColor: "rgba(255,206,86,1)", // Amarillo
+            backgroundColor: "rgba(255,206,86,0.10)",
+            tension: 0.35,
+            fill: true,
+            yAxisID: "y1"
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            ticks: { color: "#e6f7f5" },
+            grid: { color: "rgba(255,255,255,0.06)" }
+          },
+          y1: {
+            position: "right",
+            ticks: { color: "#ffe89a" },
+            grid: { drawOnChartArea: false }
+          },
+          x: {
+            ticks: { color: "#d0e6e6" },
+            grid: { color: "rgba(255,255,255,0.03)" }
+          }
+        },
+        plugins: {
+          legend: { labels: { color: "#eafaf8" } }
+        }
+      }
+    });
+  }
+
+  /* =====================================================
+     5. MINI GRÁFICO (TARJETA VERDE)
+  ===================================================== */
+  const miniCtx = document.getElementById("miniTrackingChart");
+  if (miniCtx && pesos.length) {
+    new Chart(miniCtx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            data: pesos,
+            borderColor: "rgba(46,196,182,1)",
+            backgroundColor: "rgba(46,196,182,0.15)",
+            tension: 0.4, // Más suave
+            fill: true,
+            pointRadius: 0 // Sin puntos para que se vea limpio
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { enabled: true } },
+        scales: {
+          x: { display: false },
+          y: { display: false }
+        },
+        layout: {
+            padding: { left: -10, right: -10, bottom: -10 } // Ocupar todo el espacio
+        }
+      }
+    });
+  }
+});
+</script>
+
+{% endblock %}

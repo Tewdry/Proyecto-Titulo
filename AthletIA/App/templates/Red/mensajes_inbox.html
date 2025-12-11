@@ -1,0 +1,52 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/Red/inbox_athletia.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="inbox-wrapper">
+
+    <h2 class="inbox-title">💬 Mensajes</h2>
+
+    {% if conversaciones %}
+        <div class="inbox-list">
+
+            {% for c in conversaciones %}
+            <a href="{% url 'mensajes_conversacion' c.perfil.id %}" class="inbox-item">
+
+                <!-- Avatar -->
+                <div class="inbox-avatar-wrapper">
+                    <img src="{% if c.perfil.foto and c.perfil.foto.name %}{{ c.perfil.foto.url }}{% else %}/media/avatar.png{% endif %}"
+                         class="inbox-avatar">
+                </div>
+
+                <!-- Nombre + último mensaje -->
+                <div class="inbox-info">
+                    <span class="inbox-name">{{ c.perfil.first_name|default:c.perfil.username }}</span>
+                    <span class="inbox-lastmsg">{{ c.last_message.contenido|truncatechars:55 }}</span>
+                </div>
+
+                <!-- Fecha + contador -->
+                <div class="inbox-meta">
+                    <span class="inbox-date">{{ c.last_message.fecha_envio|date:"d/m/Y H:i" }}</span>
+
+                    {% if c.unread > 0 %}
+                        <span class="inbox-badge">{{ c.unread }}</span>
+                    {% endif %}
+                </div>
+
+            </a>
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+        <p class="inbox-empty">No tienes conversaciones aún. Envía un mensaje para comenzar.</p>
+    {% endif %}
+
+</div>
+
+{% endblock %}

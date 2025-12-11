@@ -1,0 +1,230 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/Red/red.css' %}">
+<link rel="stylesheet" href="{% static 'css/Perfil/detalle_perfil.css' %}">
+<link rel="stylesheet" href="{% static 'css/Red/post_card.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4 mb-5 muro-wrapper perfil-wrapper">
+
+    <div class="perfil-header-card mb-4">
+        <div class="position-relative">
+            {% if perfil.foto %}
+                <img src="{{ perfil.foto.url }}" class="perfil-foto">
+            {% else %}
+                <img src="/media/avatar.png" class="perfil-foto">
+            {% endif %}
+        </div>
+
+        <div class="perfil-main-info text-center text-md-start">
+            <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2 mb-1">
+                <h2 class="perfil-nombre mb-0">{{ perfil.username }}</h2>
+                {% if es_mi_perfil %}
+                    <a href="{% url 'perfil' %}" class="perfil-edit-btn" data-bs-toggle="tooltip" title="Editar">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                {% endif %}
+            </div>
+
+            <div class="text-muted small mb-3">
+                <p class="perfil-dato mb-0"><strong>Email:</strong> {{ perfil.email }}</p>
+                {% if perfil.telefono %}<p class="perfil-dato mb-0"><strong>Teléfono:</strong> {{ perfil.telefono }}</p>{% endif %}
+                {% if perfil.direccion %}<p class="perfil-dato mb-0"><strong>Dirección:</strong> {{ perfil.direccion }}</p>{% endif %}
+                <p class="perfil-dato mb-0">
+                    <strong>Nacimiento:</strong> {{ perfil.fecha_nacimiento|date:"d \\d\\e F \\d\\e Y" }}
+                </p>
+            </div>
+
+            {% if user.is_authenticated and perfil != user %}
+            <div class="perfil-btn-group justify-content-center justify-content-md-start gap-2"> {% if siguiendo %}
+                    <button class="btn btn-follow-card following" 
+                            style="padding: 6px 18px; font-size: 0.85rem;" 
+                            onclick="toggleFollow({{ perfil.id }}, this)">
+                        <i class="bi bi-check-lg"></i> <span class="text-siguiendo">Siguiendo</span>
+                    </button>
+                {% else %}
+                    <button class="btn btn-follow-card not-following" 
+                            style="padding: 6px 18px; font-size: 0.85rem;"
+                            onclick="toggleFollow({{ perfil.id }}, this)">
+                        <i class="bi bi-person-plus-fill"></i> Seguir
+                    </button>
+                {% endif %}
+
+                <a href="{% url 'mensajes_conversacion' perfil.id %}" class="perfil-msg-btn text-decoration-none"
+                   style="padding: 6px 18px; font-size: 0.85rem;">
+                    <i class="fi fi-rr-paper-plane"></i> Mensaje
+                </a>
+
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="perfil-stats">
+            <div class="stats-clickable" onclick="abrirListaSeguidores({{ perfil.id }})">
+                <span class="perfil-stat-num">{{ seguidores_count }}</span>
+                <span class="perfil-stat-label">Seguidores</span>
+            </div>
+            <div class="stats-clickable" onclick="abrirListaSiguiendo({{ perfil.id }})">
+                <span class="perfil-stat-num">{{ siguiendo_count }}</span>
+                <span class="perfil-stat-label">Siguiendo</span>
+            </div>
+        </div>
+    </div>
+
+    {% if es_mi_perfil %}
+    <div class="perfil-newpost-card mb-4">
+        <h5 class="fw-bold mb-3 text-white">📝 Publicar</h5>
+        <form method="POST" enctype="multipart/form-data" action="{% url 'detalle_perfil' perfil.pk %}">
+            {% csrf_token %}
+            
+            <div class="mb-3">
+                <textarea class="form-control textarea-post" 
+                          name="contenido" 
+                          rows="3" 
+                          placeholder="¿Qué estás pensando?" 
+                          required></textarea>
+            </div>
+
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <input type="file" name="media_url" class="form-control" accept="image/*,video/*,.gif">
+                <button type="submit" class="btn btn-primary px-4" style="border-radius: 999px;">Publicar</button>
+            </div>
+
+            <div class="athletia-rutina-share-box p-3 rounded d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div>
+                    <h6 class="fw-bold mb-0 text-white">💾 Compartir Rutina</h6>
+                    <p class="small text-muted mb-0">Publica tus rutinas guardadas.</p>
+                </div>
+                <button type="button" class="btn btn-athletia-premium" id="btnAbrirModalRutinas">
+                    📋 Elegir rutina
+                </button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+    <div class="perfil-tabs mb-3 justify-content-center">
+        <button class="perfil-tab-btn active" data-target="#posts">📝 Publicaciones</button>
+
+        {% if es_mi_perfil %}
+        <button class="perfil-tab-btn" data-target="#guardadas">⭐ Guardadas</button>
+        {% endif %}
+    </div>
+
+    <div id="perfilTabContainer">
+
+        <!-- POSTS -->
+        <div id="posts" class="perfil-tab-pane active">
+            <div class="posts-container">
+                {% if publicaciones %}
+                    {% for publicacion in publicaciones %}
+                        {% include "Perfil/_post_card.html" with pub=publicacion %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- GUARDADAS -->
+        {% if es_mi_perfil %}
+        <div id="guardadas" class="perfil-tab-pane">
+            <div class="posts-container">
+                {% if publicaciones_guardadas %}
+                    {% for pub in publicaciones_guardadas %}
+                        {% include "Perfil/_post_card.html" with pub=pub is_saved=True %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<div class="modal fade" id="comentariosModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content modal-ig">
+      <div class="modal-header border-0 modal-ig-header">
+        <h5 class="modal-title fw-bold text-white">💬 Comentarios</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-0">
+        <div id="comentariosModalContent" class="comentarios-modal-list">
+            <p class="text-center my-3 text-white">Cargando...</p>
+        </div>
+      </div>
+      <div class="modal-footer border-0 modal-ig-footer">
+        {% if user.is_authenticated %}
+        <form class="d-flex w-100 align-items-center" id="form-comentario-modal">
+          <input type="text" class="form-control rounded-pill me-2 bg-dark text-light border-secondary" name="contenido" placeholder="Escribe..." required>
+          <button class="btn btn-primary rounded-pill" type="submit">➤</button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="rutinasModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content rutina-modal">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold text-white">📋 Compartir Rutina</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        {% if user.is_authenticated %}
+            <div class="rutina-search-box mb-3">
+                <span class="rutina-search-icon">🔍</span>
+                <input type="text" id="buscadorRutinas" class="form-control rutina-search-input" placeholder="Buscar...">
+            </div>
+            <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between mb-3">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-sm btn-light filter-rutina-btn active" data-filter="todas">Todas</button>
+                    <button type="button" class="btn btn-sm btn-outline-light filter-rutina-btn" data-filter="propia">⭐ Propias</button>
+                    <button type="button" class="btn btn-sm btn-outline-light filter-rutina-btn" data-filter="guardada">📦 Guardadas</button>
+                </div>
+                <select id="ordenarRutinas" class="form-select form-select-sm bg-dark text-light border-secondary" style="width: auto;">
+                    <option value="desc">📅 Recientes</option>
+                    <option value="asc">📅 Antiguas</option>
+                </select>
+            </div>
+            <div id="rutinasSkeleton" class="rutinas-skeleton d-none">
+                <div class="rutina-skeleton-card"></div>
+            </div>
+            <div id="rutinasListContainer" class="rutinas-list" style="max-height: 400px; overflow-y: auto; padding-right: 5px;"></div>
+        {% endif %}
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-outline-secondary text-light" data-bs-dismiss="modal">Cerrar</button>
+        {% if user.is_authenticated %}
+        <button type="button" class="btn btn-primary btn-compartir-rutina" id="btnConfirmarCompartirRutina" disabled>📤 Compartir</button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="seguidoresModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content modal-ig">
+      <div class="modal-header border-0 px-4 py-3">
+        <h5 class="modal-title fw-bold text-white" id="seguidoresModalTitle"></h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-0">
+        <div id="seguidoresModalContent" class="seguidores-list p-3" style="max-height: 400px; overflow-y: auto;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block extra_js %}
+<script src="{% static 'js/detalle_perfil.js' %}"></script>
+{% endblock %}
+
+{% endblock %}

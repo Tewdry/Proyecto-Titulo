@@ -1,0 +1,489 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/Red/red.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid mt-4 mb-5 muro-wrapper">
+
+    <!-- ========================================================= -->
+    <!-- TÍTULO PRINCIPAL -->
+    <!-- ========================================================= -->
+    <h1 class="text-center fw-bold titulo-athletia">
+        🌐 Explorar comunidad AthletIA
+    </h1>
+
+    <!-- ========================================================= -->
+    <!-- ESTRUCTURA EN TRES COLUMNAS -->
+    <!-- ========================================================= -->
+    <div class="row mt-4 justify-content-center">
+
+        <!-- ========================================================= -->
+        <!--  COLUMNA IZQUIERDA — KPI + TUS GRUPOS + GRUPOS + REPORTES -->
+        <!-- ========================================================= -->
+        <div class="col-lg-3 order-lg-1 mb-4">
+
+            <!-- KPI COMUNIDAD -->
+            <div class="card card-athletia shadow-sm mb-4 p-3">
+                <h5 class="fw-bold mb-1">📊 Descubre grupos y actividades</h5>
+                <p class="text-muted mb-3">Explora, crea o únete a comunidades activas dentro de AthletIA.</p>
+
+                <div class="row text-center mt-3">
+                    <div class="col">
+                        <h6 class="text-muted">Grupos activos</h6>
+                        <p class="kpi-number">{{ kpi_total_grupos }}</p>
+                    </div>
+                    <div class="col">
+                        <h6 class="text-muted">Posts esta semana</h6>
+                        <p class="kpi-number">{{ kpi_posts_semana }}</p>
+                    </div>
+                    <div class="col">
+                        <h6 class="text-muted">Comentarios</h6>
+                        <p class="kpi-number">{{ kpi_comentarios_semana }}</p>
+                    </div>
+                </div>
+
+                <p class="mt-2 small text-muted">
+                    Última actualización: {{ kpi_ultima_actualizacion|date:"d/m/Y H:i" }}
+                </p>
+            </div>
+
+            <!-- TUS GRUPOS -->
+             {% if user.is_authenticated %}
+            <div class="card card-athletia mb-4 p-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="fw-bold mb-0">👥 Tus grupos</h5>
+                    <button class="btn btn-athletia-primary" id="btnAbrirCrearGrupo">➕</button>
+                </div>
+
+                {% if mis_grupos %}
+                    {% for mg in mis_grupos %}
+                    <div class="grupo-mini-card p-3 rounded shadow-sm mb-3">
+                        <h6 class="fw-bold">{{ mg.grupo_entrenamiento.nombre }}</h6>
+                        <p class="text-muted small">{{ mg.grupo_entrenamiento.descripcion|truncatechars:80 }}</p>
+                        <a href="/grupos/{{ mg.grupo_entrenamiento.id }}/" class="btn btn-outline-light btn-sm">
+                            Ver →
+                        </a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <p class="text-muted fst-italic">Aún no eres parte de ningún grupo.</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- TODOS LOS GRUPOS -->
+            <div class="card card-athletia mb-4 p-3">
+                <h5 class="fw-bold mb-2">🌐 Todos los grupos</h5>
+
+                {% if grupos_todos %}
+                    {% for g in grupos_todos %}
+                    <div class="grupo-mini-card p-3 rounded shadow-sm mb-3">
+                        <h6 class="fw-bold">{{ g.nombre }}</h6>
+                        <p class="text-muted small">{{ g.descripcion|truncatechars:100 }}</p>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-info text-dark">
+                                👥 {{ g.miembros_count }} miembros
+                            </span>
+
+                            {% if user.is_authenticated %}
+                                {% if g.id in mis_grupos_ids %}
+                                    <button class="btn btn-sm btn-secondary" disabled>✓ Miembro</button>
+                                {% else %}
+                                    <button class="btn btn-sm btn-athletia-primary"
+                                            onclick="unirseGrupo('{{ g.id }}', this)">
+                                        Unirme
+                                    </button>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <p class="text-muted fst-italic">No existen grupos aún. ¡Crea uno!</p>
+                {% endif %}
+            </div>
+
+
+            {% if user.is_authenticated and user.is_superuser %}
+            <!-- REPORTES RECIENTES -->
+            <div class="card card-athletia mb-4 p-3">
+                <h5 class="fw-bold mb-3">🚨 Reportes recientes</h5>
+
+                {% if reportes_recientes %}
+                    {% for rep in reportes_recientes %}
+                    <div class="mb-2 small">
+                        <b>{{ rep.perfil.username }}</b> reportó a 
+                        <b>{{ rep.comentario.perfil.username }}</b><br>
+                        <span class="text-muted">{{ rep.fecha|date:"d/m/Y H:i" }}</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <p class="text-muted fst-italic">No hay reportes recientes.</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- ========================================================= -->
+        <!--      COLUMNA CENTRAL — NUEVO POST + PUBLICACIONES         -->
+        <!-- ========================================================= -->
+        <div class="col-lg-6 order-lg-2">
+
+            {% if user.is_authenticated %}
+            <div class="card card-athletia shadow-sm mb-4 p-3">
+
+                <h5 class="fw-bold mb-3">📝 Nuevo post</h5>
+
+                <form method="POST" enctype="multipart/form-data" action="{% url 'muro' %}">
+                    {% csrf_token %}
+
+                    <textarea class="form-control textarea-post mb-3"
+                              name="contenido" rows="3"
+                              placeholder="¿Qué estás pensando?" required></textarea>
+
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <input type="file" class="form-control" name="media_url"
+                               accept="image/*,video/*,.gif">
+                        <button type="submit" class="btn btn-athletia-primary">
+                            Publicar
+                        </button>
+                    </div>
+
+                    <div class="divider-or my-3"><span>o</span></div>
+
+                    <!-- Compartir rutina -->
+                    <div class="athletia-rutina-share-box p-3 rounded">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="fw-bold mb-0">💾 Compartir rutina AthletIA</h6>
+                                <p class="small text-muted mb-0">Publica una rutina como tarjeta premium.</p>
+                            </div>
+                            <button type="button" class="btn btn-athletia-accent" id="btnAbrirModalRutinas">
+                                📋 Elegir rutina
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            {% endif %}
+
+            <!-- PUBLICACIONES -->
+            <div class="posts-container">
+                {% for publicacion in publicaciones %}
+                <div class="post-card card card-athletia shadow-sm mb-4">
+
+                    <div class="card-body">
+
+                        <!-- Header -->
+                        <div class="d-flex align-items-center mb-3">
+                            {% if publicacion.perfil.foto %}
+                                <img src="{{ publicacion.perfil.foto.url }}"
+                                     class="rounded-circle me-2 post-avatar">
+                            {% else %}
+                                <img src="/media/avatar.png"
+                                     class="rounded-circle me-2 post-avatar">
+                            {% endif %}
+                            <div>
+                                <a href="{% url 'detalle_perfil' publicacion.perfil.id %}"
+                                   class="post-author">
+                                   {{ publicacion.perfil.first_name|default:publicacion.perfil.username }}
+                                </a>
+                                <div class="post-date text-muted small">
+                                    {{ publicacion.fecha_creacion|date:"d/m/Y H:i" }}
+                                </div>
+                            </div>
+
+                            {% if user.is_authenticated and publicacion.perfil != user %}
+                                {% if publicacion.es_siguiendo %}
+                                    <button class="btn btn-follow-card following ms-auto" 
+                                            onclick="toggleFollow({{ publicacion.perfil.id }}, this)">
+                                        <i class="bi bi-check-lg"></i> <span class="text-siguiendo">Siguiendo</span>
+                                    </button>
+                                {% else %}
+                                    <button class="btn btn-follow-card not-following ms-auto" 
+                                            onclick="toggleFollow({{ publicacion.perfil.id }}, this)">
+                                        <i class="bi bi-person-plus-fill"></i> Seguir
+                                    </button>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+
+                        <!-- Contenido -->
+                        <p class="post-text">{{ publicacion.contenido|safe }}</p>
+
+                        <!-- Media -->
+                        {% if publicacion.media_url %}
+                            {% with file_url=publicacion.media_url.url %}
+                                {% if ".mp4" in file_url or ".mov" in file_url or ".avi" in file_url %}
+                                    <video controls class="w-100 rounded mt-2 post-media" style="max-height:500px; object-fit:cover;">
+                                        <source src="{{ file_url }}" type="video/mp4">
+                                        Tu navegador no soporta videos.
+                                    </video>
+                                {% else %}
+                                    <img src="{{ file_url }}" class="w-100 rounded mt-2 post-media" style="max-height:500px; object-fit:cover;">
+                                {% endif %}
+                            {% endwith %}
+                        {% endif %}
+
+                        <!-- Footer -->
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+
+                            <div>
+                                <button class="btn btn-like btn-sm {% if publicacion.es_liked %}liked{% endif %}"
+                                        onclick="toggleLike({{ publicacion.id }}, this)">
+                                    <i class="bi {% if publicacion.es_liked %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                                    <span class="like-count">{{ publicacion.num_likes }}</span>
+                                </button>
+
+                                <button class="btn btn-comment btn-sm ms-2"
+                                        onclick="abrirComentariosModal('{{ publicacion.id }}')">
+                                    <i class="bi bi-chat-left-text-fill"></i>
+                                    <span class="badge bg-light text-dark ms-2">
+                                        {{ publicacion.num_comentarios }}
+                                    </span>
+                                </button>
+                            </div>
+
+                            <button class="btn btn-fav btn-sm {% if publicacion.es_favorited %}fav-active{% endif %}"
+                                    onclick="toggleFavorite('{{ publicacion.id }}', this)">
+                                <i class="bi {% if publicacion.es_favorited %}bi-star-fill{% else %}bi-star{% endif %}"></i>
+                                <span class="fav-count ms-1">{{ publicacion.num_favoritos }}</span>
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center text-muted mt-4">No hay publicaciones aún.</p>
+                {% endfor %}
+            </div>
+
+        </div>
+
+        <!-- ========================================================= -->
+        <!--  COLUMNA DERECHA — TENDENCIAS + RECOMENDADOS + TIPS + KPI -->
+        <!-- ========================================================= -->
+        <div class="col-lg-3 order-lg-3 mt-4 mt-lg-0">
+
+            <!-- Tendencias -->
+            <div class="card card-athletia sidebar-card mb-4 p-3">
+                <h5 class="fw-bold">🔥 Tendencias</h5>
+                {% if grupos_tendencia %}
+                    {% for g in grupos_tendencia %}
+                    <div class="mb-2 small">
+                        <b>{{ g.nombre }}</b><br>
+                        <span class="text-muted">Miembros activos: {{ g.activos_count }}</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <p class="text-muted fst-italic">No hay suficiente actividad aún.</p>
+                {% endif %}
+            </div>
+
+            <!-- Recomendados -->
+            <div class="card card-athletia sidebar-card mb-4 p-3">
+                <h5 class="fw-bold">💡 Recomendados por AthletIA</h5>
+                {% if grupos_recomendados %}
+                    {% for g in grupos_recomendados %}
+                    <div class="mb-2 small">
+                        <b>{{ g.nombre }}</b>
+                        <p class="text-muted small mb-1">{{ g.descripcion|truncatechars:100 }}</p>
+                    </div>
+                    <hr>
+                    {% endfor %}
+                {% else %}
+                <p class="text-muted fst-italic">No hay grupos para recomendar ahora.</p>
+                {% endif %}
+            </div>
+
+            <!-- Tips -->
+            <div class="card card-athletia sidebar-card mb-4 p-3">
+                <h5 class="fw-bold">🌱 Tips del día</h5>
+                {% if tips %}
+                    {% for tip in tips %}
+                    <div class="mb-3">
+                        <h6 class="fw-bold">{{ tip.titulo }}</h6>
+                        <p class="text-muted small mb-0">{{ tip.contenido }}</p>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                <p class="text-muted fst-italic">Sin tips por ahora.</p>
+                {% endif %}
+            </div>
+
+            <!-- Insight rápido -->
+            <div class="card card-athletia sidebar-card mb-4 p-3">
+                <h5 class="fw-bold">🔎 Insight rápido</h5>
+
+                <ul class="text-muted small">
+                    <li>Participas en {{ kpi_mis_grupos }} grupo(s)</li>
+                    <li>Actividad semanal publicaciones: {{ kpi_posts_semana }}</li>
+                    <li>Comentarios realizados: {{ kpi_comentarios_semana }}</li>
+                </ul>
+
+                <p class="text-muted small">
+                    Únete a 2+ grupos para mejorar motivación y conexiones 💬
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ========================================================= -->
+<!-- MODAL: COMENTARIOS -->
+<!-- ========================================================= -->
+<div class="modal fade" id="comentariosModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content modal-ig">
+
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold">💬 Comentarios</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body p-0">
+        <div id="comentariosModalContent" class="comentarios-modal-list">
+          <p class="text-muted text-center my-3">Cargando comentarios...</p>
+        </div>
+      </div>
+
+      <div class="modal-footer border-0">
+        {% if user.is_authenticated %}
+        <form class="d-flex w-100 align-items-center" id="form-comentario-modal">
+          {% csrf_token %}
+          <input type="text" class="form-control rounded-pill me-2"
+                 name="contenido" placeholder="Agrega un comentario..." required>
+          <button class="btn btn-athletia-primary rounded-pill" type="submit">➤</button>
+        </form>
+
+        {% else %}
+        <div class="alert alert-warning w-100 m-0">
+            💬 Inicia sesión para poder comentar.
+            <a href="{% url 'inicio_Sesion' %}" class="btn btn-sm btn-outline-primary ms-2">Iniciar</a>
+        </div>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ========================================================= -->
+<!-- MODAL: CREAR GRUPO -->
+<!-- ========================================================= -->
+<div class="modal fade" id="crearGrupoModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content card-athletia p-3">
+
+      <div class="modal-header border-0">
+        <h5 class="fw-bold">➕ Crear nuevo grupo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Nombre del grupo</label>
+            <input type="text" id="grupoNombre" class="form-control"
+                   placeholder="Ej: Calistenia Santiago">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Descripción</label>
+            <textarea class="form-control" id="grupoDescripcion"
+                      rows="3" placeholder="Describe de qué trata"></textarea>
+        </div>
+
+      </div>
+
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancelar
+        </button>
+        <button type="button" class="btn btn-athletia-primary" onclick="crearGrupo()">
+            Crear grupo
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ========================================================= -->
+<!-- MODAL: RUTINAS -->
+<!-- ========================================================= -->
+<div class="modal fade" id="rutinasModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content rutina-modal">
+      
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold">📋 Seleccionar rutina para compartir</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body">
+        {% if user.is_authenticated %}
+        
+        <div class="rutina-search-box mb-3">
+            <span class="rutina-search-icon">🔍</span>
+            <input type="text" id="buscadorRutinas" class="form-control rutina-search-input" placeholder="Buscar por nombre o descripción...">
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between mb-3">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-sm btn-light filter-rutina-btn active" data-filter="todas">Todas</button>
+                <button type="button" class="btn btn-sm btn-outline-light filter-rutina-btn" data-filter="propia">⭐ Mis rutinas</button>
+                <button type="button" class="btn btn-sm btn-outline-light filter-rutina-btn" data-filter="guardada">📦 Guardadas</button>
+            </div>
+
+            <select id="ordenarRutinas" class="form-select form-select-sm bg-dark text-light border-secondary" style="width: auto;">
+                <option value="desc">📅 Más recientes</option>
+                <option value="asc">📅 Más antiguas</option>
+            </select>
+        </div>
+
+        <div id="rutinasSkeleton" class="rutinas-skeleton d-none">
+            <div class="rutina-skeleton-card"></div>
+            <div class="rutina-skeleton-card"></div>
+            <div class="rutina-skeleton-card"></div>
+        </div>
+
+        <div id="rutinasListContainer" class="rutinas-list" style="max-height: 400px; overflow-y: auto; padding-right: 5px;"></div>
+
+        {% else %}
+        <div class="alert alert-warning" role="alert">
+            Debes iniciar sesión para poder compartir rutinas.
+        </div>
+        {% endif %}
+    </div>
+
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+        {% if user.is_authenticated %}
+        <button type="button" class="btn btn-primary btn-compartir-rutina" id="btnConfirmarCompartirRutina" disabled>
+          📤 Compartir en el muro
+        </button>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% block extra_js %}
+{% endblock %}
+
+{% endblock %}

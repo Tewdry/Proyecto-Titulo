@@ -1,0 +1,55 @@
+{% extends "Base/base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/api_ejercicio/listar_base.css' %}">
+{% endblock %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="m-0 titulo-listar">{{ title }}</h2>
+        <a href="{{ crear_url }}" class="btn btn-primary boton-crear">Crear {{ title_singular }}</a>
+    </div>
+
+
+    {% if object_list %}
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    {% for col in columns %}
+                        <th>{{ col }}</th>
+                    {% endfor %}
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in object_list %}
+                    <tr>
+                        {% for attr in attributes %}
+                            <td>{{ obj|attr:attr }}</td>
+                        {% endfor %}
+                        <td class="text-end">
+                            <div class="d-inline-flex">
+                                <a href="{% url editar_url_name obj.pk %}" class="btn btn-sm btn-warning me-2">Editar</a>
+                                <form action="{% url eliminar_url_name obj.pk %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            onclick="return confirm('¿Seguro que quieres eliminar este {{ title_singular|lower }}?');">
+                                        Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+        </table>
+    {% else %}
+        <p>No hay {{ title_singular|lower }} aún.</p>
+    {% endif %}
+</div>
+{% endblock %}

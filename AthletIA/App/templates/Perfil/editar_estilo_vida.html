@@ -1,0 +1,629 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'css/Perfil/estilo_vida.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="estilo-vida-wrapper container mt-4 mb-5">
+
+  <div class="ev-header d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="ev-title">
+        🧬 Editar Estilo de Vida
+      </h2>
+      <p class="ev-subtitle">
+        Ajusta tus hábitos diarios para que AthletIA pueda afinar mejor tus rutinas y recomendaciones.
+      </p>
+    </div>
+    <div class="ev-status-pill">
+      <span class="ev-status-dot"></span>
+      Perfil activo
+    </div>
+  </div>
+
+  <div class="ev-card ev-form-card mb-4">
+    <form method="POST" novalidate>
+      {% csrf_token %}
+
+      <div class="row g-4">
+        <div class="col-md-6">
+          <label class="ev-label" for="{{ form.nivel_estres.id_for_label }}">
+            Nivel de estrés
+            <span class="ev-hint-icon" data-ev-tip="Cómo percibes tu estrés general durante la última semana.">
+              ⓘ
+            </span>
+          </label>
+          {% render_field form.nivel_estres class+="ev-input" %}
+          {% if form.nivel_estres.errors %}
+            <div class="ev-error">{{ form.nivel_estres.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div class="col-md-6">
+          <label class="ev-label" for="{{ form.horas_sueno.id_for_label }}">
+            Horas de sueño (promedio)
+            <span class="ev-hint-icon" data-ev-tip="Promedio de horas que duermes por noche los últimos días.">
+              🌙
+            </span>
+          </label>
+          {% render_field form.horas_sueno class+="ev-input" %}
+          {% if form.horas_sueno.errors %}
+            <div class="ev-error">{{ form.horas_sueno.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div class="col-md-6">
+          <label class="ev-label" for="{{ form.calidad_sueno.id_for_label }}">
+            Calidad de sueño
+            <span class="ev-hint-icon" data-ev-tip="Cómo sientes el descanso al despertar: profundo, liviano o interrumpido.">
+              ✨
+            </span>
+          </label>
+          {% render_field form.calidad_sueno class+="ev-input" %}
+          {% if form.calidad_sueno.errors %}
+            <div class="ev-error">{{ form.calidad_sueno.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div class="col-md-6">
+          <label class="ev-label" for="{{ form.alimentacion.id_for_label }}">
+            Tipo de alimentación
+            <span class="ev-hint-icon" data-ev-tip="Cómo se compone tu alimentación principal durante el día.">
+              🍽
+            </span>
+          </label>
+          {% render_field form.alimentacion class+="ev-input" %}
+          {% if form.alimentacion.errors %}
+            <div class="ev-error">{{ form.alimentacion.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div class="col-md-6">
+          <label class="ev-label" for="{{ form.actividad_laboral.id_for_label }}">
+            Actividad laboral / estudio
+            <span class="ev-hint-icon" data-ev-tip="Si tu trabajo/estudio es más bien sentado o te mantiene en movimiento.">
+              💼
+            </span>
+          </label>
+          {% render_field form.actividad_laboral class+="ev-input" %}
+          {% if form.actividad_laboral.errors %}
+            <div class="ev-error">{{ form.actividad_laboral.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div class="col-md-6">
+          <label class="ev-label" for="{{ form.entorno_entrenamiento.id_for_label }}">
+            Entorno de entrenamiento principal
+            <span class="ev-hint-icon" data-ev-tip="Dónde entrenas la mayoría de las veces. Esto ayuda a sugerir mejores rutinas.">
+              📍
+            </span>
+          </label>
+          {% render_field form.entorno_entrenamiento class+="ev-input" %}
+          {% if form.entorno_entrenamiento.errors %}
+            <div class="ev-error">{{ form.entorno_entrenamiento.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div class="col-md-6">
+          <label class="ev-label" for="{{ form.frecuencia_entrenamiento.id_for_label }}">
+            Frecuencia de entrenamiento
+            <span class="ev-hint-icon" data-ev-tip="Cuántos días a la semana entrenas habitualmente.">
+              📈
+            </span>
+          </label>
+          {% render_field form.frecuencia_entrenamiento class+="ev-input" %}
+          {% if form.frecuencia_entrenamiento.errors %}
+            <div class="ev-error">{{ form.frecuencia_entrenamiento.errors|striptags }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="ev-actions text-center mt-4">
+        <button type="submit" class="ev-btn ev-btn-primary">
+          💾 Guardar Cambios
+        </button>
+        <a href="{% url 'perfil' %}" class="ev-btn ev-btn-secondary ms-2">
+          Volver
+        </a>
+      </div>
+    </form>
+  </div>
+
+  <div class="ev-card ia-panel">
+
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div>
+        <h5 class="ia-title mb-1">✨ Evaluación Inteligente de tu Estilo de Vida</h5>
+        <p class="ia-subtitle mb-0">
+          Se actualiza automáticamente según tus selecciones. AthletIA usa estos datos para personalizar tus rutinas.
+        </p>
+      </div>
+      <span class="ia-mini-badge">Modo IA activo</span>
+    </div>
+
+    <div class="row g-4 align-items-stretch mt-3">
+      <div class="col-lg-3">
+        <div class="ia-score-card h-100">
+          <div class="ia-score-header">
+            <span>Puntaje AthletIA</span>
+          </div>
+          <div class="ia-score-main">
+            <span id="ia-score-value">–</span>
+          </div>
+          <p id="ia-score-label" class="ia-score-label">Calculando…</p>
+          <p id="ia-score-detail" class="ia-score-detail">
+            Ajusta tus datos para ver una evaluación más precisa.
+          </p>
+
+          <ul class="ia-score-metrics list-unstyled mt-3 mb-0">
+            <li>
+              <span>Balance Sueño / Estrés</span>
+              <span id="ia-metric-balance">–%</span>
+            </li>
+            <li>
+              <span>Consistencia de entrenamiento</span>
+              <span id="ia-metric-entreno">–%</span>
+            </li>
+            <li>
+              <span>Calidad de alimentación</span>
+              <span id="ia-metric-food">–%</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="ia-chart-card h-100">
+          <h6 class="ia-chart-title">Radar de Hábitos</h6>
+          <div class="canvas-container">
+              <canvas id="iaRadarHabitos"></canvas>
+          </div>
+          <p class="ia-chart-footnote">
+            Comparación entre tus hábitos actuales y el rango recomendado para rendimiento y bienestar.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="ia-quick-map h-100">
+          <h6 class="ia-chart-title mb-3">Mapa rápido de tu semana</h6>
+
+          <div class="row g-2">
+            <div class="col-6">
+              <button type="button" class="ia-chip" id="chip-sueno">Sueño</button>
+            </div>
+            <div class="col-6">
+              <button type="button" class="ia-chip" id="chip-estres">Estrés</button>
+            </div>
+            <div class="col-6">
+              <button type="button" class="ia-chip" id="chip-entreno">Entreno</button>
+            </div>
+            <div class="col-6">
+              <button type="button" class="ia-chip" id="chip-alimentacion">Alimentación</button>
+            </div>
+          </div>
+
+          <p class="ia-chip-legend mt-3 mb-0">
+            Mientras más intenso el color, más alineado está ese hábito con un estilo de vida saludable.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="ia-divider my-4">
+
+    <div class="row g-4 align-items-stretch">
+      
+      <div class="col-lg-6 d-flex flex-column gap-4">
+        
+        <div class="ia-chart-card p-3 d-flex align-items-center justify-content-between" style="min-height: 90px;">
+            <div>
+                <h6 class="ia-chart-title mb-1">Logros potenciales</h6>
+                <small style="color: white; font-size: 0.85rem;">Basado en tu selección actual</small>
+            </div>
+            <div class="ia-badge-list" id="ia-badges">
+              </div>
+        </div>
+
+        <div class="ia-chart-card flex-grow-1">
+          <h6 class="ia-chart-title">Tendencia de Hábitos (últimos 7 días)</h6>
+          <div class="canvas-container">
+              <canvas id="iaTrendChart"></canvas>
+          </div>
+          <p class="ia-chart-footnote">
+              Curvas simuladas...
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-3">
+        <div class="ia-heatmap-card h-100">
+          <h6 class="ia-chart-title mb-2">Mapa de calor</h6>
+          <p class="ia-heatmap-sub mb-3">
+            Verde = fuerte · Rojo = mejorar
+          </p>
+          <div class="ia-heatmap-grid">
+            <div class="ia-heat-box" id="heat-sueno">
+              <span>Sueño</span>
+              <small id="heat-sueno-val">–</small>
+            </div>
+            <div class="ia-heat-box" id="heat-estres">
+              <span>Estrés</span>
+              <small id="heat-estres-val">–</small>
+            </div>
+            <div class="ia-heat-box" id="heat-entreno">
+              <span>Entreno</span>
+              <small id="heat-entreno-val">–</small>
+            </div>
+            <div class="ia-heat-box" id="heat-food">
+              <span>Alimentación</span>
+              <small id="heat-food-val">–</small>
+            </div>
+          </div>
+          <p class="ia-heatmap-foot mt-3 mb-0">
+            AthletIA ajusta la intensidad según este mapa.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-3">
+        <div class="ia-tips-card h-100 d-flex flex-column">
+          <h6 class="ia-chart-title mb-3">Sugerencias IA para hoy</h6>
+          
+          <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border-left: 3px solid #FF9F1C;">
+              <p id="ia-tip-text" class="ia-tip-text mb-0" style="font-size: 0.95rem; line-height: 1.5;">
+                Completa tus datos para recibir una recomendación personalizada.
+              </p>
+          </div>
+
+          <div class="mt-auto text-center opacity-50 pt-3">
+             <i class="bi bi-robot" style="font-size: 2rem;"></i>
+             <p class="small mt-2">Coach AthletIA activo</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div> </div> 
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // ===== Utilidades =====
+  const $ = (id) => document.getElementById(id);
+
+  function getSelectValue(fieldName) {
+    const el = document.getElementById(`id_${fieldName}`);
+    return el ? el.value || "" : "";
+  }
+
+  function getNumberValue(fieldName) {
+    const el = document.getElementById(`id_${fieldName}`);
+    if (!el || !el.value) return null;
+    const v = parseFloat(el.value.replace(",", "."));
+    return isNaN(v) ? null : v;
+  }
+
+  // ===== Mapeos a 0–100 =====
+  function scoreEstres(nivel) {
+    switch ((nivel || "").toLowerCase()) {
+      case "bajo": return 95;
+      case "moderado": return 60;
+      case "alto": return 25;
+      default: return 50;
+    }
+  }
+
+  // CORREGIDO: "Excelente" eliminado. "Buena" ahora es el máximo (100)
+  function scoreCalidadSueno(calidad) {
+    switch ((calidad || "").toLowerCase()) {
+      case "buena": return 100;
+      case "regular": return 50;
+      case "mala": return 25;
+      default: return 50;
+    }
+  }
+
+  function scoreHorasSueno(horas) {
+    if (horas == null) return 50;
+    if (horas < 5) return 30;
+    if (horas < 6) return 50;
+    if (horas >= 7 && horas <= 9) return 100;
+    if (horas > 9) return 85;
+    return 60;
+  }
+
+  function scoreFrecuencia(freq) {
+    freq = (freq || "").toLowerCase();
+    if (freq.includes("sedentario") || freq.includes("nunca")) return 20;
+    if (freq.includes("1-2")) return 50;
+    if (freq.includes("3-4")) return 85;
+    if (freq.includes("5") || freq.includes("diario")) return 100;
+    return 50;
+  }
+
+  function scoreAlimentacion(tipo) {
+    tipo = (tipo || "").toLowerCase();
+    if (tipo.includes("equilibrada") || tipo.includes("balanceada")) return 95;
+    if (tipo.includes("prote")) return 90;
+    if (tipo.includes("carbo") || tipo.includes("vegana")) return 75; 
+    if (tipo.includes("grasas") || tipo.includes("procesada")) return 30;
+    return 50;
+  }
+
+  // ===== Cálculo principal =====
+  function calcularIndicadores() {
+    const nivelEstres = getSelectValue("nivel_estres");
+    const horas = getNumberValue("horas_sueno");
+    const calidadSueno = getSelectValue("calidad_sueno");
+    const alimentacion = getSelectValue("alimentacion");
+    const actividad = getSelectValue("actividad_laboral");
+    const entorno = getSelectValue("entorno_entrenamiento");
+    const frecuencia = getSelectValue("frecuencia_entrenamiento");
+
+    const estresScore = scoreEstres(nivelEstres);
+    const suenoScore = Math.round((scoreHorasSueno(horas) * 0.6) + (scoreCalidadSueno(calidadSueno) * 0.4));
+    const entrenoScore = scoreFrecuencia(frecuencia);
+    const foodScore = scoreAlimentacion(alimentacion);
+
+    const balanceSuenoEstres = Math.round((suenoScore + estresScore) / 2);
+    
+    const globalScore = Math.round(
+      (suenoScore * 0.3) +
+      (estresScore * 0.25) +
+      (entrenoScore * 0.25) +
+      (foodScore * 0.2)
+    ) / 10;
+
+    return {
+      suenoScore,
+      estresScore,
+      entrenoScore,
+      foodScore,
+      balanceSuenoEstres,
+      globalScore: (isNaN(globalScore) ? null : globalScore)
+    };
+  }
+
+  // ====== Actualizar Score Card ======
+  function actualizarScoreCard(ind) {
+    const scoreEl = $("ia-score-value");
+    const labelEl = $("ia-score-label");
+    const detailEl = $("ia-score-detail");
+
+    if (ind.globalScore === null) {
+      scoreEl.textContent = "–";
+      return;
+    }
+
+    scoreEl.textContent = ind.globalScore.toFixed(1);
+
+    let label, detail;
+    if (ind.globalScore >= 8.5) {
+      label = "🔥 Nivel Élite";
+      detail = "Tu estilo de vida es óptimo. Estás listo para entrenamientos de alta intensidad.";
+    } else if (ind.globalScore >= 7) {
+      label = "🌿 Saludable";
+      detail = "Buen equilibrio. Pequeños ajustes en descanso o nutrición te llevarán al siguiente nivel.";
+    } else if (ind.globalScore >= 5) {
+      label = "⚠️ En desarrollo";
+      detail = "Hay áreas por mejorar. AthletIA ajustará la carga para evitar fatiga.";
+    } else {
+      label = "🛑 Riesgo de Fatiga";
+      detail = "Prioriza el descanso y la nutrición antes de aumentar la carga de entreno.";
+    }
+
+    labelEl.textContent = label;
+    detailEl.textContent = detail;
+
+    $("ia-metric-balance").textContent = ind.balanceSuenoEstres + "%";
+    $("ia-metric-entreno").textContent = ind.entrenoScore + "%";
+    $("ia-metric-food").textContent = ind.foodScore + "%";
+  }
+
+  // ===== Heatmap =====
+  function colorForScore(score) {
+    if (score === null || score === undefined) return "#2b3b40";
+    if (score >= 80) return "#00c896";
+    if (score >= 50) return "#f1c40f";
+    return "#ff4757";
+  }
+
+  function actualizarHeatmap(ind) {
+    const boxes = [
+      { id: "heat-sueno", score: ind.suenoScore },
+      { id: "heat-estres", score: ind.estresScore }, 
+      { id: "heat-entreno", score: ind.entrenoScore },
+      { id: "heat-food", score: ind.foodScore }
+    ];
+
+    boxes.forEach(item => {
+      const box = $(item.id);
+      const val = $(`${item.id}-val`);
+      
+      if (box && val) {
+        box.style.backgroundColor = colorForScore(item.score);
+        box.style.color = item.score < 50 ? "#fff" : "#003135";
+        val.textContent = item.score ? `${Math.round(item.score)}%` : "–";
+      }
+    });
+  }
+
+  // ===== Radar Chart =====
+  let radarChart = null;
+  function actualizarRadar(ind) {
+    const ctx = document.getElementById("iaRadarHabitos");
+    if (!ctx) return;
+
+    const data = {
+      labels: ["Sueño", "Manejo Estrés", "Entreno", "Nutrición", "Balance"],
+      datasets: [{
+        label: "Tus Métricas",
+        data: [
+          ind.suenoScore || 0,
+          ind.estresScore || 0,
+          ind.entrenoScore || 0,
+          ind.foodScore || 0,
+          ind.balanceSuenoEstres || 0
+        ],
+        fill: true,
+        backgroundColor: "rgba(37, 226, 215, 0.2)",
+        borderColor: "#25e2d7",
+        pointBackgroundColor: "#fff",
+        pointBorderColor: "#25e2d7",
+        pointRadius: 4
+      }]
+    };
+
+    const options = {
+      scales: {
+        r: {
+          suggestedMin: 0,
+          suggestedMax: 100,
+          grid: { color: "rgba(255,255,255,0.1)" },
+          angleLines: { color: "rgba(255,255,255,0.1)" },
+          ticks: { display: false },
+          pointLabels: { color: "#e8fdf8", font: { size: 11 } }
+        }
+      },
+      plugins: { legend: { display: false } },
+      maintainAspectRatio: false
+    };
+
+    if (radarChart) {
+      radarChart.data = data;
+      radarChart.update();
+    } else {
+      radarChart = new Chart(ctx, { type: "radar", data, options });
+    }
+  }
+
+  // ===== Line Chart =====
+  let trendChart = null;
+  function actualizarTrend(ind) {
+    const ctx = document.getElementById("iaTrendChart");
+    if (!ctx) return;
+
+    const labels = ["L", "M", "X", "J", "V", "S", "D"];
+    const dataPoints = labels.map(() => Math.min(100, Math.max(0, (ind.globalScore * 10) + (Math.random() * 10 - 5))));
+
+    const data = {
+      labels,
+      datasets: [{
+        label: "Bienestar General",
+        data: dataPoints,
+        borderColor: "#5ff5e5",
+        backgroundColor: "rgba(95, 245, 229, 0.1)",
+        tension: 0.4,
+        fill: true
+      }]
+    };
+
+    const options = {
+      scales: {
+        y: { beginAtZero: true, max: 100, grid: { color: "rgba(255,255,255,0.05)" } },
+        x: { grid: { display: false } }
+      },
+      plugins: { legend: { display: false } },
+      maintainAspectRatio: false
+    };
+
+    if (trendChart) {
+      trendChart.data = data;
+      trendChart.update();
+    } else {
+      trendChart = new Chart(ctx, { type: "line", data, options });
+    }
+  }
+
+  // ===== Chips =====
+  function actualizarChips(ind) {
+    const setChip = (id, score) => {
+        const chip = $(id);
+        if(chip) {
+            const alpha = score ? (score / 100) : 0.2;
+            chip.style.backgroundColor = `rgba(37, 226, 215, ${Math.max(0.2, alpha)})`;
+        }
+    };
+    setChip("chip-sueno", ind.suenoScore);
+    setChip("chip-estres", ind.estresScore);
+    setChip("chip-entreno", ind.entrenoScore);
+    setChip("chip-alimentacion", ind.foodScore);
+  }
+
+  // ===== Tips & Logros =====
+  function actualizarTips(ind) {
+    const tipEl = $("ia-tip-text");
+    const badgesEl = $("ia-badges");
+    
+    if (!ind.globalScore) return;
+
+    const scores = [
+        { name: "Sueño", val: ind.suenoScore },
+        { name: "Estrés", val: ind.estresScore },
+        { name: "Entreno", val: ind.entrenoScore },
+        { name: "Nutrición", val: ind.foodScore }
+    ];
+    
+    scores.sort((a, b) => a.val - b.val);
+    const peor = scores[0];
+
+    let consejo = "";
+
+    // Si tu peor puntaje es alto, felicitamos
+    if (peor.val >= 85) {
+        consejo = "✨ ¡Estás en tu mejor momento! Tus hábitos son sólidos. Mantén esta constancia para ver resultados increíbles.";
+    } else {
+        if (peor.name === "Sueño") consejo = "💡 Tu recuperación podría ser mejor. Intenta desconectar pantallas 1h antes de dormir.";
+        else if (peor.name === "Estrés") consejo = "💡 Nivel de estrés alto. Prueba 5 min de respiración box-breathing antes de entrenar.";
+        else if (peor.name === "Entreno") consejo = "💡 Falta consistencia. Agenda tus sesiones como si fueran reuniones de trabajo.";
+        else consejo = "💡 Ojo con la nutrición. Asegura proteína en cada comida para recuperar.";
+    }
+
+    tipEl.textContent = consejo;
+
+    // Logros
+    let htmlBadges = "";
+    if (ind.globalScore >= 8) htmlBadges += `<div class="ia-badge">🏆 Atleta Disciplinado</div>`;
+    if (ind.suenoScore >= 95) htmlBadges += `<div class="ia-badge">🌙 Maestro del Descanso</div>`;
+    if (ind.foodScore >= 90) htmlBadges += `<div class="ia-badge">🥗 Nutrición Pro</div>`;
+    
+    if (htmlBadges === "") htmlBadges = `<div class="ia-badge" style="background:#2b3b40">🚀 Iniciando Camino</div>`;
+    
+    if (badgesEl) {
+        badgesEl.innerHTML = htmlBadges;
+    }
+  }
+
+  // ===== ORQUESTADOR =====
+  function refrescarTodo() {
+    const indicadores = calcularIndicadores();
+    actualizarScoreCard(indicadores);
+    actualizarHeatmap(indicadores);
+    actualizarRadar(indicadores);
+    actualizarTrend(indicadores);
+    actualizarChips(indicadores);
+    actualizarTips(indicadores);
+  }
+
+  const campos = [
+    "nivel_estres", "horas_sueno", "calidad_sueno", 
+    "alimentacion", "actividad_laboral", 
+    "entorno_entrenamiento", "frecuencia_entrenamiento"
+  ];
+
+  campos.forEach(id => {
+    const el = document.getElementById(`id_${id}`);
+    if (el) {
+        el.addEventListener("change", refrescarTodo);
+        el.addEventListener("input", refrescarTodo);
+    }
+  });
+
+  refrescarTodo();
+});
+</script>
+{% endblock %}

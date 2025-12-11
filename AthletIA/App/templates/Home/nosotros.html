@@ -1,0 +1,140 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}Nosotros - AthletIA{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'css/Home/nosotros.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="nosotros-wrapper container py-5">
+
+    <!-- ===================== TÍTULO ===================== -->
+    <div class="text-center mb-5">
+        <h1 class="nosotros-titulo">
+            Sobre <span class="ath-primary">AthletIA</span>
+        </h1>
+        <p>
+            Entrenamiento y nutrición potenciados por inteligencia artificial.
+        </p>
+    </div>
+
+    <!-- ===================== MISIÓN / VISIÓN ===================== -->
+    <div class="row align-items-center justify-content-center mb-5">
+        <div class="col-lg-5 mb-4">
+            <img src="/media/banner.jpg" class="nosotros-img shadow-lg" alt="AthletIA">
+        </div>
+
+        <div class="col-lg-6">
+            <div class="glass-card p-4 mb-4">
+                <h3 class="ath-primary fw-bold">Nuestra misión</h3>
+                <p>
+                    Brindar herramientas inteligentes y accesibles que transformen el entrenamiento y 
+                    la nutrición en experiencias personalizadas basadas en ciencia, datos y progreso real.
+                </p>
+            </div>
+
+            <div class="glass-card p-4">
+                <h3 class="ath-primary fw-bold">Nuestra visión</h3>
+                <p>
+                    Ser la plataforma líder de fitness inteligente en Latinoamérica, impulsando 
+                    bienestar, rendimiento y salud mediante IA, deporte y tecnología avanzada.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== EQUIPO ===================== -->
+    <div class="text-center mb-4">
+        <h2 class="section-title">Nuestro equipo</h2>
+        <p>Unimos tecnología, deporte y salud para acompañarte paso a paso.</p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+
+        <!-- Gabriel -->
+        <div class="col-md-4 col-lg-3">
+            <div class="equipo-card glass-card shadow-lg h-100 text-center p-3">
+                <img src="/media/logo.png" class="equipo-img">
+                <h5 class="equipo-nombre">Gabriel Verdejo</h5>
+                <p class="equipo-desc">
+                    Desarrollador Full Stack y creador de AthletIA. Apasionado por la tecnología,
+                    la ciencia de datos y el entrenamiento físico.
+                </p>
+            </div>
+        </div>
+
+        <!-- Jonathan -->
+        <div class="col-md-4 col-lg-3">
+            <div class="equipo-card glass-card shadow-lg h-100 text-center p-3">
+                <img src="/media/logo.png" class="equipo-img">
+                <h5 class="equipo-nombre">Jonathan Gaete</h5>
+                <p class="equipo-desc">
+                    Desarrollador Full Stack y creador de AthletIA. Apasionado por la tecnología,
+                    la ciencia de datos y el entrenamiento físico.
+                </p>
+            </div>
+        </div>
+
+        <!-- Gonzalo -->
+        <div class="col-md-4 col-lg-3">
+            <div class="equipo-card glass-card shadow-lg h-100 text-center p-3">
+                <img src="/media/logo.png" class="equipo-img">
+                <h5 class="equipo-nombre">Gonzalo Monreal</h5>
+                <p class="equipo-desc">
+                    Desarrollador Full Stack y creador de AthletIA. Apasionado por la tecnología,
+                    la ciencia de datos y el entrenamiento físico.
+                </p>
+            </div>
+        </div>
+
+        <!-- Bruno -->
+        <div class="col-md-4 col-lg-3">
+            <div class="equipo-card glass-card shadow-lg h-100 text-center p-3">
+                <img src="/media/logo.png" class="equipo-img">
+                <h5 class="equipo-nombre">Bruno Moreno</h5>
+                <p class="equipo-desc">
+                    Desarrollador Full Stack y creador de AthletIA. Apasionado por la tecnología,
+                    la ciencia de datos y el entrenamiento físico.
+                </p>
+            </div>
+        </div>
+
+        <!-- Coach AI -->
+        <div class="col-lg-6 col-md-10">
+            <div class="equipo-card glass-card shadow-lg text-center p-3">
+                <img src="/media/ia.png" class="equipo-img">
+                <h5 class="equipo-nombre">AthletIA Coach 🤖</h5>
+                <p class="equipo-desc">
+                    Tu asistente virtual impulsado por IA. Crea rutinas y responde tus dudas 
+                    en tiempo real para mejorar tu rendimiento.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- ===================== CTA ===================== -->
+    <div class="text-center mt-5">
+        <h3 class="section-title">Únete a nosotros</h3>
+        <p>
+            Forma parte de una comunidad impulsada por ciencia, motivación y tecnología.
+        </p>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'ia:generar_rutina' %}" class="btn btn-athletia-primary btn-lg">
+                Comenzar a entrenar
+            </a>
+        {% else %}
+            <a href="{% url 'registro' %}" class="btn btn-athletia-accent btn-lg">
+                Crear mi cuenta
+            </a>
+        {% endif %}
+    </div>
+
+</section>
+
+{% endblock %}

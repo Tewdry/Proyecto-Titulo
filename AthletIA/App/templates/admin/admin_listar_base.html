@@ -1,0 +1,248 @@
+{% extends "admin/admin_base.html" %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="admin-wrapper">
+    
+    <!-- SIDEBAR -->
+    <nav class="admin-sidebar">
+        <div class="sidebar-logo">
+            <img src="/media/logo.png" width="30" alt="">
+            Athlet<span>IA</span>
+        </div>
+
+        <div class="menu-cat">Navegación</div>
+        <a href="{% url 'panel_admin' %}" class="nav-link-admin"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="javascript:history.back()" class="nav-link-admin active"><i class="bi bi-arrow-return-left"></i> Volver</a>
+
+        {% if title == "Reportes de Comentarios" %}
+        <div class="menu-cat">Moderación</div>
+        <a href="{% url 'panel_analisis_rutinas' %}" class="nav-link-admin"><i class="bi bi-bar-chart-line"></i> Análisis de Rutinas</a>
+        {% endif %}
+    </nav>
+
+
+    <!-- CONTENIDO -->
+    <div class="admin-content">
+
+        <div class="admin-header">
+            <div class="admin-title">
+                <h1>{{ title }}</h1>
+                <p style="color: var(--text-muted);">Gestión de {{ title_singular }}</p>
+            </div>
+
+            {% if crear_url_name and title != "Rutinas" and title != "Publicaciones" %}
+            <a href="{% url crear_url_name %}" class="btn-new">
+                <i class="bi bi-plus-lg"></i> Nuevo {{ title_singular }}
+            </a>
+            {% endif %}
+        </div>
+
+
+        <!-- 🔍 BUSCADOR -->
+        <div class="mb-3">
+            <input type="text" id="searchInput" class="form-control"
+                placeholder="Buscar..." 
+                style="max-width: 300px; background: rgba(255,255,255,0.07); border:1px solid var(--ath-neon); color:white;">
+        </div>
+
+
+        <!-- TABLA -->
+        <div class="cyber-table-box">
+
+            {% if object_list %}
+            <table class="cyber-table" id="dataTable">
+                <thead>
+                    <tr>
+                        {% for col in columns %}
+                            <th>{{ col }}</th>
+                        {% endfor %}
+
+                        {% if title == "Usuarios" %}
+                            <th style="width: 10%;">Staff</th>
+                        {% endif %}
+
+                        <th style="width: 15%; text-align: right;">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for obj in object_list %}
+                    <tr>
+
+                        {% for attr in attributes %}
+                            {% if title == "Publicaciones" and attr == "contenido" %}
+                                <td>{{ obj.contenido|clean_text:120 }}</td>
+                            {% else %}
+                                <td>{{ obj|attr_lookup:attr|truncatechars:35 }}</td>
+                            {% endif %}
+                        {% endfor %}
+
+
+                        <!-- BOTÓN STAFF -->
+                        {% if title == "Usuarios" %}
+                            <td>
+                                {% if request.user.is_superuser %}
+                                    {% if obj.is_superuser %}
+                                        <span style="color:#2de3c6;"><i class="bi bi-shield-lock"></i> Root</span>
+                                    {% else %}
+                                        {% if obj.is_staff %}
+                                            <a href="{% url 'toggle_staff' obj.id %}" class="btn-staff active">
+                                                <i class="bi bi-shield-check"></i> Staff
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'toggle_staff' obj.id %}" class="btn-staff inactive">
+                                                <i class="bi bi-shield-slash"></i> No Staff
+                                            </a>
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    {% if obj.is_staff %}
+                                        <span style="color:#2de3c6;"><i class="bi bi-shield-check"></i> Staff</span>
+                                    {% else %}
+                                        <span style="opacity:0.6;"><i class="bi bi-shield-slash"></i> No Staff</span>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        {% endif %}
+
+                        <!-- ACCIONES -->
+                        <td style="text-align:right;">
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-dark text-white dropdown-toggle"
+                                    type="button" data-bs-toggle="dropdown"
+                                    style="background: rgba(45, 227, 198, 0.15); 
+                                          color: var(--ath-neon)!important; 
+                                          border: 1px solid var(--ath-neon);">
+                                    <i class="bi bi-three-dots"></i>
+                                </button>
+
+                                <ul class="dropdown-menu dropdown-menu-end shadow"
+                                    style="background: var(--ath-sidebar); border: 1px solid var(--border);">
+
+
+                                    {# ============================ #}
+                                    {#  EDITAR (con permisos)      #}
+                                    {# ============================ #}
+
+                                    {% if editar_url_name and title != "Rutinas" %}
+
+                                        {% if title == "Usuarios" %}
+                                            {% if user.is_superuser %}
+                                                <li>
+                                                    <a class="dropdown-item" href="{% url editar_url_name pk=obj.id %}">
+                                                        <i class="bi bi-pencil-square"></i> Editar
+                                                    </a>
+                                                </li>
+                                                <li><hr class="dropdown-divider"></li>
+                                            {% endif %}
+                                        {% else %}
+                                            <li>
+                                                <a class="dropdown-item" href="{% url editar_url_name pk=obj.id %}">
+                                                    <i class="bi bi-pencil-square"></i> Editar
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                        {% endif %}
+
+                                    {% endif %}
+
+
+
+                                    {# ============================ #}
+                                    {#  ELIMINAR (con permisos)    #}
+                                    {# ============================ #}
+
+                                    {% if title == "Usuarios" %}
+                                        {% if user.is_superuser %}
+                                            <li>
+                                                <form action="{% url eliminar_url_name pk=obj.id %}" method="POST" class="form-delete d-inline">
+                                                    {% csrf_token %}
+                                                    <button type="button" class="dropdown-item text-danger delete-trigger"
+                                                        data-nombre="{{ title_singular }}">
+                                                        <i class="bi bi-trash"></i> Eliminar {{ title_singular }}
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        {% else %}
+                                            <li>
+                                                <span class="dropdown-item text-muted">
+                                                    <i class="bi bi-lock"></i> Sin permisos
+                                                </span>
+                                            </li>
+                                        {% endif %}
+                                    {% elif eliminar_url_name %}
+                                        <li>
+                                            <form action="{% url eliminar_url_name pk=obj.id %}" method="POST" class="form-delete d-inline">
+                                                {% csrf_token %}
+                                                <button type="button" class="dropdown-item text-danger delete-trigger"
+                                                    data-nombre="{{ title_singular }}">
+                                                    <i class="bi bi-trash"></i> Eliminar {{ title_singular }}
+                                                </button>
+                                            </form>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            {% else %}
+            <div class="p-5 text-center text-muted">
+                <i class="bi bi-inbox" style="font-size: 2rem; opacity: 0.5;"></i>
+                <p class="mt-2">No hay {{ title_singular|lower }} disponibles.</p>
+            </div>
+            {% endif %}
+        </div>
+
+    </div><!-- admin-content -->
+
+</div><!-- wrapper -->
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+/* ============================
+   🔍 FILTRO / BUSCADOR
+============================ */
+document.getElementById("searchInput").addEventListener("keyup", function () {
+    let filter = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#dataTable tbody tr");
+
+    rows.forEach(row => {
+        let text = row.textContent.toLowerCase();
+        row.style.display = text.includes(filter) ? "" : "none";
+    });
+});
+
+
+/* ============================
+   SWEET ALERTS COMO ANTES
+============================ */
+document.querySelectorAll('.delete-trigger').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const form = this.closest('.form-delete');
+        const nombre = this.dataset.nombre || 'elemento';
+        Swal.fire({
+            title: '¿Eliminar ' + nombre + '?',
+            text: 'Esta acción no se puede deshacer.',
+            icon: 'warning',
+            background: '#042b35',
+            color: '#fff',
+            showCancelButton: true,
+            confirmButtonColor: '#ff4f6a',
+            cancelButtonColor: '#0aa38b',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((r)=>{ if(r.isConfirmed) form.submit() });
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,244 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block head %}
+<title>🔔 Centro de Notificaciones | AthletIA</title>
+<style>
+    /* =========================================
+       ESTILOS NOTIFICACIONES (SIN FONDO PROPIO)
+       ========================================= */
+    :root {
+        --ath-cyan: #25e2d7;
+        --ath-card-bg: rgba(6, 28, 36, 0.85); /* Vidrio oscuro para contraste */
+        --ath-text-main: #e8fdf8;
+        --ath-text-muted: #8caeb0;
+        --ath-radius: 16px;
+    }
+
+    /* Wrapper: Solo da espaciado, NO tiene color de fondo */
+    .notif-wrapper {
+        padding-top: 50px;
+        padding-bottom: 60px;
+        min-height: 80vh; /* Asegura que ocupe buen espacio */
+    }
+
+    .notif-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Header */
+    .notif-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 20px;
+    }
+
+    .notif-title {
+        color: var(--ath-text-main);
+        font-weight: 300;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* Sombra para leerse bien */
+    }
+    .notif-title span { font-weight: 700; color: var(--ath-cyan); }
+
+    .btn-mark-all {
+        background: rgba(6, 28, 36, 0.6);
+        border: 1px solid var(--ath-cyan);
+        color: var(--ath-cyan);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        transition: 0.3s;
+        text-decoration: none;
+        cursor: pointer;
+        backdrop-filter: blur(4px);
+    }
+    .btn-mark-all:hover {
+        background: var(--ath-cyan);
+        color: #000;
+    }
+
+    /* Lista */
+    .notif-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    /* Tarjetas GLASS (Para que resalten sobre tu fondo azul) */
+    .notif-card {
+        background: var(--ath-card-bg);
+        border: 1px solid rgba(37, 226, 215, 0.2);
+        border-radius: var(--ath-radius);
+        padding: 20px;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        transition: transform 0.2s, box-shadow 0.2s;
+        backdrop-filter: blur(10px); /* Efecto vidrio */
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .notif-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--ath-cyan);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+
+    /* Estilo para NO LEÍDAS */
+    .notif-card.unread {
+        border-left: 4px solid var(--ath-cyan);
+        background: rgba(37, 226, 215, 0.15); /* Un poco más claro */
+    }
+
+    .notif-icon {
+        width: 45px; height: 45px;
+        border-radius: 50%;
+        background: rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+    
+    .notif-content { flex: 1; }
+    
+    .notif-text {
+        color: var(--ath-text-main);
+        margin: 0 0 5px 0;
+        font-size: 1rem;
+    }
+    .notif-date {
+        font-size: 0.8rem;
+        color: var(--ath-text-muted);
+    }
+
+    /* Paginación */
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 40px;
+    }
+    .page-link {
+        background: rgba(0,0,0,0.3);
+        color: var(--ath-text-main);
+        padding: 8px 14px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: 0.2s;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    .page-link:hover, .page-link.active {
+        background: var(--ath-cyan);
+        color: #000;
+        font-weight: bold;
+        border-color: var(--ath-cyan);
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 0;
+        color: var(--ath-text-main);
+        text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+    .empty-icon { font-size: 3rem; margin-bottom: 15px; display: block; opacity: 0.8; }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="notif-wrapper">
+
+    <div class="notif-container">
+        
+        <div class="notif-header">
+            <h1 class="notif-title">Centro de <span>Notificaciones</span></h1>
+            <button id="btnMarkAllMain" class="btn-mark-all">
+                <i class="bi bi-check-all"></i> Marcar todo leído
+            </button>
+        </div>
+
+        <div class="notif-list">
+            {% for notif in page_obj %}
+            <div class="notif-card {% if not notif.leida %}unread{% endif %}">
+                
+                <div class="notif-icon">
+                    {% if notif.tipo == 'like' %}
+                        <span style="color: #FF5757;">❤️</span>
+                    {% elif notif.tipo == 'follow' %}
+                        <span style="color: #25e2d7;">👤</span>
+                    {% elif notif.tipo == 'comentario' %}
+                        <span style="color: #FF9F1C;">💬</span>
+                    {% else %}
+                        <span style="color: #8caeb0;">🔔</span>
+                    {% endif %}
+                </div>
+
+                <div class="notif-content">
+                    <p class="notif-text">{{ notif.mensaje }}</p>
+                    <span class="notif-date">
+                        <i class="bi bi-clock"></i> {{ notif.fecha|date:"d M Y, H:i" }}
+                    </span>
+                </div>
+
+                {% if not notif.leida %}
+                <div title="No leído">
+                    <span style="color:var(--ath-cyan); font-size:2rem;">•</span>
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <span class="empty-icon">🔕</span>
+                <h3>Todo tranquilo por aquí</h3>
+                <p>No tienes notificaciones recientes.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page={{ page_obj.previous_page_number }}" class="page-link">&laquo; Anterior</a>
+            {% endif %}
+            
+            <span class="page-link active">{{ page_obj.number }}</span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="page-link">Siguiente &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('btnMarkAllMain').addEventListener('click', async () => {
+        try {
+            const response = await fetch('/notifications/mark-all-read/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json'
+                }
+            });
+            if(response.ok){
+                location.reload(); 
+            }
+        } catch(e) {
+            console.error(e);
+        }
+    });
+</script>
+{% endblock %}

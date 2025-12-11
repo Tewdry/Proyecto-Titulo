@@ -1,0 +1,138 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block head %}
+<title>🚀 Command Center | AthletIA</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="background-fx"></div>
+
+<div class="dashboard-container">
+
+  <header class="dash-header">
+      <div>
+          <h2 id="saludoUsuario">Bienvenido, Atleta</h2>
+          <p class="text-muted">Panel de Control Biométrico</p>
+      </div>
+      <div class="user-level-badge" id="badgeNivel">
+          <span class="level-icon">🛡️</span>
+          <span class="level-text" id="textoNivel">Calculando Nivel...</span>
+      </div>
+  </header>
+
+  <section class="kpi-grid">
+    <div class="kpi-card">
+      <h3>🎯 Rutinas (Semana)</h3>
+      <div class="kpi-body">
+          <p class="kpi-value" id="kpiRutinasSemanaValor">0</p>
+          <span class="kpi-sub">Meta: <span id="kpiRutinasSemanaObjetivo" class="font-mono">0</span></span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <h3>📈 Cumplimiento</h3>
+      <div class="kpi-body">
+          <p class="kpi-value" id="kpiCumplimientoValor">0%</p>
+          <span class="kpi-sub" id="kpiCumplimientoTexto">Analizando...</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <h3>🔥 Racha Activa</h3>
+      <div class="kpi-body">
+          <p class="kpi-value" id="kpiRachaValor">0</p>
+          <span class="kpi-sub">Mantén el fuego</span>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <h3>⏱️ Carga de Trabajo</h3>
+      <div class="kpi-body">
+          <p class="kpi-value" id="kpiMinutosValor">0</p>
+          <span class="kpi-sub">Minutos (7 días)</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid-2-1">
+      <div class="coach-card">
+          <div class="coach-avatar">
+              <svg xmlns="http://www.w3.org/2000/svg" class="coach-svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+          </div>
+          <div class="coach-content">
+              <h3>Coach AthletIA <span class="badge-ai">AI ACTIVE</span></h3>
+              <p id="coachMensaje">Tu mejor versión te espera hoy. 💪</p>
+          </div>
+      </div>
+
+      <div class="energia-card">
+          <div class="energia-header">
+              <h3>⚡ Nivel de Energía</h3>
+              <span id="energiaValorTexto" class="font-mono">0%</span>
+          </div>
+          <div class="energia-track">
+              <div class="energia-fill" id="energiaBarra"></div>
+          </div>
+          <p id="energiaTexto" class="energia-status">Calculando...</p>
+      </div>
+  </section>
+
+  <section class="graficos-grid">
+    <div class="grafico-card">
+      <div class="card-header">
+        <h3>⚖️ Evolución de Peso</h3>
+        </div>
+      <div class="chart-container">
+          <canvas id="graficoPeso"></canvas>
+      </div>
+    </div>
+
+    <div class="grafico-card">
+      <div class="card-header">
+        <h3>📊 Actividad (14 días)</h3>
+      </div>
+      <div class="chart-container">
+          <canvas id="graficoRutinas14"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <section class="bottom-grid">
+      <div class="dash-card timeline-card">
+          <h3>📅 Próximas Sesiones</h3>
+          <div id="timelineRutinas" class="timeline-list">
+              <p class="text-muted">Cargando agenda...</p>
+          </div>
+      </div>
+
+      <div class="dash-card proyeccion-card">
+          <h3>🚀 Proyección de Rendimiento</h3>
+          <div class="proyeccion-body">
+              <p id="proyeccionTexto">Recopilando datos para inferencia...</p>
+              
+              <div class="xp-container">
+                  <span class="xp-label">Progreso Nivel Actual</span>
+                  <div class="xp-track"><div id="xpBarra" class="xp-fill"></div></div>
+              </div>
+          </div>
+      </div>
+
+      <div class="dash-card logros-card">
+          <h3>🏆 Logros Recientes</h3>
+          <div id="listaLogros" class="tags-container">
+              <span class="text-muted">Sin actividad reciente</span>
+          </div>
+      </div>
+  </section>
+
+</div>
+
+{% block extra_js %}
+  <script id="historial-data" type="application/json">{{ historial_peso_json|safe }}</script>
+{% endblock %}
+
+{% endblock %}

@@ -1,0 +1,151 @@
+/* ===========================================
+   🎨 PALETA ATHLETIA (OSCURA SOLO PARA TARJETAS)
+=========================================== */
+:root {
+    --ath-primary: #2de3c6;
+    --ath-text-light: #e8fdf8;
+    --ath-text-muted: #91c1c1;
+
+    /* NO tocamos el fondo general */
+    --ath-card-bg: rgba(3, 28, 34, 0.92);
+    --ath-card-glass: rgba(3, 28, 34, 0.70);
+
+    --ath-border: rgba(255,255,255,0.06);
+}
+
+/* ===========================================
+   📌 WRAPPER
+=========================================== */
+.nosotros-wrapper {
+    color: var(--ath-text-light);
+}
+
+/* ===========================================
+   ✨ TÍTULOS
+=========================================== */
+.nosotros-titulo {
+    font-size: 2.6rem;
+    font-weight: 900;
+    color: var(--ath-text-light);
+    text-shadow: 0 0 12px rgba(45, 227, 198, 0.45);
+}
+
+.ath-primary {
+    color: var(--ath-primary);
+}
+
+.nosotros-sub {
+    font-size: 1.15rem;
+    color: var(--ath-text-muted);
+}
+
+/* ===========================================
+   📸 IMAGEN PRINCIPAL (se deja igual pero más elegante)
+=========================================== */
+.nosotros-img {
+    width: 100%;
+    border-radius: 20px;
+    border: 1px solid var(--ath-border);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.55);
+}
+
+/* ===========================================
+   🧊 GLASS CARDS (AQUÍ ESTÁ LA OSCURIDAD PRINCIPAL)
+=========================================== */
+.glass-card {
+    background: var(--ath-card-glass) !important;
+    border: 1px solid var(--ath-border);
+    border-radius: 20px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    color: var(--ath-text-light) !important;
+    box-shadow: 0 10px 22px rgba(0,0,0,0.45);
+    transition: .25s;
+}
+
+.glass-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--ath-primary);
+}
+
+/* ===========================================
+   👥 EQUIPO — CARDS
+=========================================== */
+.equipo-card {
+    background: var(--ath-card-bg) !important;
+    border: 1px solid var(--ath-border);
+    border-radius: 22px;
+    box-shadow: 0 12px 24px rgba(0,0,0,0.55);
+    transition: .25s;
+}
+
+.equipo-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--ath-primary);
+}
+
+/* Imagen */
+.equipo-img {
+    width: 100%;
+    height: 210px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 12px rgba(45,227,198,0.45));
+    margin-bottom: 12px;
+}
+
+/* Nombre */
+.equipo-nombre {
+    font-weight: 700;
+    color: var(--ath-primary);
+    margin-bottom: 6px;
+    text-shadow: 0 0 10px rgba(45,227,198,0.4);
+}
+
+/* Descripción */
+.equipo-desc {
+    color: var(--ath-text-muted);
+    font-size: 0.92rem;
+    opacity: 0.9;
+}
+
+/* ===========================================
+   ⭐ SECCIONES
+=========================================== */
+.section-title {
+    font-size: 2rem;
+    color: var(--ath-primary);
+    font-weight: 800;
+    text-shadow: 0 0 10px rgba(45,227,198,0.35);
+}
+
+/* ===========================================
+   🔘 BOTONES ATHLETIA
+=========================================== */
+.btn-athletia-primary {
+    background: var(--ath-primary) !important;
+    color: #003028 !important;
+    border-radius: 999px;
+    padding: 10px 26px;
+    font-weight: 700;
+    transition: .3s;
+}
+
+.btn-athletia-primary:hover {
+    box-shadow: 0 0 20px rgba(45,227,198,0.55);
+    transform: translateY(-2px);
+}
+
+.btn-athletia-accent {
+    border: 2px solid var(--ath-primary);
+    background: transparent;
+    color: var(--ath-primary);
+    border-radius: 999px;
+    padding: 10px 26px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+.btn-athletia-accent:hover {
+    background: var(--ath-primary);
+    color: #003028 !important;
+}

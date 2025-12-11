@@ -1,0 +1,412 @@
+/* =========================================================
+   🌑 PERFIL — ATHLETIA DARK PREMIUM
+   Paleta sincronizada con red.css
+========================================================= */
+
+:root {
+    --ath-primary: #2de3c6;
+    --ath-primary-dark: #0aa38b;
+
+    --ath-bg-dark: #021e26;
+    --ath-bg-deep: #03252e;
+
+    --ath-card-bg: rgba(4, 35, 40, 0.92);
+    --ath-card-glass: rgba(4, 35, 40, 0.65);
+
+    --ath-border-light: rgba(255,255,255,0.06);
+    --ath-text-light: #e8fdf8;
+    --ath-text-muted: #9ec7c7;
+
+    --ath-shadow: 0 12px 28px rgba(0,0,0,0.55);
+    --ath-shadow-soft: 0 6px 16px rgba(0,0,0,0.35);
+}
+
+/* =========================================================
+   WRAPPER GENERAL
+========================================================= */
+.perfil-wrapper {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 10px;
+    color: var(--ath-text-light);
+}
+
+/* Asegurar que los .text-muted no se vean gris muerto */
+.perfil-wrapper .text-muted {
+    color: var(--ath-text-muted) !important;
+}
+
+/* =========================================================
+   CARD PRINCIPAL DEL PERFIL
+========================================================= */
+.perfil-header-card {
+    background: var(--ath-card-bg);
+    border: 1px solid var(--ath-border-light);
+    border-radius: 20px;
+    padding: 28px;
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: var(--ath-shadow);
+    color: var(--ath-text-light);
+}
+
+/* FOTO */
+.perfil-foto {
+    width: 115px;
+    height: 115px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--ath-primary);
+    box-shadow: 0 0 10px rgba(45,227,198,0.4);
+}
+
+/* INFO */
+.perfil-main-info {
+    flex-grow: 1;
+}
+
+.perfil-nombre {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ath-primary);
+    margin-bottom: 4px;
+}
+
+.perfil-edit-btn {
+    font-size: 18px;
+    color: var(--ath-primary);
+    transition: .2s;
+}
+.perfil-edit-btn:hover {
+    text-shadow: 0 0 10px var(--ath-primary);
+    transform: scale(1.1);
+}
+
+.perfil-dato {
+    margin: 2px 0;
+    color: var(--ath-text-light);
+    font-size: 0.92rem;
+}
+
+/* =========================================================
+   FOLLOW / MSG
+========================================================= */
+.perfil-btn-group {
+    margin-top: 12px;
+    display: flex;
+    gap: 12px;
+}
+
+.perfil-follow-btn {
+    background: transparent;
+    border: 2px solid var(--ath-primary);
+    color: var(--ath-primary);
+    padding: 6px 16px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: .2s;
+}
+.perfil-follow-btn:hover {
+    background: var(--ath-primary);
+    color: #003028;
+}
+
+.perfil-msg-btn {
+    padding: 6px 16px;
+    background: var(--ath-card-glass);
+    border: 1px solid var(--ath-border-light);
+    color: var(--ath-primary);
+    border-radius: 10px;
+    font-weight: 600;
+    transition: .2s;
+}
+.perfil-msg-btn:hover {
+    background: rgba(45,227,198,0.15);
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+.perfil-stats {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+    gap: 10px;
+}
+
+.perfil-stat-num {
+    color: var(--ath-primary);
+    font-size: 20px;
+    font-weight: 700;
+}
+.perfil-stat-label {
+    font-size: 0.85rem;
+    color: var(--ath-text-muted);
+}
+
+.stats-clickable {
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.stats-clickable:hover {
+    transform: translateY(-3px);
+    opacity: 0.85;
+}
+
+/* =========================================================
+   NUEVA PUBLICACIÓN
+========================================================= */
+.perfil-newpost-card {
+    background: var(--ath-card-bg);
+    border: 1px solid var(--ath-border-light);
+    padding: 25px;
+    margin-top: 22px;
+    border-radius: 20px;
+    box-shadow: var(--ath-shadow-soft);
+    color: var(--ath-text-light);
+}
+
+/* textarea */
+.form-floating textarea,
+textarea.form-control {
+    background: var(--ath-card-glass) !important;
+    color: var(--ath-text-light) !important;
+    border: 1px solid var(--ath-border-light) !important;
+    border-radius: 14px !important;
+}
+
+.form-floating textarea:focus {
+    border-color: var(--ath-primary) !important;
+    box-shadow: 0 0 12px rgba(45,227,198,0.35);
+}
+
+label {
+    color: var(--ath-text-muted) !important;
+}
+
+/* File input */
+.form-control[type=file] {
+    background: var(--ath-card-glass) !important;
+    border: 1px solid var(--ath-border-light) !important;
+    color: var(--ath-text-light) !important;
+}
+
+.perfil-newpost-card button[type=submit] {
+    background: var(--ath-primary);
+    color: #003028 !important;
+    border: none;
+    border-radius: 999px;
+    font-weight: 700;
+    padding: 6px 20px;
+}
+
+/* Compartir rutina */
+.athletia-rutina-share-box {
+    color: var(--ath-text-muted);
+}
+
+.btn-athletia-premium {
+    background: transparent;
+    border: 2px solid var(--ath-primary);
+    color: var(--ath-primary);
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.btn-athletia-premium:hover {
+    background: var(--ath-primary);
+    color: #003135;
+}
+
+/* =========================================================
+   TABS
+========================================================= */
+.perfil-tabs {
+    margin-top: 30px;
+    display: flex;
+    gap: 12px;
+}
+
+.perfil-tab-btn {
+    padding: 10px 20px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--ath-border-light);
+    font-weight: 600;
+    color: var(--ath-text-light);
+    cursor: pointer;
+    transition: .25s;
+}
+
+.perfil-tab-btn:hover {
+    background: rgba(45,227,198,0.10);
+    border-color: rgba(45,227,198,0.4);
+}
+
+.perfil-tab-btn.active {
+    background: var(--ath-primary);
+    color: #003028;
+    border-color: var(--ath-primary);
+}
+
+/* =========================================================
+   TAB CONTENT (Publicaciones + Guardadas)
+========================================================= */
+.perfil-tab-pane {
+    display: none;
+    margin-top: 15px;
+}
+.perfil-tab-pane.active {
+    display: block;
+}
+
+/* Texto vacío (sin publicaciones / sin guardadas) más visible */
+.perfil-tab-pane p.text-muted {
+    color: var(--ath-primary) !important;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(45,227,198,0.35);
+}
+
+/* Tarjeta principal del post (envuelve al .card de _post_card.html) */
+#posts .post-card .card,
+#guardadas .post-card .card {
+    background: var(--ath-card-bg) !important;
+    border: 1px solid var(--ath-border-light) !important;
+    color: var(--ath-text-light) !important;
+    border-radius: 18px !important;
+    box-shadow: var(--ath-shadow-soft);
+}
+
+/* Autor */
+#posts .post-card strong,
+#guardadas .post-card strong {
+    color: var(--ath-primary) !important;
+}
+
+/* Fecha */
+#posts .post-card small,
+#guardadas .post-card small {
+    color: var(--ath-text-muted) !important;
+}
+
+/* Texto del post */
+#posts .post-card .card-text,
+#guardadas .post-card .card-text {
+    color: var(--ath-text-light) !important;
+}
+
+/* Badge comentarios (contador redondito junto al icono) */
+#posts .comment-badge,
+#guardadas .comment-badge {
+    background: var(--ath-primary) !important;
+    color: #003028 !important;
+    font-weight: 700;
+}
+
+/* Rutina compartida dentro de un post */
+#posts .rutina-shared-box,
+#guardadas .rutina-shared-box {
+    background: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+}
+
+#posts .rutina-shared-box .rutina-line,
+#guardadas .rutina-shared-box .rutina-line {
+    color: var(--ath-text-light) !important;
+}
+
+#posts .rutina-shared-box strong,
+#guardadas .rutina-shared-box strong {
+    color: var(--ath-primary) !important;
+}
+
+
+#posts .btn-like:hover,
+#posts .btn-comment:hover,
+#posts .btn-fav:hover,
+#guardadas .btn-like:hover,
+#guardadas .btn-comment:hover,
+#guardadas .btn-fav:hover {
+    color: var(--ath-primary) !important;
+}
+
+/* Favorito activo: respetar dorado del muro */
+#posts .btn-fav.fav-active i,
+#guardadas .btn-fav.fav-active i {
+    color: #ffd66b !important;
+}
+
+/* Like activo: respetar rosa del muro */
+#posts .btn-like.liked i,
+#guardadas .btn-like.liked i {
+    color: #ff4f6a !important;
+}
+
+/* =========================================================
+   MODALES (Comentarios + Seguidores / Siguiendo)
+========================================================= */
+
+/* Título del modal Comentarios (sobrescribe style="color:#000") */
+.modal-ig-header .modal-title {
+    color: var(--ath-text-light) !important;
+}
+
+/* Lista de seguidores/siguiendo */
+.seguidores-list .list-group-item {
+    background: var(--ath-card-glass) !important;
+    border-color: var(--ath-border-light) !important;
+    color: var(--ath-text-light) !important;
+}
+
+.seguidores-list .list-group-item strong {
+    color: var(--ath-primary) !important;
+}
+
+/* Botones dentro del modal seguidores/siguiendo */
+.seguidores-list .btn-outline-primary {
+    border-color: var(--ath-primary) !important;
+    color: var(--ath-primary) !important;
+}
+
+.seguidores-list .btn-outline-primary:hover {
+    background: var(--ath-primary) !important;
+    color: #003028 !important;
+}
+
+.seguidores-list .btn-secondary {
+    background: var(--ath-primary-dark) !important;
+    border-color: var(--ath-primary-dark) !important;
+    color: #003028 !important;
+}
+
+/* Texto: “Sé el primero en comentar” */
+#comentariosModalContent .no-comments-text {
+    color: #4da3ff !important;
+    font-weight: 600 !important;
+    text-shadow: 0 0 10px rgba(77,163,255,0.4);
+    opacity: 1 !important;
+    font-style: normal !important;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+@media (max-width: 768px) {
+    .perfil-header-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .perfil-stats {
+        flex-direction: row;
+        justify-content: center;
+        margin-top: 10px;
+        gap: 20px;
+    }
+}

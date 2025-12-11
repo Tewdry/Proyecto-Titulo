@@ -1,0 +1,383 @@
+/* ====================================================================== */
+/* ====================================================================== */
+
+.estilo-vida-wrapper {
+    padding: 25px 15px;
+}
+
+/* ---------------- TITULOS Y CABECERA ---------------- */
+.ev-title {
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: #2de3c6;
+}
+
+.ev-subtitle {
+    color: #c9e6ec;
+    font-size: 0.95rem;
+    margin-top: -5px;
+}
+
+/* etiqueta de estado (perfil activo) */
+.ev-status-pill {
+    background: #043a3a;
+    padding: 7px 16px;
+    border-radius: 25px;
+    font-size: 0.85rem;
+    color: #aefef5;
+    border: 1px solid #0a6262;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ev-status-dot {
+    width: 9px;
+    height: 9px;
+    background: #18ff89;
+    border-radius: 50%;
+}
+
+/* ---------------- TARJETAS ---------------- */
+
+.ev-card {
+    background: rgba(5, 20, 28, 0.78);
+    padding: 25px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.06);
+    backdrop-filter: blur(12px);
+}
+
+/* ---------------- FORMULARIO ---------------- */
+
+.ev-label {
+    color: #d3faf5;
+    font-weight: 600;
+}
+
+.ev-input {
+    background: rgba(10, 26, 35, 0.85);
+    border: 1px solid #1e3d43;
+    padding: 10px 13px;
+    color: #dffaf7;
+    border-radius: 10px;
+}
+
+.ev-input:focus {
+    border-color: #2de3c6;
+    box-shadow: 0 0 8px rgba(45, 227, 198, 0.4);
+    outline: none;
+}
+
+/* icono de ayuda */
+.ev-hint-icon {
+    font-size: 0.8rem;
+    margin-left: 5px;
+    color: #34f2d2;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.ev-hint-icon:hover {
+    color: #2de3c6;
+}
+
+/* errores */
+.ev-error {
+    font-size: 0.8rem;
+    color: #ff7474;
+    margin-top: 3px;
+}
+
+/* ---------------- BOTONES ---------------- */
+
+.ev-actions .ev-btn {
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: none;
+}
+
+.ev-btn-primary {
+    background: linear-gradient(90deg, #11d6a3, #2ef2be);
+    color: #002925;
+}
+
+.ev-btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 12px #2ef2be60;
+}
+
+.ev-btn-secondary {
+    background: rgba(255,255,255,0.1);
+    color: #d8fef9;
+}
+
+.ev-btn-secondary:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* ====================================================================== */
+/* ====================== PANEL IA – PARTE 2 ============================ */
+/* ====================================================================== */
+
+.ia-panel {
+    margin-top: 25px;
+}
+
+.ia-title {
+    color: #52f2d3;
+    font-weight: 700;
+    font-size: 1.4rem;
+}
+
+.ia-subtitle {
+    color: #b7d9d9;
+    font-size: 0.9rem;
+}
+
+/* etiqueta pequeña IA */
+.ia-mini-badge {
+    background: #042f2e;
+    border: 1px solid #0a5554;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: #99fff3;
+}
+
+/* ---------------- SCORE CARD ---------------- */
+
+.ia-score-card {
+    background: #0e2026;
+    border-radius: 15px;
+    padding: 18px;
+}
+
+.ia-score-header {
+    font-size: 0.9rem;
+    color: #badad8;
+}
+
+.ia-score-main {
+    font-size: 3rem;
+    font-weight: 800;
+    text-align: center;
+    color: #2ef2be;
+    margin-top: 10px;
+}
+
+.ia-score-label {
+    text-align: center;
+    font-weight: 600;
+    color: #bfffea;
+    margin-top: -5px;
+}
+
+.ia-score-detail {
+    font-size: 0.85rem;
+    text-align: center;
+    color: #aacccc;
+}
+
+/* métricas */
+.ia-score-metrics li {
+    display: flex;
+    justify-content: space-between;
+    color: #98bebe;
+    padding: 6px 0;
+    font-size: 0.85rem;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* ---------------- RADAR ---------------- */
+
+.ia-chart-card {
+    background: #0e2026;
+    border-radius: 15px;
+    padding: 18px;
+}
+
+.ia-chart-title {
+    color: #c8ffff;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.ia-chart-footnote {
+    margin-top: 10px;
+    font-size: 0.75rem;
+    color: #88a9a9;
+}
+
+/* ---------------- MAPA RÁPIDO ---------------- */
+
+.ia-quick-map {
+    background: #0e2026;
+    padding: 18px;
+    border-radius: 15px;
+}
+
+.ia-chip {
+    width: 100%;
+    padding: 10px;
+    border-radius: 12px;
+    background: rgba(46, 242, 190, var(--chip-intensity, 0.3));
+    color: #003b33;
+    font-weight: 700;
+    border: none;
+    transition: .2s;
+}
+
+.ia-chip:hover {
+    transform: scale(1.04);
+    background: rgba(46, 242, 190, 0.85);
+}
+
+.ia-chip-legend {
+    color: #9ec8c8;
+    font-size: 0.75rem;
+    text-align: center;
+}
+
+/* ====================================================================== */
+/* ======================= PARTE 3: IA AVANZADO ========================= */
+/* ====================================================================== */
+
+/* ------------- Tendencias (line chart) ------------ */
+
+#iaTrendChart {
+    width: 100% !important;
+    height: 260px !important;
+}
+
+/* ------------- Heatmap Habits -------------- */
+
+.ia-heatmap-card {
+    background: #0e2026;
+    padding: 18px;
+    border-radius: 15px;
+}
+
+.ia-heatmap-sub {
+    color: #bdd6d5;
+    font-size: 0.8rem;
+}
+
+.ia-heatmap-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.ia-heatmap-foot {
+    color: #d6ffff;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    margin-top: 10px;
+    opacity: 0.9;
+    letter-spacing: 0.2px;
+}
+
+.ia-heat-box {
+    padding: 10px;
+    border-radius: 12px;
+    text-align: center;
+    background: #294044;
+    transition: 0.3s ease;
+}
+
+.ia-heat-box span {
+    font-weight: 700;
+    color: #e9fffd;
+}
+
+.ia-heat-box small {
+    color: #f3fff7;
+    font-size: 0.8rem;
+}
+
+/* ------------- Tips Inteligentes -------------- */
+
+.ia-tips-card {
+    background: #0e2026;
+    padding: 18px;
+    border-radius: 15px;
+}
+
+#ia-tip-text {
+    color: #c3f7eb;
+    font-size: 0.9rem;
+}
+
+.ia-badge-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ia-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(20, 70, 65, 0.7);
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    color: #dffdf8;
+}
+
+.ia-badge-icon {
+    font-size: 1.2rem;
+}
+
+.ia-divider {
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.canvas-container {
+    position: relative;
+    width: 100%;
+    height: 260px; /* altura segura */
+}
+
+.panel-logros {
+    background: #0e2026;
+    padding: 20px;
+    border-radius: 16px;
+    margin-top: 20px;
+
+    /* FIX */
+    position: relative !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+}
+
+.panel-logros * {
+    max-height: none !important;
+}
+
+.glow {
+    position: absolute;
+    inset: auto auto 15px 15px;
+    width: 120px;
+    height: 120px;
+    pointer-events: none;
+    background: radial-gradient(circle, rgba(0,255,180,0.22), transparent 70%);
+}
+
+.glow.animate {
+    animation: pulseGlow 3s infinite ease-in-out;
+}
+
+@keyframes pulseGlow {
+    0% { opacity: 0.85; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(1.25); }
+    100% { opacity: 0.85; transform: scale(1); }
+}
+
+body {
+    overflow-x: hidden;
+}

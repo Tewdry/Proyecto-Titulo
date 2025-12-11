@@ -1,0 +1,111 @@
+/* ===========================================
+   PALETA ATHLETIA
+=========================================== */
+:root {
+    --ath-primary: #2de3c6;
+    --ath-text-light: #e8fdf8;
+    --ath-text-muted: #9ec7c7;
+    --ath-card-glass: rgba(4, 35, 40, 0.75);
+    --ath-border: rgba(255,255,255,0.08);
+}
+
+/* CONTENEDOR GENERAL */
+.contacto-section {
+    color: var(--ath-text-light);
+    margin-top: 5rem;
+}
+
+/* TÍTULOS */
+.contacto-titulo {
+    font-size: 2.8rem;
+    text-shadow: 0 0 12px rgba(45,227,198,0.45);
+}
+
+.contacto-sub {
+    color: var(--ath-text-muted);
+}
+
+/* IMAGEN */
+.contacto-img {
+    width: 90%;
+    border-radius: 18px;
+    border: 1px solid var(--ath-border);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.45);
+}
+
+/* CARD DEL FORMULARIO */
+.contacto-card {
+    background: var(--ath-card-glass);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--ath-border);
+    border-radius: 20px;
+}
+
+/* LABELS */
+.form-label {
+    font-weight: 600;
+    color: var(--ath-text-muted);
+}
+
+/* INPUTS */
+.contacto-card input,
+.contacto-card textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    color: var(--ath-text-light);
+    border: 1px solid var(--ath-border);
+    border-radius: 12px;
+    padding: 10px 14px;
+}
+
+.contacto-card input:focus,
+.contacto-card textarea:focus {
+    border-color: var(--ath-primary);
+    box-shadow: 0 0 12px rgba(45,227,198,0.35);
+    outline: none;
+}
+
+/* BOTÓN */
+.btn-athletia-primary {
+    background: var(--ath-primary);
+    color: #003028 !important;
+    border-radius: 999px;
+    font-weight: 700;
+    transition: .2s;
+}
+
+.btn-athletia-primary:hover {
+    box-shadow: 0 0 16px rgba(45,227,198,0.55);
+    transform: translateY(-2px);
+}
+
+/* ALERT */
+.contacto-alert {
+    background: rgba(45,227,198,0.12);
+    border: 1px solid var(--ath-primary);
+    color: var(--ath-primary);
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+/* REDES */
+.contacto-redes a {
+    color: var(--ath-text-light);
+    transition: .2s;
+}
+
+.contacto-redes a:hover {
+    color: var(--ath-primary);
+    text-shadow: 0 0 12px rgba(45,227,198,0.4);
+}
+
+.section-title {
+    color: var(--ath-primary);
+    font-weight: 800;
+    text-shadow: 0 0 12px rgba(45,227,198,0.4);
+}
+
+.contacto-info {
+    color: var(--ath-text-muted);
+}

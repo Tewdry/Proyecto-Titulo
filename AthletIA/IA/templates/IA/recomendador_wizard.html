@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-cyan-700 to-emerald-500 p-6">
+  <div id="wizard-card" class="w-full max-w-lg bg-gray-900 text-white rounded-3xl shadow-2xl p-8">
+    <h2 class="text-center text-3xl font-extrabold mb-6">⚡ Generar Rutina con AthletIA v9</h2>
+
+    <!-- Progreso -->
+    <div class="flex items-center justify-center mb-8">
+      <div class="flex space-x-2">
+        <div id="step1" class="h-3 w-12 rounded-full bg-emerald-400"></div>
+        <div id="step2" class="h-3 w-12 rounded-full bg-gray-600"></div>
+        <div id="step3" class="h-3 w-12 rounded-full bg-gray-600"></div>
+        <div id="step4" class="h-3 w-12 rounded-full bg-gray-600"></div>
+      </div>
+    </div>
+
+    <!-- Paso 1 -->
+    <div class="step" id="step-1">
+      <h3 class="text-xl mb-4 font-semibold">👤 Información Personal</h3>
+      <label class="block mb-2">Edad</label>
+      <input id="edad" type="number" min="10" max="100" class="w-full rounded-md text-black p-2 mb-4">
+
+      <label class="block mb-2">Nivel de experiencia</label>
+      <select id="nivel_experiencia" class="w-full rounded-md text-black p-2">
+        <option value="Principiante">Principiante</option>
+        <option value="Intermedio">Intermedio</option>
+        <option value="Avanzado">Avanzado</option>
+      </select>
+
+      <button onclick="nextStep(2)" class="w-full mt-6 bg-emerald-500 hover:bg-emerald-600 py-2 rounded-md font-bold">Siguiente →</button>
+    </div>
+
+    <!-- Paso 2 -->
+    <div class="step hidden" id="step-2">
+      <h3 class="text-xl mb-4 font-semibold">💪 Condición Física</h3>
+      <label class="block mb-2">Índice de Masa Corporal (IMC)</label>
+      <input id="imc" type="number" step="0.1" class="w-full rounded-md text-black p-2 mb-4">
+
+      <label class="block mb-2">Ritmo Cardíaco</label>
+      <input id="ritmo" type="number" class="w-full rounded-md text-black p-2 mb-4">
+
+      <label class="block mb-2">Duración estimada (minutos)</label>
+      <input id="duracion" type="number" class="w-full rounded-md text-black p-2 mb-4">
+
+      <label class="block mb-2">Calorías quemadas estimadas</label>
+      <input id="calorias" type="number" class="w-full rounded-md text-black p-2 mb-4">
+
+      <div class="flex justify-between mt-6">
+        <button onclick="prevStep(1)" class="bg-gray-600 hover:bg-gray-700 py-2 px-4 rounded-md">← Atrás</button>
+        <button onclick="nextStep(3)" class="bg-emerald-500 hover:bg-emerald-600 py-2 px-4 rounded-md">Siguiente →</button>
+      </div>
+    </div>
+
+    <!-- Paso 3 -->
+    <div class="step hidden" id="step-3">
+      <h3 class="text-xl mb-4 font-semibold">🎯 Objetivo</h3>
+      <select id="objetivo" class="w-full rounded-md text-black p-2">
+        {% for o in objetivos %}
+          <option value="{{ o.nombre }}">{{ o.nombre }}</option>
+        {% endfor %}
+      </select>
+
+      <div class="flex justify-between mt-6">
+        <button onclick="prevStep(2)" class="bg-gray-600 hover:bg-gray-700 py-2 px-4 rounded-md">← Atrás</button>
+        <button onclick="obtenerRecomendacion()" class="bg-emerald-500 hover:bg-emerald-600 py-2 px-4 rounded-md font-bold">Generar Rutina ⚡</button>
+      </div>
+    </div>
+
+    <!-- Paso 4 -->
+    <div class="step hidden text-center" id="step-4">
+      <h3 class="text-xl mb-4 font-semibold">🏋️ Resultado IA</h3>
+      <p id="resultado" class="text-emerald-400 text-2xl font-bold mb-4"></p>
+      <div id="top3" class="text-left text-sm space-y-1"></div>
+
+      <div class="flex justify-center mt-6">
+        <button onclick="prevStep(3)" class="bg-gray-600 hover:bg-gray-700 py-2 px-4 rounded-md">← Cambiar datos</button>
+        <button onclick="reiniciarWizard()" class="ml-2 bg-emerald-500 hover:bg-emerald-600 py-2 px-4 rounded-md font-bold">Volver al inicio</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentStep = 1;
+function nextStep(step) {
+  document.getElementById(`step-${currentStep}`).classList.add("hidden");
+  document.getElementById(`step-${step}`).classList.remove("hidden");
+  document.getElementById(`step${currentStep}`).classList.remove("bg-emerald-400");
+  document.getElementById(`step${step}`).classList.add("bg-emerald-400");
+  currentStep = step;
+}
+function prevStep(step) { nextStep(step); }
+
+function reiniciarWizard() {
+  currentStep = 1;
+  document.querySelectorAll('.step').forEach(s => s.classList.add('hidden'));
+  document.getElementById('step-1').classList.remove('hidden');
+  document.querySelectorAll('[id^=step]').forEach(el => el.classList.remove('bg-emerald-400'));
+  document.getElementById('step1').classList.add('bg-emerald-400');
+  document.getElementById('resultado').textContent = '';
+  document.getElementById('top3').innerHTML = '';
+}
+
+async function obtenerRecomendacion() {
+  const data = {
+    edad: parseFloat(document.getElementById("edad").value || 25),
+    imc: parseFloat(document.getElementById("imc").value || 23.5),
+    ritmo_cardiaco: parseFloat(document.getElementById("ritmo").value || 130),
+    duracion_min: parseFloat(document.getElementById("duracion").value || 40),
+    calorias_quemadas: parseFloat(document.getElementById("calorias").value || 250),
+    objetivo: document.getElementById("objetivo").value,
+    nivel_experiencia: document.getElementById("nivel_experiencia").value
+  };
+
+  try {
+    const res = await fetch("{% url 'recomendar_rutina' %}", {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "X-CSRFToken": '{{ csrf_token }}'},
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+
+    if (result.success) {
+      document.getElementById("resultado").textContent = `💪 ${result.recommendation}`;
+      document.getElementById("top3").innerHTML = result.top3.map(r => `
+        <div class='flex justify-between border-b border-gray-700 pb-1'>
+          <span>${r.rutina}</span>
+          <span class='text-emerald-400 font-bold'>${r.probabilidad}%</span>
+        </div>`).join('');
+      nextStep(4);
+    } else {
+      alert("Error: " + result.error);
+    }
+  } catch (err) {
+    alert("Error al conectar con la IA: " + err);
+  }
+}
+</script>
+{% endblock %}

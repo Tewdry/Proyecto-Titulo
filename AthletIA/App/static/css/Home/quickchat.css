@@ -1,0 +1,158 @@
+/* BOTÓN flotante AthletIA */
+#quickchat-button {
+    position: fixed;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #25e2d7;                         /* Primario AthletIA */
+    width: 55px;
+    height: 55px;
+    border-radius: 0 14px 14px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #022320;                               /* Oscuro AthletIA */
+    font-size: 1.8rem;
+    cursor: pointer;
+    z-index: 99999;
+    box-shadow: 0 8px 25px rgba(37,226,215,0.35); /* Glow menta */
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+#quickchat-button:hover {
+    transform: translateY(-50%) scale(1.08);
+    box-shadow: 0 10px 30px rgba(37,226,215,0.55);
+}
+
+/* PANEL QuickChat — AthletIA Glass */
+#quickchat-panel {
+    position: fixed;
+    left: 60px;
+    top: 50%;
+    transform: translateY(-50%) translateX(-120%);
+    width: 330px;
+    height: 450px;
+    background: rgba(2,25,32,0.96);               /* Fondo oscuro AthletIA */
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: 0 12px 35px rgba(0,255,210,0.18); /* Glow suave */
+    border: 1px solid rgba(95,245,229,0.12);      /* Borde menta */
+    transition: transform .35s ease;
+    overflow: hidden;
+    z-index: 99999;
+}
+
+/* Estado abierto */
+#quickchat-panel.open {
+    transform: translateY(-50%) translateX(0%);
+}
+
+/* HEADER */
+.qc-header {
+    background: rgba(4,35,42,0.92);               /* Glass oscuro suave */
+    padding: 12px;
+    color: #25e2d7;                               /* Turquesa */
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(95,245,229,0.12);
+}
+
+#qc-close {
+    border: none;
+    background: transparent;
+    font-size: 1.4rem;
+    color: #5ff5e5;                                /* Primario suave */
+    cursor: pointer;
+    transition: .2s;
+}
+
+#qc-close:hover {
+    color: #25e2d7;
+}
+
+/* BODY */
+.qc-body {
+    height: calc(100% - 50px);
+    overflow-y: auto;
+    padding: 10px 14px;
+    color: #e8fdf8;                                /* Texto blanco suave */
+}
+
+/* Ítems */
+.qc-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: .2s;
+    background: rgba(4,35,42,0.4);
+}
+
+.qc-item:hover {
+    background: rgba(37,226,215,0.12);            /* Glow menta hover */
+}
+
+/* Avatar */
+.qc-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+    border: 2px solid #25e2d7;                     /* Borde turquesa */
+}
+
+/* Nombre */
+.qc-name {
+    font-weight: 600;
+    color: #e8fdf8;
+}
+
+/* Último mensaje */
+.qc-last {
+    font-size: .85rem;
+    color: #9ec7c7;                                 /* Texto suave */
+}
+
+.qc-empty {
+    color: #e8fdf8;
+    text-align: center;
+    padding: 35px 0;
+    opacity: 0.85;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.qc-empty-icon {
+    font-size: 2.4rem;
+    opacity: 0.65;
+    color: #5ff5e5;
+}
+
+/* Badge de no leído */
+.qc-unread {
+    background: #ff4d6d;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: .75rem;
+    font-weight: bold;
+    margin-left: auto;
+    box-shadow: 0 0 8px rgba(255,77,109,0.45);
+}
+
+#quickchat-panel .qc-empty p {
+    color: #e8fdf8 !important;
+    font-size: 1rem;
+    opacity: 0.85;
+    margin-top: 10px;
+}
+
+#quickchat-panel p.text-muted {
+    color: #e8fdf8 !important;
+}

@@ -1,0 +1,102 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}Contáctanos - AthletIA{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/Home/contactos.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="contacto-section container py-5">
+
+    <!-- TÍTULO -->
+    <div class="text-center mb-5">
+        <h1 class="contacto-titulo fw-bold">Contáctanos</h1>
+        <p>¿Tienes dudas, sugerencias o ideas? ¡Queremos escucharte!</p>
+    </div>
+
+    <div class="row justify-content-center align-items-center g-4">
+
+        <!-- IMAGEN -->
+        <div class="col-lg-5 text-center d-none d-lg-block">
+            <img src="/media/contacto.jpg"
+                 class="contacto-img img-fluid rounded shadow-lg">
+        </div>
+
+        <!-- FORMULARIO -->
+        <div class="col-lg-6 col-md-10">
+            <div class="contacto-card p-4 rounded-4 shadow-lg">
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <label class="form-label">Nombre completo</label>
+                    {{ form.nombre }}
+
+                    <label class="form-label">Correo electrónico</label>
+                    {{ form.correo }}
+
+                    <label class="form-label mt-3">Asunto</label>
+                    {{ form.asunto }}
+
+                    <label class="form-label mt-3">Mensaje</label>
+                    {{ form.mensaje }}
+
+                    <div class="text-center mt-4">
+                        <button class="btn-athletia-primary px-5 py-2" type="submit">
+                            Enviar mensaje
+                        </button>
+                    </div>
+                </form>
+
+                {% if messages %}
+                <div class="mt-3">
+                    {% for message in messages %}
+                        <div class="contacto-alert">{{ message }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- REDES -->
+    <div class="text-center mt-5">
+        <h4 class="section-title">También puedes encontrarnos en</h4>
+
+        <div class="contacto-redes d-flex justify-content-center gap-4 mt-3">
+            <a href="#"><i class="bi bi-facebook fs-2"></i></a>
+            <a href="#"><i class="bi bi-instagram fs-2"></i></a>
+            <a href="#"><i class="bi bi-envelope-at fs-2"></i></a>
+        </div>
+
+        <p>
+            Responderemos a tu mensaje lo antes posible 💪
+        </p>
+    </div>
+
+</section>
+
+<script>
+    {% for m in messages %}
+        Swal.fire({
+            icon: "success",
+            title: "Mensaje enviado",
+            text: "{{ m }}",
+            background: "#062e37",
+            color: "#e8fdf8",
+            confirmButtonColor: "#25e2d7",
+            confirmButtonText: "Aceptar",
+            showClass: {
+                popup: 'animate__animated animate__fadeInDown'
+            },
+            hideClass: {
+                popup: 'animate__animated animate__fadeOutUp'
+            }
+        });
+    {% endfor %}
+</script>
+
+{% endblock %}

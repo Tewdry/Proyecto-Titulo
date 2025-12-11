@@ -1,0 +1,187 @@
+:root {
+  --ath-primary: #25e2d7;
+  --ath-primary-soft: #5ff5e5;
+  --ath-dark-1: rgba(2, 20, 28, 0.95);
+  --ath-dark-2: rgba(3, 30, 40, 0.92);
+  --ath-text-main: #e8fdf8;
+  --ath-text-soft: #9ec7c7;
+}
+
+/* ============================================
+   CABECERA / LAYOUT GENERAL
+============================================ */
+
+.map-page {
+  color: var(--ath-text-main);
+}
+
+.breadcrumb-ath {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(3, 30, 40, 0.92);
+  border: 1px solid rgba(2, 20, 28, 0.95);
+  border-radius: 999px;
+  color: var(--ath-primary-soft);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  backdrop-filter: blur(10px);
+}
+
+.crumb-icon {
+  color: var(--ath-primary-soft);
+  font-size: 0.9rem;
+}
+
+.map-title-main {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-top: 0.9rem;
+  margin-bottom: 0.3rem;
+  color: var(--ath-text-main);
+  text-shadow: 0 0 20px rgba(37, 226, 215, 0.35);
+}
+
+.map-subtitle-main {
+  font-size: 1rem;
+  color: var(--ath-text-soft);
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   CONTENEDOR DE MAPAS
+============================================ */
+
+#mapa-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 2.5rem;
+  flex-wrap: nowrap;
+}
+
+.body-map {
+  background: linear-gradient(135deg, var(--ath-dark-1), var(--ath-dark-2));
+  padding: 1.5rem;
+  border-radius: 22px;
+  border: 1px solid rgba(95, 245, 229, 0.14);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(14px);
+}
+
+.sub_titulo {
+  color: var(--ath-primary-soft);
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* SVGs */
+.body-map svg {
+  width: 300px;
+  height: auto;
+  cursor: pointer;
+}
+
+/* ============================================
+   MÚSCULOS — SIN ANIMACIÓN
+============================================ */
+
+#mapa-container svg path,
+#mapa-container svg polygon {
+  fill: #a0b9b9 !important;
+  stroke: #0a0a0a !important;
+  stroke-width: 0.1 !important;
+
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Hover: solo cambio de color (sin movimiento) */
+#mapa-container svg path:hover,
+#mapa-container svg polygon:hover {
+  fill: var(--ath-primary-soft) !important;
+  stroke: var(--ath-primary-soft) !important;
+  stroke-width: 0.18 !important;
+
+  animation: none !important;
+  transition: none !important;
+}
+
+/* ============================================
+   TOOLTIP
+============================================ */
+
+.muscle-tooltip {
+  position: absolute;
+  background: rgba(3, 30, 40, 0.96);
+  border: 1px solid rgba(95, 245, 229, 0.5);
+  padding: 10px 14px;
+  border-radius: 12px;
+  color: var(--ath-text-main);
+  font-size: 13px;
+  pointer-events: none;
+  display: none;
+  z-index: 9999;
+  backdrop-filter: blur(8px);
+  min-width: 160px;
+  box-shadow: 0 0 15px rgba(37, 226, 215, 0.22);
+}
+
+.muscle-tooltip strong {
+  color: var(--ath-primary-soft);
+}
+
+/* ============================================
+   PANEL DE AYUDA
+============================================ */
+
+.map-help-card {
+  margin: 0 auto;
+  max-width: 880px;
+  background: linear-gradient(135deg, rgba(2, 20, 28, 0.96), rgba(3, 30, 40, 0.94));
+  border-radius: 20px;
+  padding: 20px 24px;
+  border: 1px solid rgba(95, 245, 229, 0.18);
+  box-shadow:
+    0 16px 32px rgba(0, 0, 0, 0.55),
+    0 0 18px rgba(37, 226, 215, 0.16);
+}
+
+.map-help-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ath-primary-soft);
+  margin-bottom: 0.7rem;
+}
+
+.map-help-list {
+  padding-left: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: var(--ath-text-soft);
+}
+
+.map-help-list li {
+  margin-bottom: 0.25rem;
+}
+
+.map-help-footnote {
+  font-size: 0.86rem;
+  color: var(--ath-text-soft);
+  margin-bottom: 0;
+}
+
+/* ============================================
+   RESPONSIVE
+============================================ */
+
+@media (max-width: 900px) {
+  #mapa-container {
+    flex-wrap: wrap;
+  }
+  .body-map svg {
+    width: 90%;
+  }
+}

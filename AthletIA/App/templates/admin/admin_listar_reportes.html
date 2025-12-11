@@ -1,0 +1,151 @@
+{% extends "admin/admin_base.html" %}
+{% load static %}
+{% load custom_filters %} 
+
+{% block content %}
+<div class="admin-wrapper">
+    
+    <nav class="admin-sidebar">
+        <div class="sidebar-logo">
+            <img src="/media/logo.png" width="30" alt="">
+            Athlet<span>IA</span>
+        </div>
+        <div class="menu-cat">Moderación</div>
+        <a href="{% url 'panel_analisis_rutinas' %}" class="nav-link-admin"><i class="bi bi-bar-chart-line"></i> Rutinas & Reportes</a>
+        <a href="{% url 'listar_reportes_comentarios' %}" class="nav-link-admin active"><i class="bi bi-flag"></i> Reportes Activos</a>
+        <a href="{% url 'panel_admin' %}" class="nav-link-admin"><i class="bi bi-arrow-return-left"></i> Dashboard</a>
+    </nav>
+
+    <!-- 🖥️ MAIN CONTENT ÁREA -->
+    <div class="admin-content">
+        <div class="admin-header">
+            <div class="admin-title">
+                <h1>Reportes de Comentarios</h1>
+                <p style="color: var(--text-muted);">Gestiona contenido marcado por los usuarios.</p>
+            </div>
+        </div>
+
+        <div class="cyber-table-box">
+            {% if object_list %}
+            <table class="cyber-table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">ID</th>
+                        <th style="width: 15%;">Motivo</th>
+                        <th style="width: 30%;">Comentario Reportado</th>
+                        <th style="width: 10%;">Publicación</th>
+                        <th style="width: 15%;">Reportado Por</th>
+                        <th style="width: 10%;">Fecha</th>
+                        <th style="width: 15%; text-align: right;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for obj in object_list %}
+                    <tr>
+                        <td>{{ obj.id }}</td>
+                        <td>{{ obj.motivo|truncatechars:20 }}</td>
+                        {# Muestra el texto real del comentario #}
+                        <td>{{ obj|attr_lookup:"comentario__comentario"|truncatechars:50 }}</td>
+                        
+                        {# Enlace a la Publicación #}
+                        <td>
+                            <a href="{% url 'detalle_perfil' pk=obj.comentario.publicacion.perfil.id %}" class="text-info" title="Ver Post de {{ obj.comentario.publicacion.perfil.username }}">
+                                <i class="bi bi-link-45deg"></i> Post #{{ obj.comentario.publicacion.id }}
+                            </a>
+                        </td>
+                        {# Muestra el username del perfil que reporta #}
+                        <td>{{ obj.perfil.username }}</td> 
+                        <td>{{ obj.fecha|date:"Y-m-d" }}</td>
+                        
+                        <td style="text-align: right;">
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-dark text-white dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: rgba(45, 227, 198, 0.15); color: var(--ath-neon) !important; border: 1px solid var(--ath-neon);">
+                                    <i class="bi bi-three-dots"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow" style="background: var(--ath-sidebar); border: 1px solid var(--border);">
+                                    
+                                    {# Opción 1: ELIMINAR COMENTARIO (DESTRUCTIVO) #}
+                                    <li>
+                                        <form action="{% url 'eliminar_comentario_admin' pk=obj.comentario.id %}" method="POST" class="form-delete-comentario d-inline">
+                                            {% csrf_token %}
+                                            <button type="button" class="dropdown-item text-danger delete-comentario-trigger">
+                                                <i class="bi bi-x-octagon"></i> Eliminar Comentario
+                                            </button>
+                                        </form>
+                                    </li>
+
+                                    <li>
+                                        <form action="{% url 'eliminar_reporte_comentario' pk=obj.id %}" method="POST" class="form-delete-reporte d-inline">
+                                            {% csrf_token %}
+                                            <button type="button" class="dropdown-item text-success delete-reporte-trigger" style="color: var(--ath-neon) !important;">
+                                                <i class="bi bi-check-lg"></i> Marcar Resuelto
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="p-5 text-center text-muted">
+                <i class="bi bi-flag-fill" style="font-size: 2rem; opacity: 0.5; color: var(--danger);"></i>
+                <p class="mt-2">No hay reportes pendientes. ¡Todo limpio!</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // 1. SweetAlert para ELIMINAR COMENTARIO (Opción Destructiva)
+    document.querySelectorAll('.delete-comentario-trigger').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const form = this.closest('.form-delete-comentario');
+            Swal.fire({
+                title: '¿ELIMINAR Comentario?',
+                text: "Esta acción eliminará el comentario permanentemente. ¡IRREVERSIBLE!",
+                icon: 'error',
+                background: '#042b35',
+                color: '#fff',
+                showCancelButton: true,
+                confirmButtonColor: '#ff4f6a',
+                cancelButtonColor: '#0aa38b',
+                confirmButtonText: 'Sí, ELIMINAR',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            })
+        });
+    });
+
+    // 2. SweetAlert para RESOLVER REPORTE (Opción Archivada)
+    document.querySelectorAll('.delete-reporte-trigger').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const form = this.closest('.form-delete-reporte');
+            Swal.fire({
+                title: '¿Marcar como Resuelto?',
+                text: "Esto archivará el reporte, eliminándolo de la lista de pendientes.",
+                icon: 'question',
+                background: '#042b35',
+                color: '#fff',
+                showCancelButton: true,
+                confirmButtonColor: '#0aa38b',
+                cancelButtonColor: '#ff4f6a',
+                confirmButtonText: 'Sí, Resolver',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            })
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}AthletIA — Mapa Corporal{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/api_ejercicio/mapa.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="map-page container mt-5 mb-5">
+
+  <!-- Migas de pan -->
+  <div class="breadcrumb-ath mb-3">
+    <span class="crumb-icon">⚡</span>
+    <span>AthletIA · Selección de Músculos</span>
+  </div>
+
+  <a href="{% url 'ia:generar_rutina' %}" class="breadcrumb-ath mb-3">
+    Volver
+  </a>
+
+  <!-- Título y subtítulo -->
+  <h2 class="map-title-main text-center">Mapa Corporal Interactivo</h2>
+  <p class="text-white text-center">
+    Pasa el mouse por las zonas musculares para ver su nombre y función.
+    AthletIA usará esta información para sugerirte ejercicios más inteligentes.
+  </p>
+
+  <!-- MAPAS CENTRADOS -->
+  <div id="mapa-container" class="mt-4">
+    <div class="body-map">
+      <h5 class="sub_titulo">Vista Frontal</h5>
+      {% include 'mapas/frontal_body.svg' %}
+    </div>
+
+    <div class="body-map">
+      <h5 class="sub_titulo">Vista Posterior</h5>
+      {% include 'mapas/back_body.svg' %}
+    </div>
+  </div>
+
+  <!-- PANEL DE AYUDA / RECOMENDACIÓN -->
+  <div class="map-help-card mt-5">
+    <h5 class="map-help-title">¿Cómo usar el mapa corporal AthletIA?</h5>
+    <ul class="map-help-list">
+      <li><strong>Pasa el mouse</strong> sobre un músculo para ver su nombre y una breve descripción.</li>
+      <li>Usa esta vista para <strong>aprender qué trabaja cada zona</strong> antes de planificar tu rutina.</li>
+      <li>Si quieres que AthletIA te recomiende ejercicios, vuelve a <strong>Generar Rutina</strong> y elige
+          la opción que mejor se adapte a tu objetivo.</li>
+    </ul>
+    <p class="map-help-footnote">
+      Consejo AthletIA: combinar grupos musculares grandes (piernas, espalda, pecho) con zonas de soporte
+      (core, glúteos) mejora fuerza, postura y rendimiento general.
+    </p>
+  </div>
+
+</div>
+
+<script src="{% static 'js/mapa.js' %}"></script>
+
+{% endblock %}

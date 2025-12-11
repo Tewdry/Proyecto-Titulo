@@ -1,0 +1,153 @@
+:root {
+  /* Paleta Cyberpunk Dark */
+  --ath-bg-deep: #020c12;       /* Negro casi absoluto */
+  --ath-bg-card: rgba(6, 28, 36, 0.7); /* Vidrio oscuro */
+  
+  --ath-cyan: #25e2d7;
+  --ath-cyan-dim: rgba(37, 226, 215, 0.2);
+  --ath-mint: #00E0A1;
+  --ath-orange: #FF9F1C;
+  --ath-red: #FF5757;
+  
+  --ath-text-white: #e8fdf8;
+  --ath-text-gray: #8caeb0;
+  
+  --font-body: 'Poppins', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace; /* Clave para el look ingeniero */
+  
+  --radius: 16px;
+}
+
+body {
+  background-color: var(--ath-bg-deep);
+  color: var(--ath-text-white);
+  font-family: var(--font-body);
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* Efecto de fondo "Spotlight" fijo */
+.background-fx {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  z-index: -1;
+  background: 
+    radial-gradient(circle at 15% 50%, rgba(37, 226, 215, 0.04) 0%, transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(0, 224, 161, 0.03) 0%, transparent 25%);
+}
+
+.dashboard-container {
+  max-width: 1400px;
+  width: 94%;
+  margin: 30px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* --- CLASES UTILITARIAS --- */
+.text-muted { color: var(--ath-text-gray); font-size: 0.9rem; }
+.font-mono { font-family: var(--font-mono); }
+
+/* --- HEADER --- */
+.dash-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+}
+.dash-header h2 { margin: 0; font-weight: 600; font-size: 1.8rem; }
+
+/* Badge de Nivel */
+.user-level-badge {
+  background: rgba(37, 226, 215, 0.1);
+  border: 1px solid var(--ath-cyan);
+  padding: 8px 16px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 0 15px var(--ath-cyan-dim);
+}
+.level-text { font-family: var(--font-mono); color: var(--ath-cyan); font-weight: bold; font-size: 0.9rem; }
+
+/* --- TARJETAS GENERALES (GLASS) --- */
+.kpi-card, .coach-card, .energia-card, .grafico-card, .dash-card {
+  background: var(--ath-bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kpi-card:hover, .dash-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(37, 226, 215, 0.3);
+}
+
+/* --- KPI GRID --- */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+.kpi-card h3 { margin: 0 0 10px 0; font-size: 1rem; color: var(--ath-text-gray); font-weight: 500; }
+.kpi-value {
+  font-family: var(--font-mono);
+  font-size: 2.2rem;
+  margin: 0;
+  font-weight: 700;
+  color: var(--ath-text-white);
+  letter-spacing: -1px;
+}
+
+/* --- GRID 2:1 (Coach + Energía) --- */
+.grid-2-1 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+@media (max-width: 768px) { .grid-2-1 { grid-template-columns: 1fr; } }
+
+/* Coach */
+.coach-card { display: flex; align-items: center; gap: 20px; border-left: 3px solid var(--ath-mint); }
+.coach-svg { width: 50px; fill: var(--ath-mint); animation: pulse 3s infinite; }
+.badge-ai { background: var(--ath-mint); color: #000; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-left: 8px; vertical-align: middle; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+/* Energía */
+.energia-card { display: flex; flex-direction: column; justify-content: center; }
+.energia-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.energia-track { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+.energia-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--ath-cyan), var(--ath-mint)); transition: width 1s ease; box-shadow: 0 0 10px var(--ath-cyan); }
+.energia-status { font-size: 0.85rem; margin-top: 8px; text-align: right; color: var(--ath-text-gray); }
+
+/* --- GRÁFICOS --- */
+.graficos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
+.chart-container { position: relative; height: 280px; width: 100%; }
+
+/* --- BOTTOM GRID --- */
+.bottom-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+
+/* Timeline */
+.timeline-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px; margin-bottom: 8px;
+  background: rgba(255,255,255,0.03); border-radius: 8px;
+  border-left: 2px solid var(--ath-text-gray);
+}
+.timeline-item.next { border-left-color: var(--ath-cyan); background: rgba(37, 226, 215, 0.05); }
+.timeline-date { font-family: var(--font-mono); font-weight: bold; color: var(--ath-cyan); margin-right: 10px; }
+
+/* XP Bar (Proyección) */
+.xp-container { margin-top: 15px; }
+.xp-label { font-size: 0.8rem; color: var(--ath-text-gray); display: block; margin-bottom: 5px; }
+.xp-track { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; }
+.xp-fill { height: 100%; width: 0%; background: var(--ath-orange); border-radius: 4px; transition: width 1.5s ease; }
+
+/* Logros */
+.tags-container { display: flex; flex-wrap: wrap; gap: 8px; }
+.logro-tag { background: rgba(255, 159, 28, 0.15); color: var(--ath-orange); padding: 5px 12px; border-radius: 12px; font-size: 0.85rem; border: 1px solid rgba(255, 159, 28, 0.3); }

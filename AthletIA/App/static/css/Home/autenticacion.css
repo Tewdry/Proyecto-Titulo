@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* ============================================================
+   1. FONDO PANTALLA (TU AZUL)
+============================================================ */
+.login-bg {
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 120px;
+  padding-bottom: 40px;
+}
+
+/* ============================================================
+   2. TARJETA DE LOGIN (SÓLIDA OSCURA - FIX DEFINITIVO)
+============================================================ */
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  
+  /* FONDO NEGRO PETRÓLEO SÓLIDO (Sin transparencia) */
+  background: #021014 !important; 
+  background-color: #021014 !important;
+  opacity: 1 !important;
+  
+  /* Borde Cyan sutil */
+  border: 1px solid rgba(37, 226, 215, 0.25);
+  
+  border-radius: 20px;
+  
+  /* Sombra negra para separar del fondo azul */
+  box-shadow: 0 30px 60px rgba(0,0,0,0.9);
+  
+  padding: 3rem 2.5rem;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  margin: 0 auto; /* Centrado */
+}
+
+/* Si por error dejaste la clase bg-white en el HTML, esto la mata */
+.login-container.bg-white {
+    background: #021014 !important;
+}
+
+/* ============================================================
+   3. LOGO Y TEXTOS
+============================================================ */
+.logo-login {
+  height: 85px;
+  width: auto;
+  margin-bottom: 15px;
+  filter: drop-shadow(0 0 8px rgba(37, 226, 215, 0.3));
+  transition: transform 0.3s;
+}
+.logo-login:hover { transform: scale(1.05); }
+
+h2.text-primary {
+  color: #fff !important; /* Blanco puro */
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+  text-shadow: none; /* Limpio */
+}
+
+.text-muted {
+  color: #90e0ef !important; /* Cian claro para leerse bien en negro */
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* ============================================================
+   4. FORMULARIO (INPUTS OSCUROS)
+============================================================ */
+.login-form label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  color: #25e2d7; /* Labels Cyan */
+  margin-left: 5px;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  
+  /* Input oscuro sólido */
+  background-color: #081b21 !important; 
+  border: 1px solid rgba(37, 226, 215, 0.2);
+  color: #fff !important;
+  
+  outline: none;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.login-form input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.login-form input:focus {
+  background-color: #0b2229 !important;
+  border-color: #25e2d7;
+  box-shadow: 0 0 0 3px rgba(37, 226, 215, 0.15);
+}
+
+/* ============================================================
+   5. BOTÓN PRINCIPAL
+============================================================ */
+.btn-athletia {
+  background: linear-gradient(90deg, #25e2d7, #00c896);
+  color: #003135;
+  font-weight: 800;
+  border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease-in-out;
+  margin-top: 20px;
+  width: 100%;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.btn-athletia:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(37, 226, 215, 0.4);
+  filter: brightness(1.1);
+}
+
+/* ============================================================
+   6. FOOTER
+============================================================ */
+.text-athletia {
+  color: #25e2d7 !important;
+  text-decoration: none;
+  font-weight: 700;
+  transition: 0.2s;
+}
+.text-athletia:hover {
+  color: #fff !important;
+  text-decoration: underline;
+}
+
+/* ============================================================
+   7. TOASTS Y ANIMACIONES
+============================================================ */
+#toast-container {
+  position: fixed; top: 25px; right: 25px; z-index: 9999;
+}
+.toast {
+  min-width: 230px; margin-bottom: 10px; padding: 14px 22px;
+  border-radius: 8px; color: #fff; font-weight: 500;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5); opacity: 0.95;
+  animation: fadeInOut 3s forwards;
+}
+.toast.success { background: #00c896; color: #003135; font-weight: 700; }
+.toast.error { background: #ff4757; color: white; }
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; transform: translateY(-20px); }
+  10%, 90% { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+  .login-container {
+    max-width: 90%;
+    padding: 2rem 1.5rem;
+  }
+}

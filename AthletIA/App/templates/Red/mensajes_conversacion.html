@@ -1,0 +1,232 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/Red/chat_athletia.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="chat-wrapper">
+
+    <!-- HEADER -->
+    <div class="chat-header">
+        <div class="chat-user-info">
+            <img src="{% if other.foto %}{{ other.foto.url }}{% else %}/media/avatar.png{% endif %}" 
+              class="chat-user-img">
+            <h5>{{ other.first_name|default:other.username }}</h5>
+        </div>
+        <a href="{% url 'mensajes_inbox' %}" class="chat-back">← Bandeja</a>
+    </div>
+
+    <!-- MENSAJES -->
+    <div id="mensajes-list" class="chat-messages">
+        {% for m in mensajes %}
+            <div class="chat-msg {% if m.emisor == user %}chat-msg-own{% else %}chat-msg-other{% endif %}" data-msg-id="{{ m.id }}">
+
+                {% if m.emisor != user %}
+                <img src="{% if m.emisor.foto %}{{ m.emisor.foto.url }}{% else %}/media/avatar.png{% endif %}"
+                    class="chat-avatar">
+                {% endif %}
+
+                <div class="chat-bubble">
+                    <div class="chat-meta">
+                        <span class="chat-author">{{ m.emisor.first_name|default:m.emisor.username }}</span>
+                        <span class="chat-date">{{ m.fecha_envio|date:"d/m/Y H:i" }}</span>
+                    </div>
+                    <div class="chat-text">{{ m.contenido }}</div>
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- CARGAR MÁS -->
+    {% if page_obj and page_obj.has_previous %}
+    <div class="chat-load-more">
+        <button id="load-more" class="btn-load" data-next-page="{{ page_obj.previous_page_number }}">
+            Cargar mensajes anteriores
+        </button>
+    </div>
+    {% endif %}
+
+    <!-- FORMULARIO -->
+    <form id="form-enviar-mensaje" class="chat-form" method="POST" action="{% url 'enviar_mensaje' %}">
+        {% csrf_token %}
+        <input type="hidden" name="receptor_id" value="{{ other.id }}">
+
+        <input id="input-mensaje" type="text" name="contenido" placeholder="Escribe un mensaje..." required>
+        <button id="btn-enviar" type="submit">Enviar</button>
+    </form>
+
+    <div id="mensaje-error" class="chat-error"></div>
+
+</div>
+
+<script>
+const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+const mensajesList = document.getElementById('mensajes-list');
+const otherId = '{{ other.id }}';
+
+// Función auxiliar para hacer scroll al fondo
+function scrollToBottom() {
+    mensajesList.scrollTop = mensajesList.scrollHeight;
+}
+
+// Scroll inicial
+scrollToBottom();
+
+/* ======================  ENVÍO AJAX ====================== */
+document.getElementById('form-enviar-mensaje').addEventListener('submit', async function(e){
+    e.preventDefault();
+    const input = document.getElementById('input-mensaje');
+    const contenido = input.value.trim();
+    if(!contenido) return;
+
+    const data = new URLSearchParams();
+    data.append('receptor_id', otherId);
+    data.append('contenido', contenido);
+
+    try {
+        const res = await fetch('{% url "enviar_mensaje" %}', {
+            method: 'POST',
+            headers: { 'X-CSRFToken': csrftoken, 'X-Requested-With': 'XMLHttpRequest' },
+            body: data
+        });
+
+        const json = await res.json();
+        
+        if(!res.ok || json.error){
+            document.getElementById('mensaje-error').textContent = json.error || 'Error al enviar';
+            document.getElementById('mensaje-error').style.display = 'block';
+            return;
+        }
+
+        // Limpiar input inmediatamente
+        input.value = '';
+        document.getElementById('mensaje-error').style.display = 'none';
+
+        // NOTA: No agregamos el mensaje manualmente aquí para evitar duplicados.
+        // Forzamos una actualización inmediata del polling en su lugar.
+        actualizarMensajes(); 
+
+    } catch (error) {
+        console.error("Error envío", error);
+    }
+});
+
+/* ======================  POLLING (OPTIMIZADO POR ID) ====================== */
+let isPolling = false; // Semáforo para evitar peticiones simultáneas
+
+async function actualizarMensajes() {
+    if (isPolling) return;
+    isPolling = true;
+
+    try {
+        // Obtenemos el ID del último mensaje renderizado
+        const ultimos = mensajesList.querySelectorAll('.chat-msg');
+        let ultimoId = 0;
+        
+        if (ultimos.length > 0) {
+            const ultimoElemento = ultimos[ultimos.length - 1];
+            ultimoId = ultimoElemento.getAttribute('data-msg-id') || 0;
+        }
+
+        // Llamamos al backend pasando el ID
+        const res = await fetch(`{% url 'obtener_nuevos_mensajes' other.id %}?ultimo_id=${ultimoId}`);
+        const json = await res.json();
+
+        if(json.messages && json.messages.length > 0){
+            let needsScroll = false;
+            // Detectamos si el usuario está cerca del final para hacer autoscroll
+            const isNearBottom = mensajesList.scrollHeight - mensajesList.scrollTop - mensajesList.clientHeight < 100;
+
+            for(const m of json.messages){
+                // Doble chequeo para asegurar que no exista ya en el DOM (seguridad extra)
+                if (document.querySelector(`.chat-msg[data-msg-id="${m.id}"]`)) continue;
+
+                const own = (m.emisor_id == {{ user.id }});
+                const div = document.createElement('div');
+
+                div.className = own ? 'chat-msg chat-msg-own' : 'chat-msg chat-msg-other';
+                div.setAttribute('data-msg-id', m.id); // IMPORTANTE PARA EL SIGUIENTE POLLING
+                
+                div.innerHTML = `
+                    ${own ? '' : `<img src="${m.foto}" class="chat-avatar">`}
+                    <div class="chat-bubble">
+                        <div class="chat-meta">
+                            <span class="chat-author">${m.emisor}</span>
+                            <span class="chat-date">${m.fecha_envio}</span>
+                        </div>
+                        <div class="chat-text">${m.contenido}</div>
+                    </div>
+                `;
+                mensajesList.appendChild(div);
+                needsScroll = true;
+            }
+            
+            // Solo hacemos scroll si llegaron mensajes y el usuario estaba abajo (o es mensaje propio)
+            if(needsScroll && isNearBottom) {
+                scrollToBottom();
+            }
+        }
+    } catch (e) {
+        console.error("Error polling", e);
+    } finally {
+        isPolling = false;
+    }
+}
+
+// Intervalo cada 2 segundos
+setInterval(actualizarMensajes, 2000);
+
+/* ======================  CARGAR ANTIGUOS ====================== */
+// (Tu código de cargar antiguos estaba bien, solo asegúrate de mantenerlo si lo necesitas)
+document.getElementById('load-more')?.addEventListener('click', async function(){
+    const btn = this;
+    const nextPage = btn.getAttribute('data-next-page');
+    btn.disabled = true;
+    btn.textContent = 'Cargando...';
+
+    const res = await fetch(`{% url 'cargar_mensajes' other.id %}?page=${nextPage}`);
+    const json = await res.json();
+    
+    if(!res.ok) return;
+
+    // Guardar posición del scroll actual
+    const prevHeight = mensajesList.scrollHeight;
+
+    for(const m of json.messages){
+        if (document.querySelector(`.chat-msg[data-msg-id="${m.id}"]`)) continue;
+
+        const div = document.createElement('div');
+        const own = (m.emisor_id == {{ user.id }});
+        div.className = own ? 'chat-msg chat-msg-own' : 'chat-msg chat-msg-other';
+        div.setAttribute('data-msg-id', m.id); // ID
+
+        div.innerHTML = `
+            ${own ? '' : `<img src="${m.foto}" class="chat-avatar">`}
+            <div class="chat-bubble">
+                <div class="chat-meta">
+                    <span class="chat-author">${m.emisor}</span>
+                    <span class="chat-date">${m.fecha_envio}</span>
+                </div>
+                <div class="chat-text">${m.contenido}</div>
+            </div>
+        `;
+        mensajesList.prepend(div);
+    }
+
+    // Restaurar scroll para que no salte bruscamente
+    mensajesList.scrollTop = mensajesList.scrollHeight - prevHeight;
+
+    if(json.has_next){
+        btn.setAttribute('data-next-page', parseInt(nextPage) - 1);
+        btn.disabled = false;
+        btn.textContent = 'Cargar mensajes anteriores';
+    } else {
+        btn.remove();
+    }
+});
+</script>
+
+{% endblock %}

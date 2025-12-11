@@ -1,0 +1,55 @@
+{% extends "admin/admin_base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="admin-wrapper">
+    
+    <nav class="admin-sidebar">
+        <div class="sidebar-logo">Athlet<span>IA</span></div>
+        <div class="menu-cat">Formulario</div>
+        <a href="{{ back_url }}" class="nav-link-admin active">
+            <i class="bi bi-arrow-left"></i> Cancelar y Volver
+        </a>
+    </nav>
+
+    <main class="admin-content">
+        <div class="admin-form-card">
+            <h2 class="mb-4 text-center" style="color: var(--ath-neon);">{{ title }}</h2>
+            
+            <form method="post" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div class="mb-3">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    
+                    {% if field.field.widget.input_type == "checkbox" %}
+                        <div class="form-check form-switch">
+                            {{ field|add_class:"form-check-input" }}
+                        </div>
+                    {% else %}
+                        {# Forzamos estilo aunque widget_tweaks ya ayude #}
+                        {{ field|add_class:"form-control" }}
+                    {% endif %}
+
+                    {% if field.help_text %}
+                        <small class="text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                    
+                    {% if field.errors %}
+                        <div class="text-danger small mt-1">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn-new justify-content-center" style="width: 100%;">
+                        <i class="bi bi-save"></i> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+{% endblock %}

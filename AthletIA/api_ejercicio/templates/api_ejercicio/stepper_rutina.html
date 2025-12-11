@@ -1,0 +1,28 @@
+{% extends 'Base/base.html' %}
+{% block head %}
+<title>🧠 Generar Rutina - AthletIA</title>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center text-light">
+  <h2 class="fw-bold mb-4">💪 Elige cómo deseas generar tu rutina</h2>
+  <p class="mb-5 text-muted">Puedes usar el mapa corporal o dejar que AthletIA genere una rutina personalizada basada en tus datos.</p>
+
+  <div class="row justify-content-center g-4">
+    <div class="col-md-5">
+      <div class="card bg-dark text-white p-4 h-100 shadow-lg">
+        <h4 class="fw-bold mb-3">🧍 Mapa de Ejercicios</h4>
+        <p>Explora tu cuerpo y descubre ejercicios específicos para cada músculo.</p>
+        <a href="{% url 'mapa_corporal' %}" class="btn btn-gradient mt-auto">Ver mapa corporal</a>
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div class="card bg-dark text-white p-4 h-100 shadow-lg">
+        <h4 class="fw-bold mb-3">🤖 Rutina Personalizada</h4>
+        <p>Genera una rutina IA basada en tu edad, IMC, ritmo cardíaco y objetivo.</p>
+        <a href="{% url 'ia:recomendador_view' %}" class="btn btn-gradient mt-auto">Generar con IA</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

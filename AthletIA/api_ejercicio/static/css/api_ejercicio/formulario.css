@@ -1,0 +1,45 @@
+.formulario-base{
+
+    margin-top: 50px !important;
+
+}
+
+.titulo-formulario{
+    font-weight:bold;
+    text-transform: uppercase;
+}
+
+.guardar{
+
+    text-align: center;
+}
+
+
+.boton-guardar{
+    text-transform:uppercase;
+    font-size: 16px;
+    background-color: rgb(6, 131, 33);
+    border: rgb(6, 131, 33) solid 1px;
+}
+
+.boton-guardar:hover{
+    
+    background-color: rgb(5, 105, 26);
+    border: rgb(5, 105, 26) solid 1px;
+}
+
+.card-header{
+    background-color: rgb(5, 105, 26);
+}
+
+.boton-volver{
+
+    color: #ffffff;
+    background-color: rgb(1, 190, 42);
+}
+
+.boton-volver:hover{
+
+    color: #ffffff;
+    background-color: rgb(9, 131, 35);
+}

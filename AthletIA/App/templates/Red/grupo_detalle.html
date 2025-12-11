@@ -1,0 +1,352 @@
+{% extends "Base/base.html" %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/Red/grupos.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+/* ============================================================
+   EDITAR GRUPO
+============================================================ */
+function editarGrupo(id) {
+    Swal.fire({
+        title: "Editar grupo",
+        html: `
+            <input id="nuevoNombre" class="swal2-input" placeholder="Nuevo nombre" value="{{ grupo.nombre|escapejs }}">
+            <textarea id="nuevaDesc" class="swal2-textarea" placeholder="Nueva descripción">{{ grupo.descripcion|default_if_none:''|escapejs }}</textarea>
+        `,
+        background: "#001920",
+        color: "#eafffb",
+        showCancelButton: true,
+        confirmButtonText: "Guardar",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#25e2d7",
+        cancelButtonColor: "#ff4f6a",
+        preConfirm: () => {
+            return {
+                nombre: document.getElementById("nuevoNombre").value.trim(),
+                descripcion: document.getElementById("nuevaDesc").value.trim(),
+            };
+        }
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        fetch(`/grupos/${id}/editar/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(result.value),
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                Swal.fire("Error", data.error, "error");
+                return;
+            }
+            Swal.fire({
+                title: "Actualizado",
+                text: "El grupo fue actualizado.",
+                icon: "success",
+                background: "#001920",
+                color: "#eafffb",
+                confirmButtonColor: "#25e2d7",
+            }).then(() => location.reload());
+        });
+    });
+}
+
+/* ============================================================
+   ELIMINAR GRUPO
+============================================================ */
+function eliminarGrupo(id) {
+    Swal.fire({
+        title: "¿Eliminar grupo?",
+        text: "Esta acción no se puede deshacer.",
+        icon: "warning",
+        background: "#001920",
+        color: "#eafffb",
+        showCancelButton: true,
+        confirmButtonColor: "#ff4f6a",
+        cancelButtonColor: "#25e2d7",
+        confirmButtonText: "Sí, eliminar",
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        fetch(`/grupos/${id}/eliminar/`, {
+            method: "POST",
+            headers: { "X-CSRFToken": "{{ csrf_token }}" }
+        })
+        .then(res => res.json())
+        .then(data => {
+            Swal.fire({
+                title: "Grupo eliminado",
+                text: "El grupo fue eliminado.",
+                icon: "success",
+                background: "#001920",
+                color: "#eafffb",
+                confirmButtonColor: "#25e2d7",
+            }).then(() => window.location.href = "/grupos/");
+        });
+    });
+}
+
+/* ============================================================
+   EXPULSAR MIEMBRO
+============================================================ */
+function expulsarMiembro(grupo_id, perfil_id) {
+
+    Swal.fire({
+        title: "¿Expulsar miembro?",
+        text: "Ya no participará en el grupo.",
+        icon: "warning",
+        background: "#001920",
+        color: "#eafffb",
+        showCancelButton: true,
+        confirmButtonText: "Expulsar",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#ff4f6a",
+        cancelButtonColor: "#25e2d7",
+    }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        fetch(`/grupos/${grupo_id}/expulsar/${perfil_id}/`, {
+            method: "POST",
+            headers: {"X-CSRFToken": "{{ csrf_token }}"}
+        })
+        .then(res => res.json())
+        .then(data => {
+            Swal.fire({
+                title: "Expulsado",
+                text: "El miembro fue expulsado.",
+                icon: "success",
+                background: "#001920",
+                color: "#eafffb",
+                confirmButtonColor: "#25e2d7",
+            }).then(() => location.reload());
+        });
+    });
+}
+
+/* ============================================================
+   HACER ADMIN
+============================================================ */
+function hacerAdmin(grupo_id, perfil_id) {
+
+    Swal.fire({
+        title: "Asignar rol de administrador",
+        text: "Este miembro podrá gestionar el grupo.",
+        icon: "info",
+        background: "#001920",
+        color: "#eafffb",
+        showCancelButton: true,
+        confirmButtonText: "Hacer admin",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#25e2d7",
+        cancelButtonColor: "#ff4f6a",
+    }).then((result) => {
+
+        if (!result.isConfirmed) return;
+
+        fetch(`/grupos/${grupo_id}/hacer-admin/${perfil_id}/`, {
+            method: "POST",
+            headers: { "X-CSRFToken": "{{ csrf_token }}" }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success){
+                Swal.fire("Error", data.error, "error");
+                return;
+            }
+            Swal.fire({
+                title: "Rol actualizado",
+                text: "Ahora es administrador.",
+                icon: "success",
+                background: "#001920",
+                color: "#eafffb",
+                confirmButtonColor: "#25e2d7",
+            }).then(() => location.reload());
+        });
+    });
+}
+
+/* ============================================================
+   QUITAR ADMIN
+============================================================ */
+function quitarAdmin(grupo_id, perfil_id) {
+
+    Swal.fire({
+        title: "Quitar rol de admin",
+        text: "El usuario volverá a ser miembro normal.",
+        icon: "warning",
+        background: "#001920",
+        color: "#eafffb",
+        showCancelButton: true,
+        confirmButtonText: "Quitar admin",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#ff4f6a",
+        cancelButtonColor: "#25e2d7",
+    }).then((result) => {
+
+        if (!result.isConfirmed) return;
+
+        fetch(`/grupos/${grupo_id}/quitar-admin/${perfil_id}/`, {
+            method: "POST",
+            headers: { "X-CSRFToken": "{{ csrf_token }}" }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success){
+                Swal.fire("Error", data.error, "error");
+                return;
+            }
+            Swal.fire({
+                title: "Rol actualizado",
+                text: "Ahora es miembro normal.",
+                icon: "success",
+                background: "#001920",
+                color: "#eafffb",
+                confirmButtonColor: "#25e2d7",
+            }).then(() => location.reload());
+        });
+    });
+}
+</script>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5 mb-5">
+
+    <div class="grupo-card mb-4">
+
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <h2 class="grupo-title">{{ grupo.nombre }}</h2>
+                <p class="grupo-desc">{{ grupo.descripcion }}</p>
+            </div>
+
+            <div class="d-flex gap-2">
+                {% if es_admin %}
+                <button class="btn-edit" onclick="editarGrupo({{ grupo.id }})">✏ Editar</button>
+                <button class="btn-delete" onclick="eliminarGrupo({{ grupo.id }})">🗑 Eliminar</button>
+                {% endif %}
+
+                {% if es_miembro %}
+                <button class="btn-salir" onclick="salirGrupo({{ grupo.id }})">Salir</button>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="d-flex gap-4 mt-4">
+            <div class="stats-small-box">
+                <div class="stats-small-number">{{ total_miembros }}</div>
+                <div class="stats-small-label">Miembros</div>
+            </div>
+
+            <div class="stats-small-box">
+                <div class="stats-small-number">{{ grupo.fecha_creacion }}</div>
+                <div class="stats-small-label">Creado</div>
+            </div>
+
+            <div class="stats-small-box">
+                <div class="stats-small-number">{{ total_admins }}</div>
+                <div class="stats-small-label">Admins</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="grupo-card mb-4">
+        <h4 class="stats-title mb-3">📊 Estadísticas del grupo</h4>
+
+        <div class="stats-grid">
+
+            <div>
+                <div class="stats-small-number">{{ total_miembros }}</div>
+                <div class="stats-small-label">Miembros activos</div>
+
+                {% if miembro_mas_reciente %}
+                <p class="mt-1 stats-small-label">
+                    <b>Más nuevo: </b>{{ miembro_mas_reciente.perfil.username }} <br>
+                    <span class="stat-date">📅 {{ miembro_mas_reciente.fecha_ingreso }}</span>
+                </p>
+                {% endif %}
+            </div>
+
+            <div>
+                <div class="stats-small-number">{{ total_admins }}</div>
+                <div class="stats-small-label">Administradores</div>
+
+                {% if miembro_mas_antiguo %}
+                <p class="mt-1 stats-small-label">
+                    <b>Más antiguo: </b>{{ miembro_mas_antiguo.perfil.username }} <br>
+                    <span class="stat-date">📅 {{ miembro_mas_antiguo.fecha_ingreso }}</span>
+                </p>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="grupo-card">
+        <h4 class="stats-title mb-4">👥 Miembros del grupo</h4>
+
+        {% for m in miembros %}
+        <div class="miembro-item mb-3">
+            
+            <img src="{% if m.perfil.foto %}{{ m.perfil.foto.url }}{% else %}/media/avatar.png{% endif %}"
+                 class="miembro-avatar">
+
+            <div>
+                <div class="miembro-nombre">{{ m.perfil.username }}</div>
+
+                <div class="mt-1">
+                    {% if m.rol == "admin" %}
+                    <span class="badge-admin">Admin</span>
+                    {% endif %}
+
+                    {% if miembro_mas_antiguo and m.id == miembro_mas_antiguo.id %}
+                    <span class="badge-antiguo">⭐ Antiguo</span>
+                    {% endif %}
+
+                    {% if miembro_mas_reciente and m.id == miembro_mas_reciente.id %}
+                    <span class="badge-nuevo">🟢 Nuevo</span>
+                    {% endif %}
+                </div>
+
+                <div class="miembro-fecha">📅 Desde {{ m.fecha_ingreso }}</div>
+            </div>
+
+            {% if es_admin and m.perfil != request.user %}
+            <div class="ms-auto d-flex gap-2">
+                
+                {% if m.rol == "admin" %}
+                <button class="btn-admin-remove"
+                        onclick="quitarAdmin({{ grupo.id }}, {{ m.perfil.id }})">
+                    Quitar admin
+                </button>
+                {% else %}
+                <button class="btn-admin-promote"
+                        onclick="hacerAdmin({{ grupo.id }}, {{ m.perfil.id }})">
+                    Hacer admin
+                </button>
+                {% endif %}
+
+                <button class="btn-expulsar"
+                        onclick="expulsarMiembro({{ grupo.id }}, {{ m.perfil.id }})">
+                    Expulsar
+                </button>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

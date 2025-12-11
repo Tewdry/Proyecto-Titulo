@@ -1,0 +1,183 @@
+{% extends "Base/base.html" %}
+{% load static %}
+
+{% block navbar %}{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/admin/panel_admin.css' %}">
+<title>Admin | AthletIA</title>
+
+<style>
+/* CORRECCIÓN: que el sidebar ocupe toda la pantalla */
+.admin-sidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh !important;
+    overflow-y: auto;
+    padding-top: 25px;
+}
+
+/* El contenido se desplaza a la derecha correctamente */
+.admin-content {
+    margin-left: 250px;
+    padding: 40px;
+}
+
+/* Botón volver home FIX: pegado abajo real */
+.sidebar-return-home {
+    position: absolute;
+    bottom: 25px;
+    left: 20px;
+    right: 20px;
+}
+
+/* Contiene el botón */
+.sidebar-bottom {
+    position: relative;
+    height: 60px;
+}
+</style>
+{% endblock %}
+
+<body class="admin-mode">
+{% block content %}
+<div class="admin-wrapper">
+
+    <!-- SIDEBAR -->
+    <nav class="admin-sidebar">
+        <div class="sidebar-logo">
+            <img src="/media/logo.png" width="30" alt="">
+            Athlet<span>IA</span>
+        </div>
+
+        <div class="menu-cat">Análisis Central</div>
+        <a href="{% url 'panel_admin' %}" class="nav-link-admin"><i class="bi bi-speedometer2"></i> Dashboard General</a>
+        <a href="{% url 'panel_analisis_rutinas' %}" class="nav-link-admin"><i class="bi bi-bar-chart-line"></i> Rutinas & Reportes</a>
+
+        <div class="menu-cat">Gestión Gimnasio</div>
+        <a href="{% url 'listar_musculos' %}" class="nav-link-admin"><i class="bi bi-body-text"></i> Músculos</a>
+        <a href="{% url 'listar_ejercicios' %}" class="nav-link-admin"><i class="bi bi-bicycle"></i> Ejercicios</a>
+        <a href="{% url 'listar_rutinas' %}" class="nav-link-admin"><i class="bi bi-clipboard-data"></i> Rutinas</a>
+        <a href="{% url 'listar_calendario_rutinas' %}" class="nav-link-admin"><i class="bi bi-calendar-week"></i> Calendario</a>
+
+        <div class="menu-cat">Usuarios & Datos</div>
+        <a href="{% url 'listar_usuarios' %}" class="nav-link-admin"><i class="bi bi-people"></i> Usuarios</a>
+        <a href="{% url 'listar_salud_usuarios' %}" class="nav-link-admin"><i class="bi bi-heart-pulse"></i> Fichas Salud</a>
+        <a href="{% url 'listar_progresos' %}" class="nav-link-admin"><i class="bi bi-graph-up"></i> Progresos</a>
+        <a href="{% url 'listar_nutricion_registros' %}" class="nav-link-admin"><i class="bi bi-egg-fried"></i> Nutrición</a>
+
+        <div class="menu-cat">Comunidad & Sistema</div>
+        <a href="{% url 'listar_publicaciones' %}" class="nav-link-admin"><i class="bi bi-chat-square-text"></i> Posts</a>
+        <a href="{% url 'listar_comentarios' %}" class="nav-link-admin"><i class="bi bi-chat-quote"></i> Comentarios</a>
+        <a href="{% url 'listar_tips' %}" class="nav-link-admin"><i class="bi bi-lightbulb"></i> Tips</a>
+        <a href="{% url 'listar_opiniones' %}" class="nav-link-admin"><i class="bi bi-chat-dots"></i> Opiniones</a>
+        <a href="{% url 'listar_contactos' %}" class="nav-link-admin"><i class="bi bi-envelope"></i> Contacto</a>
+
+        <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border);">
+            <a href="{% url 'index' %}" class="btn-home">
+                <i class="bi bi-house-door"></i> Ir al Inicio
+            </a>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="admin-content">
+
+        <div class="admin-header">
+            <div class="admin-title">
+                <h1>Panel de Control</h1>
+                <p class="welcome-text">Bienvenido, {{ user.username }}</p>
+            </div>
+            <span class="badge bg-dark border border-secondary p-2">{{ today|date:"l, d F Y" }}</span>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <i class="bi bi-people-fill kpi-icon"></i>
+                <div class="kpi-value">{{ kpi.total_usuarios }}</div>
+                <div class="kpi-label">Usuarios Totales</div>
+                <small class="text-success">↑ {{ kpi.nuevos_mes }} este mes</small>
+            </div>
+
+            <div class="kpi-card">
+                <i class="bi bi-lightning-charge kpi-icon"></i>
+                <div class="kpi-value">{{ kpi.rutinas_ia }}</div>
+                <div class="kpi-label">Rutinas IA (Hoy)</div>
+            </div>
+
+            <div class="kpi-card">
+                <i class="bi bi-activity kpi-icon"></i>
+                <div class="kpi-value">{{ kpi.activos }}</div>
+                <div class="kpi-label">Usuarios Activos</div>
+                <small class="text-muted" style="color:white !important;">En los últimos 15 min</small>
+            </div>
+
+            <div class="kpi-card">
+                <i class="bi bi-chat-left-dots kpi-icon"></i>
+                <div class="kpi-value">{{ kpi.posts_hoy }}</div>
+                <div class="kpi-label">Posts Hoy</div>
+            </div>
+        </div>
+
+        <!-- GRAFICOS -->
+        <div class="row">
+            <div class="col-md-8 mb-4">
+                <div class="cyber-table-box p-4">
+                    <h5 class="text-white mb-3">Crecimiento de Usuarios</h5>
+                    <canvas id="chartCrecimiento" height="150"></canvas>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="cyber-table-box p-4">
+                    <h5 class="text-white mb-3">Músculos Populares</h5>
+                    <canvas id="chartMusculos" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+Chart.defaults.color = '#8aaeb3';
+Chart.defaults.borderColor = 'rgba(45,227,198,0.1)';
+
+new Chart(document.getElementById('chartCrecimiento'), {
+    type: 'line',
+    data: {
+        labels: JSON.parse('{{ charts.crecimiento_labels|safe }}'),
+        datasets: [{
+            data: JSON.parse('{{ charts.crecimiento_data|safe }}'),
+            borderColor: '#2de3c6',
+            backgroundColor: 'rgba(45,227,198,.15)',
+            borderWidth: 2,
+            tension: .4,
+            fill: true
+        }]
+    },
+    options: { plugins:{legend:{display:false}} }
+});
+
+new Chart(document.getElementById('chartMusculos'), {
+    type: 'doughnut',
+    data: {
+        labels: JSON.parse('{{ charts.musculos_labels|safe }}'),
+        datasets: [{
+            data: JSON.parse('{{ charts.musculos_data|safe }}'),
+            backgroundColor: ['#2de3c6','#22b8d9','#0aa38b','#024b5e','#002520'],
+            borderWidth: 0
+        }]
+    },
+    options:{ plugins:{legend:{position:'bottom',labels:{color:'white'}}}}
+});
+</script>
+{% endblock %}

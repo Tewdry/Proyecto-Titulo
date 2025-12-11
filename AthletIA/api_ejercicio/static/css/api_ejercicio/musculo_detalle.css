@@ -1,0 +1,399 @@
+:root {
+  --ath-primary: #25e2d7;
+  --ath-primary-soft: #5ff5e5;
+  --ath-glow: #00ffbf;
+  --ath-dark-1: rgba(2, 18, 24, 0.92);
+  --ath-dark-2: rgba(1, 12, 17, 0.94);
+  --ath-dark-3: rgba(0, 10, 14, 0.85);
+  --ath-card-dark: rgba(0, 12, 18, 0.75);
+  --ath-text-main: #e8fdf8;
+  --ath-text-soft: #a8cfcf;
+}
+
+/* ----------------------------
+   CONTENEDOR GENERAL
+----------------------------- */
+.muscle-page {
+  color: var(--ath-text-main);
+  padding-top: 1.2rem;
+}
+
+/* ----------------------------
+   BOTÓN VOLVER + BREADCRUMB
+----------------------------- */
+.btn_volver {
+  background: rgba(37, 226, 215, 0.09);
+  border: 1px solid rgba(95, 245, 229, 0.25);
+  color: var(--ath-primary-soft);
+  border-radius: 12px;
+  padding: 6px 16px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+  transition: all .22s ease;
+}
+.btn_volver:hover {
+  background: rgba(37, 226, 215, 0.18);
+  box-shadow: 0 0 12px rgba(37, 226, 215, 0.35);
+}
+
+.crumb-muscle {
+  padding: 6px 16px;
+  border-radius: 12px;
+  font-size: 0.82rem;
+  background: rgba(0, 12, 18, 0.55);
+  border: 1px solid rgba(95, 245, 229, 0.15);
+  color: var(--ath-text-soft);
+}
+
+/* ----------------------------
+   HERO DEL MÚSCULO
+----------------------------- */
+.muscle-hero {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  padding: 1.8rem 2rem;
+  border-radius: 22px;
+  margin-top: 1rem;
+
+  background: linear-gradient(
+    135deg,
+    rgba(0, 12, 18, 0.65),
+    rgba(0, 18, 26, 0.80) 70%
+  );
+  border: 1px solid rgba(95, 245, 229, 0.15);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.75);
+}
+
+/* icono redondo inicial del músculo */
+.muscle-icon {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: rgba(0, 10, 14, 0.75);
+  border: 2px solid rgba(95, 245, 229, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1.7rem;
+  color: var(--ath-primary-soft);
+}
+
+.titulo-musculo {
+  font-size: 2.9rem;
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: var(--ath-primary-soft);
+  text-shadow: 0 0 14px rgba(37, 226, 215, 0.3);
+}
+
+.muscle-hero-sub {
+  font-size: 1rem;
+  color: var(--ath-text-soft);
+  margin-top: 6px;
+}
+
+/* ----------------------------
+   FILTROS
+----------------------------- */
+.muscle-filters-card {
+  padding: 1.5rem 1.8rem;
+  margin-top: 1.6rem;
+  border-radius: 20px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(0, 10, 14, 0.82),
+    rgba(0, 16, 22, 0.95)
+  );
+  border: 1px solid rgba(95, 245, 229, 0.12);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75);
+}
+
+.filter-label {
+  font-size: 0.82rem;
+  color: var(--ath-text-soft);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.filter-input,
+.filter-select {
+  background: rgba(0, 10, 14, 0.85) !important;
+  border: 1px solid rgba(95, 245, 229, 0.22);
+  border-radius: 12px;
+  padding: 0.58rem 1rem;
+  color: var(--ath-text-main);
+}
+.filter-input::placeholder {
+  color: rgba(158, 199, 199, 0.55);
+}
+.filter-input:focus,
+.filter-select:focus {
+  border-color: var(--ath-primary-soft);
+  box-shadow: 0 0 0 2px rgba(37, 226, 215, 0.25);
+  outline: none;
+}
+
+/* ----------------------------
+   TARJETAS DE EJERCICIOS
+----------------------------- */
+.ejercicio-card {
+  padding: 1.7rem 1.9rem;
+  border-radius: 22px;
+
+  background: radial-gradient(
+    circle at 0% 0%,
+    rgba(0, 0, 0, 0.08),
+    rgba(0, 12, 18, 0.82)
+  );
+
+  border: 1px solid rgba(95, 245, 229, 0.15);
+
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.75),
+    0 0 14px rgba(37, 226, 215, 0.18);
+
+  transition: all .25s ease;
+}
+
+.ejercicio-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(95, 245, 229, 0.5);
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.85),
+    0 0 20px rgba(37, 226, 215, 0.28);
+}
+
+.ejercicio-card.seleccionado {
+  border-color: var(--ath-glow);
+  box-shadow:
+    0 0 25px rgba(0, 255, 191, 0.6),
+    0 18px 40px rgba(0, 0, 0, 0.85);
+}
+
+/* imagen */
+.ejercicio-gif {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 2px solid rgba(95, 245, 229, 0.25);
+  margin-bottom: 1rem;
+}
+
+/* encabezado */
+.nombre-ejercicio {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--ath-primary-soft);
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.tipo-ejercicio {
+  font-size: 0.95rem;
+  color: var(--ath-text-soft);
+}
+
+.descripcion-ejercicio {
+  margin-top: .5rem;
+  color: var(--ath-text-main);
+  font-size: 0.96rem;
+  line-height: 1.55;
+  opacity: 0.92;
+}
+
+/* footer card */
+.ej-card-footer {
+  margin-top: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* botón */
+.btn-agregar {
+  background: linear-gradient(
+    135deg,
+    #00b894,
+    #00ffbf
+  );
+  padding: 0.55rem 1.35rem;
+  font-weight: 700;
+  color: #041415;
+  border: none;
+  border-radius: 12px;
+  letter-spacing: 0.05em;
+
+  box-shadow: 0 0 14px rgba(0, 255, 191, 0.45);
+  transition: all .22s ease;
+}
+.btn-agregar:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 0 22px rgba(0, 255, 191, 0.75);
+}
+
+/* ----------------------------
+   BOTÓN FLOTANTE CARRITO
+----------------------------- */
+.carrito-btn {
+  position: fixed;
+  right: 30px;
+  bottom: 80px;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  border: none;
+
+  background: radial-gradient(
+    circle at 30% 20%,
+    #5ff5e5,
+    #00b894
+  );
+  color: #041415;
+  font-size: 1.9rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow:
+    0 0 30px rgba(0, 255, 191, 0.75),
+    0 18px 35px rgba(0, 0, 0, 0.7);
+
+  cursor: pointer;
+  transition: all .22s ease;
+  z-index: 2000;
+}
+
+.carrito-btn:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 0 38px rgba(95, 245, 229, 0.9),
+    0 20px 40px rgba(0, 0, 0, 0.78);
+}
+
+.badge-counter {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #ff4b4b;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: white;
+}
+
+.ejercicios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 28px;
+    margin-top: 20px;
+
+    /* Centrado elegante */
+    justify-items: center;
+    align-items: stretch;
+}
+
+.ejercicio-wrapper {
+    width: 100%;
+}
+
+/* Cuando se filtra */
+.ejercicio-wrapper.hide,
+.ejercicio-card.hide {
+    display: none !important;
+}
+
+.ejercicio-card {
+    width: 100%;
+    min-height: 300px;
+    height: 240px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    background: rgba(0,22,30,0.92);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 5px 18px rgba(0,255,200,0.08);
+    border: 1px solid rgba(0,255,200,0.06);
+    transition: transform .15s ease, box-shadow .2s ease;
+}
+
+#carrito-ejercicios {
+    position: fixed;
+    right: 35px;
+    top: 50%;              /* ⭐ Centrado vertical */
+    transform: translateY(-50%);  /* Corrige el centro real */
+
+    background: #042e2c;
+    color: #002a2a;
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    border: none;
+    font-size: 26px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    box-shadow: 0 10px 25px rgba(0,255,200,0.18);
+    z-index: 9999;
+    cursor: pointer;
+
+    transition: 0.25s ease;
+}
+
+#carrito-ejercicios:hover {
+    transform: translateY(-50%) scale(1.08);
+    box-shadow: 0 12px 30px rgba(1, 53, 48, 0.747);
+}
+
+.badge-counter {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #ff4b4b;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* ----------------------------
+   RESPONSIVE
+----------------------------- */
+@media (max-width: 768px) {
+  .titulo-musculo {
+    font-size: 2.2rem;
+  }
+
+  .carrito-btn {
+    width: 55px;
+    height: 55px;
+    font-size: 1.6rem;
+    bottom: 70px;
+    right: 20px;
+  }
+
+  .muscle-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

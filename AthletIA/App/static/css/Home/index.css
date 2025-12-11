@@ -1,0 +1,226 @@
+/* ============================================
+   PALETA
+============================================ */
+:root {
+    --ath-primary: #2de3c6;
+    --ath-primary-dark: #0aa38b;
+    --ath-text-light: #e8fdf8;
+    --ath-text-muted: #9ec7c7;
+    --ath-card: rgba(4,35,40,0.75);
+    --ath-border: rgba(255,255,255,0.08);
+}
+
+/* ============================================
+   HERO PRINCIPAL
+============================================ */
+.hero-athletia {
+    height: 85vh;
+    margin: 2rem;
+    border-radius: 22px;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+
+.hero-logo {
+    width: 130px;
+    filter: drop-shadow(0 0 10px rgba(45,227,198,0.5));
+}
+
+.hero-title {
+    font-size: 3.2rem;
+    color: var(--ath-text-light);
+    font-weight: 900;
+    text-shadow: 0 0 16px rgba(45,227,198,0.3);
+}
+
+.hero-sub {
+    color: var(--ath-text-muted);
+    font-size: 1.2rem;
+}
+
+.hero-buttons .btn-lg {
+    padding: 12px 28px;
+}
+
+
+/* ============================================
+   BOTONES ATHLETIA
+============================================ */
+.btn-athletia-primary {
+    background: var(--ath-primary);
+    color: #003028 !important;
+    border-radius: 999px;
+    font-weight: 700;
+    transition: .2s;
+}
+
+.btn-athletia-primary:hover {
+    box-shadow: 0 0 16px rgba(45,227,198,0.6);
+    transform: translateY(-2px);
+}
+
+.btn-athletia-accent {
+    border: 2px solid var(--ath-primary);
+    color: var(--ath-primary);
+    border-radius: 999px;
+    font-weight: 700;
+    transition: .2s;
+}
+
+.btn-athletia-accent:hover {
+    background: var(--ath-primary);
+    color: #003028 !important;
+    box-shadow: 0 0 16px rgba(45,227,198,0.6);
+}
+
+a {
+    text-decoration: none !important; /* ❗ SIN SUBRAYADOS EXTRAÑOS */
+}
+
+
+
+/* ============================================
+   GLASS CARDS
+============================================ */
+.glass-card {
+    background: var(--ath-card);
+    backdrop-filter: blur(14px);
+    border: 1px solid var(--ath-border);
+    border-radius: 20px;
+    color: var(--ath-text-light);
+    transition: 0.25s;
+}
+
+.glass-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--ath-primary);
+}
+
+
+/* ============================================
+   FEATURES
+============================================ */
+.section-title {
+    color: var(--ath-primary);
+    font-size: 2rem;
+    font-weight: 800;
+    text-shadow: 0 0 10px rgba(45,227,198,0.3);
+}
+
+.feature-icon {
+    font-size: 2.8rem;
+    color: var(--ath-primary);
+    text-shadow: 0 0 10px rgba(45,227,198,0.4);
+}
+
+.feature-title {
+    color: var(--ath-text-light);
+    font-weight: 700;
+}
+
+.feature-text {
+    color: var(--ath-text-muted);
+}
+
+
+/* ============================================
+   OPINIONES
+============================================ */
+.opiniones-section {
+    background: rgba(4,35,40,0.5);
+    backdrop-filter: blur(4px);
+}
+
+.opinion-card {
+    border-radius: 18px;
+}
+
+.opinion-text {
+    color: var(--ath-text-light);
+    font-style: italic;
+    font-size: 1.05rem;
+}
+
+.opinion-user {
+    color: var(--ath-text-muted);
+}
+
+
+/* ============================================
+   CTA FINAL 
+============================================ */
+.cta-section {
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--ath-border);
+    border-bottom: 1px solid var(--ath-border);
+}
+
+.btn-explorar {
+    background: var(--ath-primary);
+    color: #003135;
+    padding: 14px 40px;
+    font-size: 1.25rem;
+    border-radius: 999px;
+    font-weight: 800;
+    transition: .3s;
+}
+
+.btn-explorar:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 25px var(--ath-primary-glow);
+}
+
+.opinion-box {
+    background: var(--ath-card-bg);
+    padding: 2rem;
+    border-radius: 18px;
+    border: 1px solid var(--ath-border);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    color: var(--ath-text-light);
+}
+
+/* Caja del formulario */
+.opinion-form-box {
+    background: var(--ath-dark-bg);
+    padding: 2rem;
+    border-radius: 18px;
+    border: 1px solid var(--ath-border);
+    box-shadow: 0 8px 22px rgba(0,0,0,0.4);
+    max-width: 700px;
+    margin: auto;
+}
+
+/* Campos */
+.opinion-form-box textarea,
+.opinion-form-box input {
+    background: rgba(0, 40, 50, 0.5);
+    border: 1px solid var(--ath-border);
+    color: var(--ath-text-light);
+    border-radius: 12px;
+    padding: 14px;
+}
+
+.opinion-form-box textarea:focus,
+.opinion-form-box input:focus {
+    border-color: var(--ath-primary);
+    box-shadow: 0 0 12px var(--ath-primary-glow);
+    outline: none;
+}
+
+/* Botón enviar opinión */
+.btn-opinion {
+    background: var(--ath-primary);
+    border-radius: 999px;
+    color: #003135;
+    padding: 10px 25px;
+    font-weight: 700;
+    transition: .25s;
+    border: none;
+}
+
+.btn-opinion:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 18px var(--ath-primary-glow);
+}

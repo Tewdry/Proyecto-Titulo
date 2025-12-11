@@ -1,0 +1,179 @@
+/* =========================================================
+   POST CARD COMPACTO (Estilo Muro Unificado)
+========================================================= */
+
+:root {
+    --ath-primary: #2de3c6;
+    --ath-text-muted: #9ec7c7;
+    --ath-text-light: #e8fdf8;
+    --ath-card-bg: rgba(4, 35, 40, 0.92);
+    --ath-border-light: rgba(255,255,255,0.06);
+    --ath-shadow-soft: 0 6px 16px rgba(0,0,0,0.35);
+}
+
+/* 1. CONTENEDOR PRINCIPAL */
+.post-card {
+    background: #021e26 !important; /* Fondo sólido muy oscuro */
+    border: 1px solid rgba(45, 227, 198, 0.15); /* Borde fino cian */
+    border-radius: 20px;
+    margin-bottom: 20px;
+    overflow: hidden; /* Importante para recortar bordes */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* 🔥 ELIMINAR RELLENOS GIGANTES DE BOOTSTRAP */
+.post-card .card {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important; /* Quitamos padding del wrapper */
+}
+
+.post-card .card-body {
+    padding: 18px 20px !important; /* Padding compacto y controlado */
+}
+
+/* 2. CABECERA COMPACTA */
+.post-card .d-flex.align-items-center.mb-2 {
+    margin-bottom: 10px !important;
+}
+
+.post-card img[alt="Foto perfil"], 
+.post-card img[alt="Avatar"] {
+    width: 42px;
+    height: 42px;
+    object-fit: cover;
+    border: 2px solid var(--ath-primary);
+    border-radius: 50%;
+    margin-right: 10px;
+    box-shadow: 0 0 8px rgba(45, 227, 198, 0.3);
+}
+
+.post-card strong {
+    color: var(--ath-primary);
+    font-size: 1rem;
+    line-height: 1.2;
+}
+
+.post-card small.text-muted {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5) !important;
+    display: block; /* Para que quede debajo del nombre limpiamente */
+    margin-top: 2px;
+}
+
+/* 3. CONTENIDO TEXTO */
+.post-card .card-text {
+    color: var(--ath-text-light);
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+
+/* 4. MEDIA */
+.post-card video, .post-card img[alt="media"] {
+    border-radius: 12px;
+    border: 1px solid var(--ath-border-light);
+    margin-top: 8px;
+    max-height: 450px;
+    width: 100%;
+    object-fit: cover;
+}
+
+/* 5. TARJETA INTERNA (RUTINA) - OSCURA Y PEQUEÑA */
+.post-card .card .card, 
+.rutina-shared-box {
+    background-color: rgba(255, 255, 255, 0.04) !important; /* Glass oscuro */
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    padding: 12px 15px !important; /* Relleno interno pequeño */
+    margin-top: 8px !important;
+    box-shadow: none !important;
+}
+
+.post-card .card h6, 
+.post-card .card strong, 
+.post-card .card b {
+    color: var(--ath-primary) !important;
+    margin-bottom: 2px;
+    display: block;
+    font-weight: 700;
+}
+
+.post-card .card p {
+    color: #ccc !important;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+/* Botón "Ver Rutina" dentro de la tarjeta */
+.post-card .btn-outline-info, a[href*="rutina"] {
+    color: var(--ath-primary) !important;
+    border-color: var(--ath-primary) !important;
+    background: transparent !important;
+    border-radius: 8px;
+    padding: 4px 12px !important;
+    font-size: 0.8rem !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-top: 8px !important;
+    display: inline-block;
+}
+.post-card .btn-outline-info:hover {
+    background: rgba(45, 227, 198, 0.15) !important;
+}
+
+/* 6. FOOTER Y BOTONES ACCIÓN */
+.post-card .border-top {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    margin-top: 10px !important;
+    padding-top: 8px !important;
+}
+
+.btn-like, .btn-comment, .btn-fav {
+    background: transparent !important;
+    border: none;
+    color: var(--ath-text-muted);
+    padding: 0 6px;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    transition: .2s;
+}
+
+.btn-like:hover, .btn-comment:hover, .btn-fav:hover {
+    color: var(--ath-primary);
+    transform: scale(1.1);
+}
+
+.btn-like.liked i { color: #ff4f6a !important; }
+.btn-fav.fav-active i { color: #ffd66b !important; }
+
+/* Badge de comentarios */
+.post-card .badge,
+.post-card .badge.bg-light,
+.post-card .badge.text-dark {
+    background-color: rgb(247, 245, 245) !important; /* Fondo gris transparente */
+    color: #000000 !important; /* Texto blanco puro */
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 4px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Borde sutil para definición */
+}
+/* Botón "VER ORIGINAL" */
+.btn-ver-original {
+    border: 1px solid var(--ath-primary);
+    color: var(--ath-primary);
+    background: transparent;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+    transition: .2s;
+}
+.btn-ver-original:hover {
+    background: var(--ath-primary);
+    color: #003028;
+}
+

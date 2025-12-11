@@ -1,0 +1,230 @@
+/* ===============================================
+   PALETA GLOBAL ATHLETIA (misma que muro)
+================================================ */
+:root {
+    --ath-primary: #25e2d7;
+    --ath-primary-soft: rgba(37, 226, 215, 0.15);
+    --ath-dark-card: rgba(0, 25, 32, 0.72);
+    --ath-dark-card-2: rgba(0, 25, 32, 0.58);
+    --ath-text-light: #eafffb;
+    --ath-text-muted: #8bb9b9;
+    --ath-shadow: 0 10px 35px rgba(0,0,0,0.25);
+}
+
+/* ===============================================
+   CARD BASE — IGUAL QUE MURO
+================================================ */
+.grupo-card,
+.grupo-stats-card,
+.miembros-card {
+    background: var(--ath-dark-card);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 22px;
+    padding: 25px;
+    box-shadow: var(--ath-shadow);
+    backdrop-filter: blur(6px);
+}
+
+/* TITULOS */
+.grupo-title {
+    font-size: 1.8rem;
+    color: var(--ath-primary);
+    font-weight: 700;
+}
+
+.grupo-desc {
+    color: var(--ath-text-muted);
+    margin-top: -5px;
+}
+
+/* ===============================================
+   CABECERA — datos del grupo
+================================================ */
+.stats-small-box {
+    background: var(--ath-primary-soft);
+    padding: 12px 22px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+    text-align: center;
+}
+
+.stats-small-number {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--ath-primary);
+}
+
+.stats-small-label {
+    font-size: 0.8rem;
+    color: var(--ath-text-muted);
+}
+
+/* SALIR BTN */
+.btn-salir {
+    background: #ff4f6a;
+    color: white !important;
+    border-radius: 50px;
+    padding: 8px 18px;
+    font-weight: 600;
+    border: none;
+    transition: 0.2s;
+}
+.btn-salir:hover {
+    background: #ff2846;
+}
+
+/* ===============================================
+   ESTADÍSTICAS
+================================================ */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+}
+
+.stats-title {
+    color: var(--ath-primary);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+/* ===============================================
+   MIEMBROS
+================================================ */
+.miembro-item {
+    display: flex;
+    gap: 18px;
+    padding: 18px;
+    background: var(--ath-dark-card-2);
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.05);
+    align-items: center;
+}
+
+/* Avatar */
+.miembro-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 14px;
+    object-fit: cover;
+    border: 2px solid var(--ath-primary);
+}
+
+/* Nombre */
+.miembro-nombre {
+    font-size: 1.1rem;
+    color: var(--ath-text-light);
+    font-weight: 600;
+}
+
+/* FECHA */
+.miembro-fecha {
+    font-size: 0.8rem;
+    color: var(--ath-text-muted);
+    margin-top: 4px;
+}
+
+/* BADGES */
+.badge-admin {
+    background: #ff4f6a;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    margin-right: 6px;
+}
+
+.badge-nuevo {
+    background: #1dd75f;
+    color: #002920;
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    margin-right: 6px;
+}
+
+.badge-antiguo {
+    background: #ffc043;
+    color: #5e4100;
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+}
+
+.btn-edit {
+    background: var(--ath-primary);
+    color: #002420;
+    border-radius: 50px;
+    padding: 8px 16px;
+    border: none;
+    font-weight: 600;
+    transition: 0.2s;
+}
+.btn-edit:hover { background: #32fff0; }
+
+.btn-delete {
+    background: #ff4f6a;
+    color: white;
+    border-radius: 50px;
+    padding: 8px 16px;
+    border: none;
+    font-weight: 600;
+    transition: 0.2s;
+}
+.btn-delete:hover { background: #ff2341; }
+
+.btn-expulsar {
+    margin-left: auto;
+    background: #ff4f6a;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+}
+.btn-expulsar:hover {
+    background: #ff2341;
+}
+
+.ath-popup {
+    border: 1px solid rgba(37,226,215,0.3) !important;
+    backdrop-filter: blur(8px) !important;
+}
+
+.ath-confirm-button, .ath-cancel-button {
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    padding: 8px 18px !important;
+}
+
+/* ===============================================================
+   ROLES: HACER ADMIN / QUITAR ADMIN
+=============================================================== */
+
+.btn-admin-promote {
+    background: var(--ath-primary);
+    color: #002420;
+    border-radius: 10px;
+    padding: 6px 14px;
+    border: none;
+    font-weight: 600;
+    font-size: 0.8rem;
+    transition: 0.2s;
+}
+.btn-admin-promote:hover {
+    background: #32fff0;
+}
+
+.btn-admin-remove {
+    background: #ffc043;
+    color: #5e4100;
+    border-radius: 10px;
+    padding: 6px 14px;
+    border: none;
+    font-weight: 600;
+    font-size: 0.8rem;
+    transition: 0.2s;
+}
+.btn-admin-remove:hover {
+    background: #ffd567;
+}

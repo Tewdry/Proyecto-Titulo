@@ -1,0 +1,312 @@
+/* ---------- PALETA ATHLETIA ---------- */
+:root {
+  --ath-primary: #25e2d7;
+  --ath-primary-soft: #5ff5e5;
+  --ath-ia-mint: #00E0A1;
+  --ath-ia-teal: #2EC4B6;
+  --ath-accent-warm: #FF9F1C;
+
+  --ath-bg-dark: rgba(2, 20, 28, 0.96);       /* MÁS OSCURO */
+  --ath-bg-soft: rgba(3, 30, 40, 0.92);       /* MÁS PROFUNDO */
+
+  --ath-text-main: #e8fdf8;
+  --ath-text-soft: #9ec7c7;
+
+  --ath-radius-card: 22px;
+}
+
+/* ========================================================= */
+/* CONTENEDOR GENERAL */
+/* ========================================================= */
+.generar-wrapper {
+  color: var(--ath-text-main);
+  margin-top: 3.5rem;
+}
+
+/* ========================================================= */
+/* CABECERA */
+/* ========================================================= */
+.generar-header {
+  max-width: 720px;
+  margin: 0 auto 2.5rem auto;
+  text-align: center;
+}
+
+.generar-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(37, 226, 215, 0.10); /* más oscuro */
+  border: 1px solid rgba(95, 245, 229, 0.25);
+  color: var(--ath-primary-soft);
+}
+
+.generar-title {
+  margin-top: 1.1rem;
+  font-weight: 700;
+  font-size: 1.9rem;
+  text-shadow: 0 0 14px rgba(37, 226, 215, 0.28);
+}
+
+.generar-subtitle {
+  margin-top: 0.7rem;
+  color: var(--ath-text-soft);
+  font-size: 0.95rem;
+}
+
+/* ========================================================= */
+/* TARJETAS */
+/* ========================================================= */
+.mode-card {
+  position: relative;
+
+  /* 🔥 NUEVO FONDO MÁS OSCURO */
+  background: linear-gradient(
+      135deg,
+      rgba(5, 40, 55, 0.95),
+      rgba(2, 20, 28, 0.98)
+  );
+
+  border-radius: var(--ath-radius-card);
+  padding: 2rem 1.85rem;
+  border: 1px solid rgba(95, 245, 229, 0.12);
+
+  /* 🔥 Sombras más profundas como perfil */
+  box-shadow:
+    0 18px 45px rgba(0, 0, 0, 0.7),
+    0 0 14px rgba(37, 226, 215, 0.15);
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+
+  transition: 0.25s ease all;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mode-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(95, 245, 229, 0.42);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.85),
+    0 0 28px rgba(37, 226, 215, 0.32);
+}
+
+/* ========================================================= */
+/* ICONOS */
+/* ========================================================= */
+.mode-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.mode-icon {
+  font-size: 2.45rem;
+  color: var(--ath-primary-soft);
+}
+
+/* 🔥 Iconos con glow más oscuro */
+.ia-glow {
+  background: radial-gradient(circle,
+    rgba(0, 224, 161, 0.20),
+    rgba(2, 20, 28, 0.95)
+  );
+}
+
+.mapa-glow {
+  background: radial-gradient(circle,
+    rgba(37, 226, 215, 0.18),
+    rgba(2, 20, 28, 0.95)
+  );
+}
+
+/* ========================================================= */
+/* TAGS */
+/* ========================================================= */
+.mode-tag {
+  position: absolute;
+  top: 1.2rem;
+  right: 1.4rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  border: 1px solid rgba(95, 245, 229, 0.35);
+}
+
+.mode-tag.recomendado {
+  background: rgba(0, 224, 161, 0.12);
+  color: var(--ath-ia-mint);
+}
+
+.mode-tag.explorador {
+  background: rgba(37, 226, 215, 0.14);
+  color: var(--ath-primary-soft);
+}
+
+/* ========================================================= */
+/* TEXTOS */
+/* ========================================================= */
+.mode-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.45rem;
+}
+
+.mode-desc {
+  font-size: 0.9rem;
+  color: var(--ath-text-soft);
+  margin-bottom: 0.85rem;
+}
+
+/* ========================================================= */
+/* LISTA */
+/* ========================================================= */
+.mode-list {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 1.3rem;
+  color: var(--ath-text-soft);
+  font-size: 0.87rem;
+}
+
+.mode-list li {
+  padding-left: 1.4rem;
+  margin-bottom: 0.38rem;
+  position: relative;
+}
+
+.mode-list li::before {
+  content: "•";
+  left: 0;
+  top: 0;
+  position: absolute;
+  color: var(--ath-primary-soft);
+}
+
+/* ========================================================= */
+/* BOTÓN */
+/* ========================================================= */
+.mode-btn {
+  margin-top: auto;
+  width: 100%;
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+
+  background: linear-gradient(90deg,
+              var(--ath-ia-teal),
+              var(--ath-ia-mint));
+
+  color: #021920;
+  font-weight: 600;
+  font-size: 0.91rem;
+  letter-spacing: 0.03em;
+
+  box-shadow:
+    0 10px 22px rgba(0, 224, 161, 0.45),
+    0 0 22px rgba(0, 224, 161, 0.5);
+
+  transition: 0.18s ease;
+}
+
+.mode-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow:
+    0 12px 30px rgba(0, 224, 161, 0.65),
+    0 0 30px rgba(0, 224, 161, 0.75);
+}
+
+.mode-btn-icon {
+  font-size: 1.2rem;
+}
+
+/* ========================================================= */
+/* AYUDA RÁPIDA */
+/* ========================================================= */
+.helper-card {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1.3rem 1.5rem;
+  border-radius: 20px;
+
+  background: rgba(2, 20, 28, 0.92);
+  border: 1px dashed rgba(95, 245, 229, 0.22);
+
+  color: var(--ath-text-soft);
+  backdrop-filter: blur(10px);
+}
+
+.helper-title {
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  color: var(--ath-primary-soft);
+}
+
+.helper-text {
+  font-size: 0.88rem;
+}
+
+/* ========================================================= */
+/* BOTÓN VOLVER */
+/* ========================================================= */
+.btn-back-athletia {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  padding: 0.55rem 1.3rem;
+  border-radius: 999px;
+
+  border: 1px solid rgba(95, 245, 229, 0.32);
+  background: rgba(2, 20, 28, 0.9);
+
+  color: var(--ath-primary-soft);
+  text-decoration: none;
+  font-size: 0.9rem;
+
+  backdrop-filter: blur(10px);
+
+  transition: 0.2s ease;
+}
+
+.btn-back-athletia:hover {
+  background: radial-gradient(circle,
+              rgba(37, 226, 215, 0.18),
+              rgba(2, 20, 28, 0.98));
+  transform: translateY(-1px);
+  box-shadow: 0 0 22px rgba(37, 226, 215, 0.42);
+  color: var(--ath-text-main);
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 767.98px) {
+  .generar-header {
+    text-align: center;
+  }
+
+  .mode-card {
+    padding: 1.7rem 1.4rem 1.5rem;
+  }
+
+  .mode-title {
+    font-size: 1.1rem;
+  }
+
+  .mode-desc,
+  .mode-list li {
+    font-size: 0.84rem;
+  }
+}

@@ -1,0 +1,294 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/Home/registro_dark.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="registro-dark-container">
+
+  <!-- Panel izquierdo -->
+  <div class="registro-left">
+
+    <div class="text-center mb-4">
+      <img src="/media/logo.png" class="logo-dark mb-3">
+      <h2 class="fw-bold text-light">Crea tu cuenta</h2>
+      <p class="text-muted">Únete al equipo AthletIA 💪</p>
+    </div>
+
+    <!-- Stepper -->
+    <div class="stepper mb-4">
+      <div class="step active">1</div><div class="step-line"></div>
+      <div class="step">2</div><div class="step-line"></div>
+      <div class="step">3</div><div class="step-line"></div>
+      <div class="step">4</div><div class="step-line"></div>
+      <div class="step">5</div>
+    </div>
+
+    <form id="registroForm" method="POST" action="{% url 'registro' %}" novalidate>
+      {% csrf_token %}
+
+      <!-- =============== PASO 1 =============== -->
+      <div class="form-step active">
+        <h5 class="fw-bold text-light mb-3">Información Personal</h5>
+
+        <div class="mb-3 field-with-tooltip">
+          <input type="text" name="username" class="form-control-dark" placeholder="Usuario" required maxlength="20">
+          <span class="tooltip-icon" data-tooltip="Nombre visible (máx. 20 caracteres)">ⓘ</span>
+        </div>
+
+        <div class="mb-3 field-with-tooltip">
+          <input type="email" name="email" class="form-control-dark" placeholder="Correo electrónico" required>
+          <span class="tooltip-icon" data-tooltip="Correo válido">ⓘ</span>
+        </div>
+
+        <div class="mb-3 field-with-tooltip">
+          <input type="password" name="password1" class="form-control-dark" placeholder="Contraseña" required minlength="8">
+          <div id="password-strength" style="margin-top:5px;font-size:0.85rem;"></div>
+          <span class="tooltip-icon" data-tooltip="Mínimo 8 caracteres">ⓘ</span>
+        </div>
+
+        <div class="mb-3 field-with-tooltip">
+          <input type="password" name="password2" class="form-control-dark" placeholder="Confirmar contraseña" required minlength="8">
+          <div id="password-strength" style="margin-top:5px;font-size:0.85rem;"></div>
+          <span class="tooltip-icon" data-tooltip="Debe coincidir con la contraseña anterior">ⓘ</span>
+        </div>
+
+        <div class="mb-3 field-with-tooltip">
+          <input type="text" name="telefono" class="form-control-dark" placeholder="Teléfono (+56 9 ... )" maxlength="15">
+          <span class="tooltip-icon" data-tooltip="Opcional">ⓘ</span>
+        </div>
+
+        <div class="mb-3 field-with-tooltip">
+          <input type="text" name="direccion" class="form-control-dark" placeholder="Dirección" maxlength="120">
+          <span class="tooltip-icon" data-tooltip="Opcional">ⓘ</span>
+        </div>
+
+        <div class="mb-3">
+          <input type="date" name="fecha_nacimiento" class="form-control-dark" required>
+          <small class="text-muted d-block mt-1">Debes tener mínimo 14 años.</small>
+        </div>
+
+        <button class="btn btn-athletia w-100 next-step" type="button">Siguiente</button>
+      </div>
+
+      <!-- OVERLAY -->
+      <div id="overlay-carga" class="overlay-carga d-none">
+        <div class="caja-analisis">
+          <div class="spinner"></div>
+          <p id="texto-analisis">Procesando datos...</p>
+        </div>
+      </div>
+
+      <!-- =============== PASO 2 =============== -->
+      <div class="form-step">
+        <h5 class="fw-bold text-light mb-3">Datos Físicos Iniciales</h5>
+
+        <div class="d-flex gap-3 mb-3">
+          <input type="number" name="altura_cm" class="form-control-dark" placeholder="Altura (cm)" min="100" max="250" required>
+          <input type="number" name="peso_kg" class="form-control-dark" placeholder="Peso (kg)" min="30" max="300" required>
+        </div>
+
+        <input type="number" name="grasa_corporal" class="form-control-dark mb-3" placeholder="Grasa corporal (%)" min="3" max="60">
+        <input type="number" name="masa_muscular" class="form-control-dark mb-3" placeholder="Masa muscular (kg)" min="10" max="120">
+        <input type="number" name="cintura_cm" class="form-control-dark mb-3" placeholder="Cintura (cm)" min="40" max="200">
+        <input type="number" name="cadera_cm" class="form-control-dark mb-3" placeholder="Cadera (cm)" min="40" max="200">
+
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-secondary prev-step" type="button">Atrás</button>
+          <button class="btn btn-athletia next-step" type="button">Siguiente</button>
+        </div>
+      </div>
+
+      <!-- =============== PASO 3 =============== -->
+      <div class="form-step">
+        <h5 class="fw-bold text-light mb-3">Salud del Usuario</h5>
+
+        <select name="tipo_sangre" class="form-control-dark mb-3" required>
+          <option value="">Tipo de Sangre</option>
+          <option>O+</option><option>O-</option>
+          <option>A+</option><option>A-</option>
+          <option>B+</option><option>B-</option>
+          <option>AB+</option><option>AB-</option>
+        </select>
+
+        <select name="frecuencia_cardiaca" class="form-control-dark mb-3" required>
+          <option value="">Frecuencia cardíaca</option>
+          <option>Menos de 60 bpm</option>
+          <option>60 - 80 bpm</option>
+          <option>81 - 100 bpm</option>
+          <option>Más de 100 bpm</option>
+        </select>
+
+        <select name="enfermedades" class="form-control-dark mb-3" required>
+          <option value="">Enfermedades preexistentes</option>
+          <option>No poseo</option>
+          <option>Asma</option>
+          <option>Diabetes</option>
+          <option>Hipertensión</option>
+          <option>Cardiopatía</option>
+          <option>Crónica</option>
+        </select>
+
+        <select name="lesiones" class="form-control-dark mb-3" required>
+          <option value="">Lesiones actuales</option>
+          <option>No tengo</option>
+          <option>Hombro</option>
+          <option>Rodilla</option>
+          <option>Esguince</option>
+          <option>Desgarro</option>
+        </select>
+
+        <select name="alergias" class="form-control-dark mb-3" required>
+          <option value="">Alergias</option>
+          <option>No tengo</option>
+          <option>Ácaros</option>
+          <option>Pólenes</option>
+          <option>Alimentos</option>
+        </select>
+
+        <div class="form-check-dark mb-2">
+          <input type="checkbox" name="fuma" id="fuma">
+          <label for="fuma">Fumo</label>
+        </div>
+
+        <div class="form-check-dark mb-3">
+          <input type="checkbox" name="bebe" id="bebe">
+          <label for="bebe">Bebo alcohol</label>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-secondary prev-step" type="button">Atrás</button>
+          <button class="btn btn-athletia next-step" type="button">Siguiente</button>
+        </div>
+      </div>
+
+      <!-- =============== PASO 4 =============== -->
+      <div class="form-step">
+        <h5 class="fw-bold text-light mb-3">Hábitos y Nutrición</h5>
+
+        <select class="form-control-dark mb-3" name="horas_dormidas" required>
+          <option value="">Horas dormidas</option>
+          <option>Menos de 5 horas</option>
+          <option>5 a 6 horas</option>
+          <option>7 a 8 horas</option>
+          <option>Más de 8 horas</option>
+        </select>
+
+        <select class="form-control-dark mb-3" name="calidad_sueno" required>
+          <option value="">Calidad del sueño</option>
+          <option>Excelente</option><option>Buena</option>
+          <option>Regular</option><option>Mala</option>
+        </select>
+
+        <select class="form-control-dark mb-3" name="despertares_nocturnos" required>
+          <option value="">Despertares</option>
+          <option>Ninguno</option>
+          <option>1 vez</option>
+          <option>2 veces</option>
+          <option>3 o más veces</option>
+        </select>
+
+        <hr>
+
+        <select class="form-control-dark mb-3" name="comida" required>
+          <option value="">Tipo de comida</option>
+          <option>Proteínas</option>
+          <option>Balanceada</option>
+          <option>Carbohidratos</option>
+          <option>Grasas</option>
+          <option>Vegana</option>
+        </select>
+
+        <select class="form-control-dark mb-3" name="calorias" required>
+          <option value="">Calorías</option>
+          <option>Menos de 1500</option>
+          <option>1500 - 2000</option>
+          <option>2000 - 2500</option>
+          <option>Más de 2500</option>
+        </select>
+
+        <select class="form-control-dark mb-3" name="proteinas" required>
+          <option value="">Proteínas</option>
+          <option>Muy bajo</option>
+          <option>Moderado</option>
+          <option>Alto</option>
+        </select>
+
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-secondary prev-step" type="button">Atrás</button>
+          <button class="btn btn-athletia next-step" type="button">Siguiente</button>
+        </div>
+      </div>
+
+      <!-- =============== PASO 5 =============== -->
+      <div class="form-step">
+        <h5 class="fw-bold text-light mb-3">Objetivo Personal</h5>
+
+        <select name="tipo_objetivo" class="form-control-dark mb-3" required>
+          <option value="">Selecciona tu objetivo</option>
+          {% for obj in objetivos %}
+          <option value="{{ obj.nombre }}">{{ obj.nombre }}</option>
+          {% endfor %}
+        </select>
+
+        <select name="meta_peso_kg" class="form-control-dark mb-3" required>
+          <option value="">Meta de peso</option>
+          <option>Subir 1-3 kg</option>
+          <option>Subir 4-6 kg</option>
+          <option>Bajar 1-3 kg</option>
+          <option>Bajar 4-6 kg</option>
+        </select>
+
+        <select name="meta_grasa_corporal" class="form-control-dark mb-3" required>
+          <option value="">Meta de grasa</option>
+          <option>Menos del 10%</option>
+          <option>10% - 15%</option>
+          <option>16% - 20%</option>
+          <option>Más del 20%</option>
+        </select>
+
+        <div class="mb-3">
+          <label class="text-light small">Fecha inicio</label>
+          <input type="date" name="fecha_inicio" class="form-control-dark" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="text-light small">Fecha meta</label>
+          <input type="date" name="fecha_meta" class="form-control-dark" required>
+        </div>
+
+        <select name="estado" class="form-control-dark mb-4" required>
+          <option value="">Estado</option>
+          <option>En progreso</option>
+          <option>Pausado</option>
+          <option>Completado</option>
+        </select>
+
+        <div class="d-flex justify-content-between">
+          <button class="btn btn-secondary prev-step" type="button">Atrás</button>
+          <button class="btn btn-athletia w-50" type="submit">Finalizar</button>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- Panel derecho -->
+  <div class="registro-right">
+    <img src="/media/gym.jpg" class="illustration">
+    <div class="overlay-gradient">
+        <div class="overlay-text">
+            <h3>Tu mejor versión te espera</h3>
+            <p>Únete a la comunidad de entrenamiento inteligente.</p>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="{% static 'js/registro_stepper.js' %}"></script>
+{% endblock %}

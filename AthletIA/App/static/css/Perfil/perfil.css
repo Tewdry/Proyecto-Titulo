@@ -1,0 +1,393 @@
+/* =========================================================
+   🎨 PALETA ATHLETIA
+========================================================= */
+:root {
+    --ath-primary: #2de3c6;
+    --ath-primary-dark: #0aa38b;
+    --ath-bg-dark: #021e26;
+    --ath-card-bg: rgba(4, 35, 40, 0.92);
+    --ath-card-glass: rgba(4, 35, 40, 0.6);
+    --ath-input-bg: rgba(9, 40, 45, 0.85);
+    --ath-border-light: rgba(255,255,255,0.08);
+    --ath-text-light: #e8fdf8;
+    --ath-text-muted: #9ec7c7;
+}
+
+/* =========================================================
+   📌 LAYOUT GENERAL
+========================================================= */
+.perfil-wrapper {
+    color: var(--ath-text-light);
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* Tarjetas oscuras */
+.perfil-wrapper .card {
+    background: var(--ath-card-bg) !important;
+    border: 1px solid var(--ath-border-light) !important;
+    color: var(--ath-text-light) !important;
+    border-radius: 20px;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.55);
+}
+
+/* Eliminación de fondo blanco en todos los inputs */
+.perfil-wrapper .form-control,
+.perfil-wrapper input,
+.perfil-wrapper textarea,
+.perfil-wrapper select {
+    background: var(--ath-input-bg) !important;
+    border: 1px solid var(--ath-border-light) !important;
+    color: var(--ath-text-light) !important;
+    border-radius: 12px !important;
+}
+
+.perfil-wrapper .form-control:focus {
+    border-color: var(--ath-primary) !important;
+    box-shadow: 0 0 10px rgba(45,227,198,0.45) !important;
+}
+
+.perfil-wrapper label {
+    color: var(--ath-text-light) !important;
+}
+
+
+/* =========================================================
+   🧩 AVATAR FUTURISTA
+========================================================= */
+.perfil-avatar-wrapper {
+    position: relative;
+}
+
+.perfil-avatar-clip {
+    width: 190px;
+    height: 210px;
+    padding: 5px;
+    margin: 0 auto;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    background: linear-gradient(135deg, #2de3c6, #22b8d9);
+    box-shadow: 0 0 26px rgba(45, 227, 198, 0.45);
+}
+
+/* La imagen dentro del clip */
+.perfil-avatar-clip img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    clip-path: inherit;
+    border-radius: 0;
+}
+
+.avatar-edit-btn {
+    position: absolute;
+    bottom: -10px;  
+    right: 0px;    
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ffffff, #1bd7bb);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #003028;
+    border: 2px solid #ffffffcc;
+    cursor: pointer;
+    z-index: 999;
+    transition: .25s ease;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+}
+
+.avatar-edit-btn:hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 20px rgba(45,227,198,0.75);
+}
+
+
+/* =========================================================
+   ✍️ TIPOGRAFÍA Y TEXTOS
+========================================================= */
+.perfil-name {
+    font-size: 1.4rem;
+    color: var(--ath-primary);
+}
+
+.perfil-email {
+    color: var(--ath-text-muted);
+    font-size: 0.9rem;
+}
+
+.perfil-badge {
+    background: rgba(45, 227, 198, 0.16);
+    padding: 5px 11px;
+    border-radius: 20px;
+    color: var(--ath-primary);
+    font-weight: 600;
+    font-size: 0.78rem;
+}
+
+.perfil-tip {
+    color: var(--ath-text-muted);
+    font-size: 0.85rem;
+}
+
+.perfil-section-title {
+    font-size: 1.45rem;
+    font-weight: 700;
+}
+
+.perfil-section-subtitle {
+    color: var(--ath-text-muted);
+    font-size: 0.9rem;
+}
+
+.perfil-label {
+    font-weight: 600;
+    font-size: 0.88rem;
+}
+
+.dot-online {
+    width: 10px;
+    height: 10px;
+    background: #18ff89;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.perfil-mini-indicador {
+    color: var(--ath-text-muted);
+    font-size: 0.8rem;
+}
+
+
+/* =========================================================
+   🟩 BOTONES ATHLETIA
+========================================================= */
+.btn-estilo-vida {
+    background: transparent;
+    border: 2px solid var(--ath-primary);
+    color: var(--ath-primary);
+    font-weight: 600;
+    border-radius: 999px;
+    transition: .18s;
+}
+
+.btn-estilo-vida:hover {
+    background: var(--ath-primary);
+    color: #003028 !important;
+    box-shadow: 0 0 12px rgba(45,227,198,.65);
+}
+
+.btn-guardar-perfil,
+.btn-registrar-progreso {
+    background: var(--ath-primary);
+    color: #003028 !important;
+    border: none;
+    font-weight: 600;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    transition: .18s;
+}
+
+.btn-guardar-perfil {
+    background: linear-gradient(90deg, #1ed6b0, #2de3c6);
+}
+
+.btn-guardar-perfil:hover,
+.btn-registrar-progreso:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 16px var(--ath-primary);
+}
+
+
+/* =========================================================
+   🧱 COLUMNAS
+========================================================= */
+.perfil-left-col {
+    border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+@media (max-width: 991px) {
+    .perfil-left-col {
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        margin-bottom: 16px;
+        padding-bottom: 16px;
+    }
+}
+
+.perfil-side-col {
+    background: var(--ath-card-glass);
+    border-radius: 18px;
+    padding: 14px 16px;
+    border: 1px solid var(--ath-border-light);
+    box-shadow: 0 0 22px rgba(0,0,0,0.55);
+}
+
+
+/* =========================================================
+   📊 KPIs
+========================================================= */
+.side-kpi-title {
+    font-size: 0.9rem;
+    color: var(--ath-text-muted);
+}
+
+.side-kpi-main {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--ath-primary);
+}
+
+.side-kpi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+.side-kpi-tag {
+    background: rgba(0,0,0,0.35);
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    color: var(--ath-text-muted);
+}
+
+.kpi-pill {
+    background: rgba(45,227,198,0.12);
+    color: var(--ath-primary);
+    padding: 6px 14px;
+    font-weight: 600;
+    border-radius: 18px;
+    font-size: 0.8rem;
+}
+
+
+/* =========================================================
+   📈 GRÁFICOS
+========================================================= */
+.chart-wrapper {
+    height: 260px;
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-wrapper-mini {
+    height: 120px;
+    position: relative;
+}
+
+
+/* =========================================================
+   🧮 TRACKING + TABLA
+========================================================= */
+.tracking-summary-card {
+    background: rgba(0,0,0,0.28);
+    border-radius: 12px;
+    padding: 18px;
+}
+
+.tracking-summary-title {
+    font-size: 0.95rem;
+}
+
+.tracking-summary-text {
+    font-size: 0.9rem;
+    color: var(--ath-text-muted);
+}
+
+.tracking-table-wrapper {
+    border-radius: 12px;
+    overflow: visible;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+
+.tracking-table thead {
+    background: rgba(45,227,198,0.15);
+    color: var(--ath-primary);
+    font-size: 0.82rem;
+}
+
+.tracking-table tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.tracking-table tbody tr:hover {
+    background: rgba(45,227,198,0.06);
+}
+
+.text-muted-ia {
+    color: rgba(182, 210, 210, 0.85);
+}
+
+/* =========================================================
+   📊 TABLA DE PROGRESO
+========================================================= */
+
+.tracking-table-wrapper {
+    background: var(--ath-card-bg);
+    border: 1px solid var(--ath-border-light);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: var(--ath-shadow-soft);
+    margin-top: 20px;
+}
+
+/* TABLA COMPLETA DARK */
+.tracking-table {
+    width: 100%;
+    color: var(--ath-text-light);
+    background: transparent; /* EVITA BLANCO */
+}
+
+/* QUITA BLANCOS DE BOOTSTRAP */
+.tracking-table thead,
+.tracking-table tbody,
+.tracking-table tr,
+.tracking-table td,
+.tracking-table th {
+    background: transparent !important;
+}
+
+/* HEADER */
+.tracking-table thead th {
+    color: var(--ath-primary);
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 14px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.10);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+/* FILAS */
+.tracking-table tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    transition: .25s ease;
+}
+
+/* CELDAS */
+.tracking-table tbody td {
+    padding: 14px 10px;
+    color: var(--ath-text-light);
+    font-size: 0.92rem;
+}
+
+/* HOVER */
+.tracking-table tbody tr:hover {
+    background: rgba(45,227,198,0.06) !important;
+    transform: translateY(-2px);
+}
+
+/* Comentario (columna 4) */
+.tracking-table tbody td:nth-child(4) {
+    color: var(--ath-text-muted);
+    font-style: italic;
+}
+
+/* Texto cuando está vacío */
+.text-muted-ia {
+    color: var(--ath-text-muted) !important;
+    padding: 20px 0;
+}

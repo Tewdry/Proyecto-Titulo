@@ -1,0 +1,295 @@
+/* ===========================
+   🎨 PALETA ATHLETIA IA
+=========================== */
+:root {
+    --ia-primary: #25e2d7;
+    --ia-primary-soft: #5ff5e5;
+    --ia-bg-card: rgba(2, 25, 32, 0.96);
+    --ia-bg-card-soft: rgba(4, 35, 42, 0.92);
+    --ia-border-soft: rgba(255,255,255,0.06);
+    --ia-text-light: #e8fdf8;
+    --ia-text-muted: #ffffff;
+}
+
+/* WRAPPER GENERAL */
+.ia-wrapper {
+    color: var(--ia-text-light);
+}
+
+/* ===========================
+   🧠 HERO
+=========================== */
+.ia-hero {
+    max-width: 900px;
+    margin: 0 auto 1.5rem auto;
+}
+.ia-badge-version {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(37, 226, 215, 0.5);
+    background: rgba(2, 24, 30, 0.8);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    color: var(--ia-text-muted);
+    text-transform: uppercase;
+}
+.ia-title {
+    margin-top: 0.8rem;
+    font-weight: 800;
+    font-size: 2.1rem;
+}
+.ia-title-highlight {
+    color: var(--ia-primary);
+    text-shadow: 0 0 14px rgba(37,226,215,0.5);
+}
+.ia-subtitle {
+    margin-top: 0.5rem;
+    color: var(--ia-text-muted);
+    font-size: 0.98rem;
+}
+
+/* ===========================
+   🧊 CARD PRINCIPAL
+=========================== */
+.ia-card {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 2.5rem 2rem 2.5rem;
+    border-radius: 24px;
+    background: radial-gradient(circle at top left,
+                rgba(37, 226, 215, 0.18),
+                transparent 55%),
+                var(--ia-bg-card);
+    border: 1px solid var(--ia-border-soft);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.7);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
+
+/* ===========================
+   📦 SECCIONES
+=========================== */
+.ia-section + .ia-section {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed rgba(255,255,255,0.08);
+}
+.ia-section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0.9rem;
+}
+.ia-section-header h5 {
+    margin: 0;
+    font-weight: 700;
+}
+.ia-section-header p {
+    margin: 2px 0 0;
+    font-size: 0.85rem;
+    color: var(--ia-text-muted);
+}
+.ia-section-tag {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #001519;
+    background: var(--ia-primary);
+    box-shadow: 0 0 12px rgba(37,226,215,0.9);
+}
+
+/* ===========================
+   🧾 FORMULARIO
+=========================== */
+.ia-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(232,253,248,0.85);
+    margin-bottom: 3px;
+}
+
+.ia-card .ia-input.form-control,
+.ia-card .ia-input.form-select {
+    background: rgba(4, 43, 52, 0.95);
+    border-radius: 12px;
+    border: 1px solid var(--ia-border-soft);
+    color: var(--ia-text-light);
+    font-size: 0.9rem;
+    padding: 9px 12px;
+    box-shadow: inset 0 0 0 rgba(0,0,0,0);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.08s ease;
+}
+
+.ia-card .ia-input.form-control::placeholder {
+    color: rgba(158,199,199,0.6);
+}
+
+.ia-card .ia-input.form-control:focus,
+.ia-card .ia-input.form-select:focus {
+    outline: none;
+    border-color: var(--ia-primary);
+    box-shadow: 0 0 0 1px rgba(37,226,215,0.55);
+    transform: translateY(-1px);
+}
+
+/* ===========================
+   ⚡ BOTÓN IA
+=========================== */
+.btn-ia-main {
+    background: linear-gradient(90deg, #25e2d7, #5ff5e5);
+    color: #003135 !important;
+    border-radius: 999px;
+    border: none;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 12px 20px;
+    box-shadow: 0 0 22px rgba(37,226,215,0.6);
+    transition: transform 0.18s ease, box-shadow 0.25s ease, filter 0.18s ease;
+}
+.btn-ia-main:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(95,245,229,0.8);
+    filter: brightness(1.05);
+}
+.btn-ia-main:active {
+    transform: translateY(0);
+    box-shadow: 0 0 12px rgba(37,226,215,0.5);
+}
+
+/* ===========================
+   🌀 LOADER
+=========================== */
+.ia-loader {
+    text-align: center;
+    margin-top: 18px;
+    color: var(--ia-text-muted);
+    font-size: 0.9rem;
+}
+.ia-loader .spinner-border {
+    width: 2.1rem;
+    height: 2.1rem;
+    color: var(--ia-primary);
+}
+
+/* ===========================
+   📊 RESULTADOS
+=========================== */
+.ia-result {
+    margin-top: 20px;
+    color: var(--ia-text-light);
+}
+
+.ia-result-card {
+    background: var(--ia-bg-card-soft);
+    border-radius: 20px;
+    padding: 1.8rem 1.6rem;
+    border: 1px solid rgba(37,226,215,0.3);
+    box-shadow: 0 0 24px rgba(0,0,0,0.6);
+}
+.ia-result-main {
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+}
+.ia-result-sub {
+    font-size: 0.9rem;
+    color: var(--ia-text-muted);
+}
+.ia-divider {
+    border-color: rgba(255,255,255,0.09);
+}
+.ia-top3-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--ia-primary-soft);
+}
+
+/* Lista de ejercicios */
+.ia-exercises ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+.ia-exercises li {
+    font-size: 0.9rem;
+    color: var(--ia-text-light);
+    background: rgba(255,255,255,0.02);
+    border-radius: 12px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    border: 1px solid rgba(255,255,255,0.06);
+}
+.ia-exercises li b {
+    color: var(--ia-primary-soft);
+}
+
+/* Animación de aparición */
+.fade-in {
+    animation: iaFadeIn 0.7s ease-out;
+}
+@keyframes iaFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===========================
+   ⚡ BARRAS IA TOP3
+=========================== */
+.ai-bar-container {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 999px;
+    overflow: hidden;
+    height: 14px;
+    width: 80%;
+    margin: 4px auto 10px;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.4);
+}
+.ai-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #25e2d7, #5ff5e5);
+    width: 0;
+    animation: growBar 1.2s ease-out forwards;
+    border-radius: 999px;
+}
+@keyframes growBar {
+    from { width: 0; }
+    to   { width: var(--bar-width); }
+}
+.ai-bar-label {
+    font-size: 0.86rem;
+    color: var(--ia-text-light);
+    text-align: left;
+    margin-left: 10%;
+    font-weight: 500;
+}
+.ai-prob {
+    color: #ffd66b;
+    font-weight: 600;
+}
+
+/* ===========================
+   📱 RESPONSIVE
+=========================== */
+@media (max-width: 992px) {
+    .ia-card {
+        padding: 1.8rem 1.5rem;
+    }
+}
+@media (max-width: 768px) {
+    .ia-title {
+        font-size: 1.6rem;
+    }
+    .ia-card {
+        padding: 1.6rem 1.1rem;
+    }
+    .ai-bar-container {
+        width: 92%;
+    }
+}

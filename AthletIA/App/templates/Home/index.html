@@ -1,0 +1,130 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}Inicio - AthletIA{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/Home/index.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="hero-athletia d-flex flex-column justify-content-center align-items-center text-center">
+  
+  <img src="/media/logo.png" alt="Logo AthletIA" class="hero-logo mb-4">
+
+  <h1 class="hero-title">
+      Entrena Inteligente, Vive Saludable
+  </h1>
+
+  <p class="hero-sub">
+      Tu entrenador y nutricionista virtual impulsado por IA
+  </p>
+
+  <div class="hero-buttons mt-3">
+    {% if user.is_authenticated %}
+        <a href="{% url 'ia:generar_rutina' %}" class="btn-athletia-primary btn-lg me-2">💪 Generar Rutina</a>
+    {% else %}
+        <a href="{% url 'inicio_Sesion' %}" class="btn-athletia-primary btn-lg me-2">💪 Generar Rutina</a>
+    {% endif %}
+
+    <a href="{% url 'muro' %}" class="btn-athletia-primary btn-lg me-2">🛜 Social</a>
+  </div>
+
+</section>
+
+
+
+<section class="container text-center my-5">
+
+  <h2 class="section-title mb-5">Descubre lo que AthletIA puede hacer por ti</h2>
+
+  <div class="row g-4">
+
+    <div class="col-md-4">
+      <div class="feature-card glass-card p-4">
+        <i class="bi bi-activity feature-icon"></i>
+        <h5 class="mt-3 feature-title">Entrenamiento Personalizado</h5>
+        <p class="feature-text">Planes adaptados a tu nivel, objetivos y progreso.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="feature-card glass-card p-4">
+        <i class="bi bi-apple feature-icon"></i>
+        <h5 class="mt-3 feature-title">Nutrición Inteligente (Próximamente)</h5>
+        <p class="feature-text">Calcula requerimientos, revisa alimentos y recibe recetas.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="feature-card glass-card p-4">
+        <i class="bi bi-people feature-icon"></i>
+        <h5 class="mt-3 feature-title">Comunidad Activa</h5>
+        <p class="feature-text">Comparte progreso y conéctate con otros usuarios.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+
+<section class="opiniones-section py-5">
+  <div class="container text-center">
+
+    <h2 class="section-title mb-4">Opiniones de nuestros usuarios</h2>
+
+    <div class="row g-4 justify-content-center">
+
+      {% for op in opiniones %}
+      <div class="col-md-4">
+        <div class="opinion-card glass-card p-4">
+          <p class="opinion-text">“{{ op.contenido }}”</p>
+          <small class="opinion-user">— {{ op.perfil.username }}, {{ op.fecha_creacion|date:"d/m/Y" }}</small>
+        </div>
+      </div>
+      {% empty %}
+      <p class="text-muted">Sé el primero en contar tu experiencia ✨</p>
+      {% endfor %}
+    </div>
+
+
+    {% if user.is_authenticated %}
+    <div class="mt-5 opinion-form-wrapper glass-card p-4 mx-auto" style="max-width:600px;">
+      <h5 class="fw-bold mb-3">Deja tu opinión</h5>
+      <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn-opinion mt-3">Enviar opinión</button>
+      </form>
+    </div>
+
+    {% else %}
+    <div class="mt-4">
+      <p class="text-muted" style="color: white !important;">Inicia sesión para dejar tu opinión.</p>
+      <a href="{% url 'inicio_Sesion' %}" class="btn-opinion mt-3">Iniciar sesión</a>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+
+
+<section class="cta-section text-center py-5">
+
+  {% if user.is_authenticated %}
+    <h2 class="fw-bold mb-3 text-white">¡Gracias por ser parte de AthletIA! 🧬</h2>
+    <p class="fw-bold mb-3 text-white">Explora nuevas rutinas y recetas personalizadas</p>
+    <a href="{% url 'ia:generar_rutina' %}" class="btn-explorar mt-3">Explorar rutinas</a>
+
+  {% else %}
+    <h2 class="fw-bold mb-3 text-white">¿Listo para comenzar tu transformación?</h2>
+    <p class="lead mb-4 text-muted" style="color: white !important;">Crea tu cuenta y recibe tu primer plan hecho por IA</p>
+    <a href="{% url 'registro' %}" class="btn-opinion mt-3">Crear mi cuenta</a>
+  {% endif %}
+
+</section>
+
+{% endblock %}

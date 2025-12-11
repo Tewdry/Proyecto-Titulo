@@ -1,0 +1,84 @@
+{% load static %}
+
+<div class="post-card mb-4">
+    <div class="card shadow-sm"> <div class="card-body">
+
+            {% if is_saved %}
+            <div class="mb-2 pb-1 border-bottom border-secondary" style="border-color: rgba(255,255,255,0.05)!important;">
+                <p class="text-muted small mb-0 d-flex align-items-center text-center">
+                    <span class="me-2">📌</span> 
+                    <span>Guardado de {{ pub.perfil.username }}</b></span>
+                </p>
+            </div>
+            {% endif %}
+
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="d-flex align-items-center">
+                    {% if pub.perfil.foto %}
+                        <img src="{{ pub.perfil.foto.url }}" alt="Foto perfil">
+                    {% else %}
+                        <img src="/media/avatar.png" alt="Avatar">
+                    {% endif %}
+                    <div>
+                        <strong>{{ pub.perfil.username }}</strong>
+                        <small class="text-muted">{{ pub.fecha_creacion|date:"d/m/Y H:i" }}</small>
+                    </div>
+                </div>
+
+                {% if user.is_authenticated and pub.perfil == user and not is_saved %}
+                <div class="dropdown">
+                    <button class="btn btn-link text-muted p-0" data-bs-toggle="dropdown">⋮</button>
+                    <ul class="dropdown-menu dropdown-menu-end bg-dark border-secondary">
+                        <li><button class="dropdown-item text-light" onclick="editarPublicacion('{{ pub.id }}', `{{ pub.contenido|escapejs }}`)">✏️ Editar</button></li>
+                        <li><button class="dropdown-item text-danger" onclick="eliminarPublicacion('{{ pub.id }}')">🗑️ Eliminar</button></li>
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="card-text">{{ pub.contenido|safe }}</div>
+
+            {% if pub.media_url %}
+                {% with file_url=pub.media_url.url %}
+                    {% if ".mp4" in file_url or ".mov" in file_url or ".avi" in file_url %}
+                        <video controls class="w-100 rounded mt-2">
+                            <source src="{{ file_url }}" type="video/mp4">
+                            Tu navegador no soporta video.
+                        </video>
+                    {% else %}
+                        <img src="{{ file_url }}" alt="media" class="w-100 rounded mt-2">
+                    {% endif %}
+                {% endwith %}
+            {% endif %}
+
+            <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top border-secondary" style="border-color: rgba(255,255,255,0.1) !important;">
+                
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-like btn-sm {% if pub.es_liked or pub.liked %}liked{% endif %}" onclick="toggleLike({{ pub.id }}, this)">
+                        <i class="bi {% if pub.es_liked or pub.liked %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+                        <span class="like-count ms-1">{{ pub.num_likes|default:pub.like_set.count }}</span>
+                    </button>
+                    <button class="btn btn-comment btn-sm ms-2" onclick="abrirComentariosModal('{{ pub.id }}')">
+                        <i class="bi bi-chat-left-text-fill"></i>
+                        <span class="badge bg-light text-dark ms-2">{{ pub.num_comentarios|default:pub.comentario_set.count }}</span>
+                    </button>
+                </div>
+
+                <div>
+                    {% if is_saved %}
+                        <a href="{% url 'detalle_perfil' pub.perfil.id %}" class="btn btn-sm btn-outline-info btn-ver-original">
+                            Ver original
+                        </a>
+                    {% else %}
+                        <button class="btn btn-fav btn-sm {% if pub.es_favorited or pub.favorited %}fav-active{% endif %}" 
+                                onclick="toggleFavorite('{{ pub.id }}', this)">
+                            <i class="bi {% if pub.es_favorited or pub.favorited %}bi-star-fill{% else %}bi-star{% endif %}"></i>
+                            <span class="fav-count ms-1">{{ pub.num_favoritos|default:pub.favoritopublicacion_set.count }}</span>
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

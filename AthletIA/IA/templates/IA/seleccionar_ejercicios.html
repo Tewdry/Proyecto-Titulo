@@ -1,0 +1,210 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}🏋️ Revisar Rutina Manual — AthletIA{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/api_ejercicio/musculo_detalle.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+  .tabla-ejercicios {
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+    padding: 1rem;
+    color: #fff;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 4px 12px rgba(0, 255, 191, 0.25);
+  }
+  .tabla-ejercicios th {
+    color: #00ffbf;
+    text-transform: uppercase;
+  }
+  .btn-eliminar {
+    background: #d63031;
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+  .btn-eliminar:hover {
+    background: #ff4d4d;
+  }
+  .btn-guardar-final {
+    background: linear-gradient(135deg, #00b894, #00ffbf);
+    border: none;
+    color: #111;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+  }
+  .btn-guardar-final:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0, 255, 191, 0.6);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-light">
+  <h2 class="text-center titulo-musculo">🧩 Rutina Manual Personalizada</h2>
+  <p class="text-center text-muted mb-4">
+    Aquí puedes revisar los ejercicios seleccionados antes de guardar tu rutina.
+  </p>
+
+  <div class="tabla-ejercicios">
+    <table class="table table-dark table-striped" id="tablaEjercicios">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Ejercicio</th>
+          <th>Descripción</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="text-center mt-4">
+    <button id="guardarRutinaBtn" class="btn-guardar-final">
+      ✅ Guardar Rutina Personalizada
+    </button>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = "rutina_manual";
+  const tablaBody = document.querySelector("#tablaEjercicios tbody");
+  const ejercicios = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+  // Rellena la tabla
+  function renderTabla() {
+    tablaBody.innerHTML = "";
+    if (ejercicios.length === 0) {
+      tablaBody.innerHTML = `<tr><td colspan="4" class="text-center">No hay ejercicios seleccionados.</td></tr>`;
+      return;
+    }
+    ejercicios.forEach((e, i) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${i + 1}</td>
+        <td><b>${e.nombre}</b></td>
+        <td>${e.descripcion || "-"}</td>
+        <td><button class="btn-eliminar" onclick="eliminarEjercicio(${i})">🗑️</button></td>
+      `;
+      tablaBody.appendChild(row);
+    });
+  }
+
+  function eliminarEjercicio(index) {
+    Swal.fire({
+      title: "¿Eliminar ejercicio?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+      background: "#1d1d1d",
+      color: "#fff"
+    }).then(res => {
+      if (res.isConfirmed) {
+        ejercicios.splice(index, 1);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(ejercicios));
+        renderTabla();
+      }
+    });
+  }
+
+  // Guardar rutina completa
+  document.getElementById("guardarRutinaBtn").addEventListener("click", async () => {
+    if (ejercicios.length === 0) {
+      Swal.fire({
+        icon: "info",
+        title: "No hay ejercicios seleccionados",
+        text: "Agrega ejercicios desde el mapa corporal antes de guardar.",
+        background: "#1d1d1d",
+        color: "#fff"
+      });
+      return;
+    }
+
+    const { value: form } = await Swal.fire({
+      title: "🏋️ Guardar Rutina Personalizada",
+      html: `
+        <input id="nombreRutina" class="swal2-input" placeholder="Nombre de la rutina">
+        <textarea id="notasRutina" class="swal2-textarea" placeholder="Notas (opcional)"></textarea>
+      `,
+      confirmButtonText: "Guardar",
+      showCancelButton: true,
+      background: "#1d1d1d",
+      color: "#fff",
+      preConfirm: () => {
+        const nombre = document.getElementById("nombreRutina").value || "Rutina Personalizada";
+        const notas = document.getElementById("notasRutina").value || "";
+        return { nombre, notas };
+      }
+    });
+
+    if (form) {
+      const res = await fetch("{% url 'ia:guardar_rutina_manual' %}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+        body: JSON.stringify({
+          nombre: form.nombre,
+          notas: form.notas,
+          ejercicios: ejercicios
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Rutina guardada correctamente",
+          text: "¿Deseas agendarla en el calendario?",
+          showCancelButton: true,
+          confirmButtonText: "📅 Sí, agendar",
+          cancelButtonText: "No",
+          background: "#1d1d1d",
+          color: "#fff"
+        }).then(async (res) => {
+          if (res.isConfirmed) {
+            const { value: fecha } = await Swal.fire({
+              title: "Selecciona la fecha",
+              input: "date",
+              confirmButtonText: "Guardar",
+              background: "#1d1d1d",
+              color: "#fff",
+              inputAttributes: { required: true }
+            });
+            if (fecha) {
+              await fetch("{% url 'ia:registrar_rutina_calendario_manual' %}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-CSRFToken": "{{ csrf_token }}" },
+                body: JSON.stringify({
+                  fecha: fecha,
+                  notas: form.notas,
+                  rutina_id: data.rutina_id
+                })
+              });
+              Swal.fire({
+                icon: "success",
+                title: "Rutina agendada en calendario 🗓️",
+                background: "#1d1d1d",
+                color: "#fff"
+              });
+              localStorage.removeItem(STORAGE_KEY);
+              renderTabla();
+            }
+          }
+        });
+      } else {
+        Swal.fire({ icon: "error", title: "Error", text: data.error || "No se pudo guardar la rutina." });
+      }
+    }
+  });
+
+  renderTabla();
+</script>
+{% endblock %}

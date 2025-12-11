@@ -1,0 +1,132 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block head %}
+<title>⚡ Generar Rutina - AthletIA</title>
+  <link rel="stylesheet" href="{% static 'css/generar_rutina.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="generar-wrapper container mt-5 mb-5">
+
+  <!-- =================== CABECERA =================== -->
+  <div class="generar-header text-center">
+    <span class="generar-chip">
+      ⚡ AthletIA · Rutinas Inteligentes
+    </span>
+    <h2 class="generar-title">Generar Rutina Personalizada</h2>
+    <p class="mode-desc text-white">
+      Elige cómo quieres crear tu próxima rutina AthletIA.  
+      Puedes dejar que la IA decida por ti o seleccionar los músculos en un mapa corporal interactivo.
+    </p>
+  </div>
+
+  <!-- =================== OPCIONES PRINCIPALES =================== -->
+  <div class="row justify-content-center g-4 mode-grid">
+
+    <!-- RUTINA AUTOMÁTICA (IA) -->
+    <div class="col-lg-4 col-md-6">
+      <div class="mode-card" id="btn-automatico">
+        <div class="mode-icon-wrapper ia-glow">
+          <ion-icon name="sparkles-outline" class="mode-icon"></ion-icon>
+        </div>
+
+        <div class="mode-tag recomendado">Recomendado</div>
+
+        <h3 class="mode-title">Rutina Automática (IA)</h3>
+        <p class="mode-desc">
+          AthletIA analiza tu perfil, salud, hábitos y objetivos para diseñar
+          una rutina totalmente personalizada y segura.
+        </p>
+
+        <ul class="mode-list">
+          <li>Se adapta a tu experiencia y condición actual.</li>
+          <li>Considera horas de sueño, nutrición y estilo de vida.</li>
+          <li>Ideal para quienes quieren una recomendación completa en 1 clic.</li>
+        </ul>
+
+        <button type="button" class="mode-btn">
+          <span>Usar IA para crear mi rutina</span>
+          <ion-icon name="arrow-forward-outline" class="mode-btn-icon"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- RUTINA POR MAPA CORPORAL -->
+    <div class="col-lg-4 col-md-6">
+      <div class="mode-card" id="btn-mapa">
+        <div class="mode-icon-wrapper mapa-glow">
+          <ion-icon name="body-outline" class="mode-icon"></ion-icon>
+        </div>
+
+        <div class="mode-tag explorador">Modo visual</div>
+
+        <h3 class="mode-title">Rutina por Mapa Corporal</h3>
+        <p class="mode-desc">
+          Explora un cuerpo humano interactivo y selecciona los grupos musculares
+          que deseas trabajar en tu próxima sesión.
+        </p>
+
+        <ul class="mode-list">
+          <li>Perfecto para priorizar zonas específicas del cuerpo.</li>
+          <li>Compatible con todos los niveles de experiencia.</li>
+          <li>Ideal para quienes entrenan por grupos musculares.</li>
+        </ul>
+
+        <button type="button" class="mode-btn">
+          <span>Crear rutina con mapa corporal</span>
+          <ion-icon name="map-outline" class="mode-btn-icon"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =================== AYUDA RÁPIDA =================== -->
+  <div class="helper-card text-center mt-5">
+    <p class="helper-title">¿No sabes qué opción elegir?</p>
+    <p class="helper-text">
+      Si es tu primera vez en AthletIA o quieres una planificación completa, te
+      recomendamos comenzar con la <strong>Rutina Automática (IA)</strong>.
+      Si ya conoces tus preferencias y músculos objetivo, el
+      <strong>Mapa Corporal</strong> será tu mejor aliado.
+    </p>
+  </div>
+
+  <!-- =================== BOTÓN VOLVER =================== -->
+  <div class="text-center mt-4">
+    <a href="{% url 'base' %}" class="btn-back-athletia">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+      <span>Volver al inicio</span>
+    </a>
+  </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const btnAuto = document.getElementById("btn-automatico");
+  const btnMapa = document.getElementById("btn-mapa");
+
+  if (btnAuto) {
+    btnAuto.addEventListener("click", () => {
+      window.location.href = "{% url 'ia:recomendador_view' %}";
+    });
+  }
+
+  if (btnMapa) {
+    btnMapa.addEventListener("click", () => {
+      window.location.href = "{% url 'mapa_corporal' %}";
+    });
+  }
+
+  // 🔹 También hacemos clic al presionar el botón interior
+  document.querySelectorAll(".mode-card .mode-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      btn.closest(".mode-card").click();
+    });
+  });
+});
+</script>
+{% endblock %}

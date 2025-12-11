@@ -1,0 +1,226 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 500" id="back-body">
+
+  <!-- Imagen de referencia anatómica como fondo -->
+  <image href="/media/cuerpo.png" 
+  x="0" y="0" width="200" height="500" />
+
+  
+
+  <!-- trapecio alto -->
+  
+  <a href="{% url 'musculo_detalle' 'Trapecio' %}">
+    <path id="Trapecio Alto" class="trapecio-alto"
+    d="M100,40
+    Q80,50 55,65
+    Q100,75 145,65
+    Q120,50 100,40
+    Z"
+    stroke-width="0.1" transform="scale(0.6,0.6) translate(65,83) "/>
+  </a>
+ 
+  
+  <defs>
+    <filter id="smooth" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.5" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="4" intercept="-0.5"/>
+      </feComponentTransfer>
+    </filter>
+  </defs>
+
+
+  <!-- trapecio medio -->
+  <a href="{% url 'musculo_detalle' 'Espalda' %}">
+    <polygon id="Trapecio Medio" class="trapecio-medio"
+    points="25,42 7,12 43,12" 
+    filter="url(#smooth)" stroke-width="0.1" transform="scale(1.2,1.2)translate(58.5,75) "/>
+  </a>
+  
+
+
+  <!-- Deltoides posterior -->
+  <a href="{% url 'musculo_detalle' 'Deltoides' %}">
+    <path id="deltoides-posterior-left" class="deltoides-posterior"
+    d="M50,110                
+    C45,120 45,140 55,150  
+    C60,155 65,150 65,140  
+    C60,125 55,115 50,110  
+    Z"
+    stroke-width="0.1" transform="rotate(55, 55, 130) translate(-23,-15)"/>
+  </a>
+  
+
+  <a href="{% url 'musculo_detalle' 'Deltoides' %}">
+    <path id="deltoides-posterior-right" class="deltoides-posterior"
+    d="M135,110
+    C140,120 140,140 130,150
+    C125,155 120,150 120,140
+    C125,125 130,115 135,110
+    Z"
+    stroke-width="0.1" transform="rotate(-55, 130, 130)  translate(31,-3)"/>
+  </a>
+  
+  <!-- Triceps -->
+
+  <a href="{% url 'musculo_detalle' 'Tríceps' %}">
+    <path id="triceps-left" class="triceps" 
+    d="M50,150             
+    C48,165 48,180 52,190  
+    C55,195 60,195 62,190  
+    C65,180 64,165 62,155  
+    C58,150 55,148 50,150  
+    Z"
+    stroke-width="0.1" transform="scale(0.9,0.9), translate(-8,-8), rotate(15, 60, 170)"/>
+  </a>
+  
+
+  <a href="{% url 'musculo_detalle' 'Tríceps' %}">
+    <path id="triceps-right" class="triceps"
+    d="M135,150
+    C137,165 137,180 133,190
+    C130,195 125,195 123,190
+    C120,180 121,165 123,155
+    C127,150 130,148 135,150
+    Z"
+    stroke-width="0.1" transform="scale(0.9,0.9), translate(45,-8),rotate(-15, 120, 170)"/>
+  </a>
+  
+
+
+  <!-- Antebrazos -->
+
+  <a href="{% url 'musculo_detalle' 'Antebrazos' %}">
+    <path id="antebrazo-back-left" class="antebrazo"
+    d="M55,210
+    C50,225 50,250 55,265
+    C60,275 68,275 70,265
+    C72,250 70,230 68,215
+    C65,210 60,208 55,210
+    Z"
+    stroke-width="0.1" transform="rotate(10, 65, 240) translate(-16,36 ) scale(0.7,0.7)"/>
+  </a>
+  
+
+  <a href="{% url 'musculo_detalle' 'Antebrazos' %}">
+    <path id="antebrazo-back-right" class="antebrazo"
+    d="M130,210
+    C135,225 135,250 130,265
+    C125,275 117,275 115,265
+    C113,250 115,230 117,215
+    C120,210 125,208 130,210
+    Z"
+    stroke-width="0.1" transform="rotate(-10, 125, 240) translate(86,36) scale(0.7,0.7)"/>
+  </a>
+  
+
+  <!-- Dorsal -->  
+  <a href="{% url 'musculo_detalle' 'Dorsales' %}">
+    <path id="dorsal-left" class="dorsal"
+    d="M70,210 
+    C67,215 68,225 72,230  
+    C74,235 75,240 78,245  
+    C82,250 85,255 85,260
+    C88,265 90,260 85,240  
+    C82,230 78,220 75,215
+    C72,212 70,210 70,210  
+    Z"
+    stroke-width="0.1" transform="scale(2.5,1.5) rotate( 18, 100, 240), translate(-88,-105)" />
+  </a>
+   
+
+  <a href="{% url 'musculo_detalle' 'Dorsales' %}">
+    <path id="dorsal-right" class="dorsal"
+    d="M130,210 
+    C133,215 132,225 128,230  
+    C126,235 125,240 122,245  
+    C118,250 115,255 115,260
+    C112,265 110,260 115,240  
+    C118,230 122,220 125,215
+    C128,212 130,210 130,210  
+    Z"
+    stroke-width="0.1" transform="scale(2.5,1.5) rotate( -18, 100, 240), translate(-26,-142)"/>
+  </a>
+   
+  <!-- Lumbar -->  
+  <a href="{% url 'musculo_detalle' 'Lumbares' %}">
+    <path id="lumbar" class="lumbar"
+    d="M95,220
+    C93,225 90,240 90,250
+    C90,260 100,265 100,265
+    C100,265 110,260 110,250
+    C110,240 107,225 105,220
+    C102,218 98,218 95,220
+    Z"
+   stroke-width="0.1" transform="scale(1.6,0.9) translate(-37.5,-30)" />
+  </a>
+   
+
+  <!-- gluteos -->
+  <a href="{% url 'musculo_detalle' 'Glúteos' %}">
+    <path id="gluteos-left" class="gluteos" 
+    d="M99,60 
+    C90,55,70,55,70,80 
+    C70,90,90,95,99,86 
+    Z" 
+    stroke-width="0.1" transform="translate(-10,150), scale(1.1,1.1)"/>
+  </a>
+  
+  <a href="{% url 'musculo_detalle' 'Glúteos' %}">
+    <path id="gluteos-right" class="gluteos" 
+    d="M101,60 
+    C110,55,130,55,130,80 
+    C130,90,110,95,101,86 
+    Z" 
+    stroke-width="0.1" transform="translate(-10,150), scale(1.1,1.1)"/>
+  </a>
+  
+
+  <!-- femoreales -->
+  <a href="{% url 'musculo_detalle' 'Femorales' %}">
+    <path id="femoral-left" class="femoral"
+    d="M75,280
+    C70,295 70,325 75,350
+    C80,360 90,360 92,350
+    C95,325 95,295 90,280
+    C85,275 80,275 75,280
+    Z"
+    stroke-width="0.1" transform="scale(1.2,0.8) rotate(5, 85, 315) translate(-17,45)" />
+  </a>
+
+
+
+  <a href="{% url 'musculo_detalle' 'Femorales' %}">
+    <path id="femoral-right" class="femoral"
+    d="M125,280
+    C130,295 130,325 125,350
+    C120,360 110,360 108,350
+    C105,325 105,295 110,280
+    C115,275 120,275 125,280
+    Z"
+    stroke-width="0.1" transform="scale(1.2,0.8) rotate(-5, 115, 315) translate(-14,41)" />
+  </a>
+
+
+  <!-- Pantorrillas -->
+
+  <a href="{% url 'musculo_detalle' 'Pantorrillas' %}">
+    <path id="pantorrilla-left" class="pantorrilla"
+    d="M70,470
+    C70,500 85,500 85,470
+    C85,460 75,460 70,470
+    Z"
+    stroke-width="0.1" transform=" rotate(5, 77.5, 480)scale(-1.2,1.4), translate(-126,-205)"/>
+  </a>
+  
+
+  <a href="{% url 'musculo_detalle' 'Pantorrillas' %}">
+    <path id="pantorrilla-right" class="pantorrilla"
+    d="M105,470
+    C105,500 120,500 120,470
+    C120,460 110,460 105,470
+    Z"
+    stroke-width="0.1" transform="rotate(-5, 112.5, 480) scale(1.2,1.4), translate(10,-205)"/>
+  </a>
+  
+
+</svg>

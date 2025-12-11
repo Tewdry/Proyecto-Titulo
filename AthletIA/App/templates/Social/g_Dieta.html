@@ -1,0 +1,215 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block head %}
+<title>🧪 Bio-Análisis Nutricional | AthletIA</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="{% static 'css/home/dieta.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="nutrition-hero">
+    <h1 class="hero-title">
+        <span class="highlight">AthletIA</span> Nutrition Lab
+    </h1>
+    
+    <form method="GET" class="search-input-group">
+        <input type="text" name="query" class="cyber-input" placeholder="Analizar alimento (ej: Pechuga de pollo)..." value="{{ query|default:'' }}" autocomplete="off">
+        <button type="submit" class="btn-search">🔍</button>
+    </form>
+    
+    {% if not datos_api %}
+    <div class="hero-subtitle">
+        <p>Introduce un alimento para descomponer su matriz nutricional.</p>
+    </div>
+    {% endif %}
+</section>
+
+{% if datos_api %}
+<div class="analysis-grid">
+    
+    <div class="food-card">
+        <div class="food-header">
+            <div>
+                <h2 class="food-title" id="foodName">{{ datos_api.name }}</h2>
+                <span class="text-muted">Análisis Bio-Químico</span>
+            </div>
+            <div class="calories-display">
+                <span id="displayCalories">{{ datos_api.calories }}</span>
+                <div class="cal-label">KCAL TOTALES</div>
+            </div>
+        </div>
+
+        <div class="macro-display">
+            <div class="macro-stat prot">
+                <span class="macro-val" id="valProt">{{ datos_api.protein_g }}g</span>
+                <span class="macro-lbl">PROTEÍNA</span>
+            </div>
+            <div class="macro-stat carb">
+                <span class="macro-val" id="valCarb">{{ datos_api.carbohydrates_total_g }}g</span>
+                <span class="macro-lbl">CARBOS</span>
+            </div>
+            <div class="macro-stat fat">
+                <span class="macro-val" id="valFat">{{ datos_api.fat_total_g }}g</span>
+                <span class="macro-lbl">GRASAS</span>
+            </div>
+        </div>
+
+        <div class="gram-control">
+            <div>
+                <label class="gram-label">Ajustar Porción (g)</label>
+                <input type="number" id="inputGramos" class="gram-input" value="{{ datos_api.serving_size_g }}" oninput="recalcularMacros()">
+            </div>
+            <button onclick="guardarAlimento()" class="btn-guardar">
+                💾 GUARDAR EN DIARIO
+            </button>
+        </div>
+    </div>
+
+    <div class="food-card chart-card">
+        <h3 class="chart-title">DISTRIBUCIÓN CALÓRICA</h3>
+        <div class="chart-wrapper">
+            <canvas id="macroChart"></canvas>
+        </div>
+        <p id="nutriScore" class="score-text">
+            🟢 Carga Nutricional Óptima
+        </p>
+    </div>
+</div>
+{% endif %}
+
+{% if recetas_api %}
+<h3 class="section-title">🧬 Fórmulas Culinarias Detectadas</h3>
+<div class="recipe-grid">
+    {% for receta in recetas_api %}
+    <div class="recipe-card">
+        <img src="{{ receta.image }}" class="recipe-img" alt="{{ receta.title }}">
+        <div class="recipe-body">
+            <h4 class="recipe-title">{{ receta.title }}</h4>
+            <a href="https://spoonacular.com/recipes/{{ receta.title|slugify }}-{{ receta.id }}" target="_blank" class="recipe-link">
+                Ver Procedimiento ↗
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if datos_api %}
+<script>
+    const BASE_DATA = {
+        name: "{{ datos_api.name }}",
+        grams: {{ datos_api.serving_size_g }},
+        cal: {{ datos_api.calories }},
+        prot: {{ datos_api.protein_g }},
+        carb: {{ datos_api.carbohydrates_total_g }},
+        fat: {{ datos_api.fat_total_g }}
+    };
+</script>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // ✅ CORRECCIÓN: Definir BASE_DATA de forma segura
+    // Usamos 'safe' para que Django imprima el JSON tal cual
+    const BASE_DATA = {{ base_data_json|default:"null"|safe }};
+
+    let chartInstance = null;
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        // Validamos que BASE_DATA exista antes de usarlo
+        if (BASE_DATA) {
+            initChart(BASE_DATA.prot, BASE_DATA.carb, BASE_DATA.fat);
+        }
+    });
+
+    function recalcularMacros() {
+        if (!BASE_DATA) return; // Protección
+
+        const gramsInput = parseFloat(document.getElementById('inputGramos').value) || 0;
+        const ratio = gramsInput / BASE_DATA.grams;
+        
+        const newCal = (BASE_DATA.cal * ratio).toFixed(1);
+        const newProt = (BASE_DATA.prot * ratio).toFixed(1);
+        const newCarb = (BASE_DATA.carb * ratio).toFixed(1);
+        const newFat = (BASE_DATA.fat * ratio).toFixed(1);
+
+        document.getElementById('displayCalories').innerText = Math.round(newCal);
+        document.getElementById('valProt').innerText = newProt + 'g';
+        document.getElementById('valCarb').innerText = newCarb + 'g';
+        document.getElementById('valFat').innerText = newFat + 'g';
+        updateChart(newProt, newCarb, newFat);
+    }
+
+    async function guardarAlimento() {
+        if (!BASE_DATA) return; // Protección
+
+        const gramsInput = parseFloat(document.getElementById('inputGramos').value);
+        const ratio = gramsInput / BASE_DATA.grams;
+        
+        const payload = {
+            nombre: BASE_DATA.name,
+            gramos: gramsInput,
+            calorias: (BASE_DATA.cal * ratio).toFixed(2),
+            proteinas: (BASE_DATA.prot * ratio).toFixed(2),
+            carbos: (BASE_DATA.carb * ratio).toFixed(2),
+            grasas: (BASE_DATA.fat * ratio).toFixed(2)
+        };
+
+        try {
+            const response = await fetch("{% url 'guardar_alimento' %}", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+            
+            if(result.status === 'success') {
+                Swal.fire({
+                    icon: 'success', 
+                    title: '¡Registrado!', 
+                    text: 'Datos inyectados en tu matriz nutricional.',
+                    background: '#020c12', 
+                    color: '#fff', 
+                    confirmButtonColor: '#25e2d7'
+                });
+            } else { 
+                throw new Error(result.msg); 
+            }
+        } catch (error) {
+            Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo guardar.' });
+        }
+    }
+
+    // ... funciones initChart y updateChart iguales ...
+    function initChart(prot, carb, fat) {
+        const ctx = document.getElementById('macroChart').getContext('2d');
+        chartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Proteína', 'Carbos', 'Grasas'],
+                datasets: [{
+                    data: [prot, carb, fat],
+                    backgroundColor: ['#25e2d7', '#FF9F1C', '#FF5757'],
+                    borderColor: '#020c12', borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                cutout: '70%'
+            }
+        });
+    }
+
+    function updateChart(prot, carb, fat) {
+        if(chartInstance) {
+            chartInstance.data.datasets[0].data = [prot, carb, fat];
+            chartInstance.update();
+        }
+    }
+</script>
+{% endblock %}

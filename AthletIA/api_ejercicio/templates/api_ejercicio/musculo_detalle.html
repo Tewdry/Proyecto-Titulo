@@ -1,0 +1,138 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/api_ejercicio/musculo_detalle.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<title>Ejercicios - {{ musculo.nombre }}</title>
+{% endblock %}
+
+{% block content %}
+<div class="muscle-page container mt-4 mb-5">
+
+  <!-- BACK / MIGAS -->
+  <div class="muscle-top-row d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <a href="{% url 'mapa_corporal' %}" class="btn_volver">
+      ← Volver al mapa corporal
+    </a>
+
+    <div class="crumb-muscle">
+      ⚡ AthletIA · Rutina manual por músculo
+    </div>
+  </div>
+
+  <!-- HERO DEL MÚSCULO -->
+  <section class="muscle-hero mb-4">
+    <div class="muscle-icon">
+      <span>{{ musculo.nombre|first }}</span>
+    </div>
+    <div class="muscle-hero-text">
+      <h1 class="titulo-musculo">{{ musculo.nombre }}</h1>
+      <p class="muscle-hero-sub">
+        Explora ejercicios específicos para <strong>{{ musculo.nombre|lower }}</strong> y arma
+        una rutina totalmente personalizada con AthletIA.
+      </p>
+    </div>
+  </section>
+
+  <!-- PANEL DE FILTROS -->
+  <section class="muscle-filters-card mb-4">
+    <div class="row g-3 align-items-center">
+      <div class="col-md-7">
+        <label class="filter-label" for="filtro-texto">Buscar ejercicio</label>
+        <input id="filtro-texto"
+               type="text"
+               class="form-control filter-input"
+               placeholder="Buscar por nombre o descripción...">
+      </div>
+      <div class="col-md-5">
+        <label class="filter-label" for="filtro-tipo">Tipo de entrenamiento</label>
+        <select id="filtro-tipo" class="form-select filter-select">
+          <option value="">Todos los tipos</option>
+          {% for t in tipos %}
+            <option value="{{ t.nombre }}">{{ t.nombre }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- GRID DE EJERCICIOS -->
+  {% if ejercicios %}
+    <div class="ejercicios-grid">
+      {% for ej in ejercicios %}
+        <div class="ejercicio-wrapper">
+          <article class="ejercicio-card"
+                   data-id="{{ ej.id }}"
+                   data-nombre="{{ ej.nombre }}"
+                   data-descripcion="{{ ej.descripcion|default_if_none:'' }}"
+                   data-tipo="{{ ej.tipo_ejercicio.nombre }}"
+                   data-nivel="{{ ej.nivel_dificultad.nombre|default:'Sin nivel' }}">
+
+            {% if ej.video_url %}
+              <img src="{{ ej.video_url.url }}" alt="{{ ej.nombre }}" class="ejercicio-gif">
+            {% endif %}
+
+            <header class="ej-card-header">
+              <h4 class="nombre-ejercicio">{{ ej.nombre }}</h4>
+              <p class="tipo-ejercicio">
+                {{ ej.tipo_ejercicio.nombre }}
+                {% if ej.nivel_dificultad %}
+                  · Nivel: {{ ej.nivel_dificultad.nombre }}
+                {% endif %}
+              </p>
+            </header>
+
+            <p class="descripcion-ejercicio">
+              {{ ej.descripcion }}
+            </p>
+
+            <div class="ej-card-footer">
+              <button class="btn-agregar" type="button">
+                ➕ Agregar a rutina
+              </button>
+              <small class="ej-id text-muted">
+                ID: {{ ej.id }}
+              </small>
+            </div>
+          </article>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-muted text-center mt-4 mb-5">
+      No hay ejercicios activos configurados para este músculo.
+    </p>
+  {% endif %}
+
+</div>
+
+<!-- Botón flotante carrito -->
+<button id="carrito-ejercicios" class="carrito-btn" type="button">
+  🧺
+  <span id="carrito-counter" class="badge-counter">0</span>
+</button>
+
+<script>
+  const URL_GUARDAR_RUTINA_MANUAL = "{% url 'ia:guardar_rutina_manual' %}";
+  const URL_CALENDARIO_MANUAL = "{% url 'ia:registrar_rutina_calendario_manual' %}";
+
+  function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+  }
+  const csrfToken = getCookie('csrftoken');
+</script>
+
+<script src="{% static 'js/musculo_detalle.js' %}"></script>
+{% endblock %}

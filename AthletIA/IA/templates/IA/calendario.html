@@ -1,0 +1,1280 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block head %}
+<title>📅 Calendario de Rutinas AthletIA</title>
+<link rel="stylesheet" href="{% static 'css/calendario.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5 text-white">
+
+    <h2 class="text-center mb-4">
+        📅 Calendario de Rutinas <span class="text-info">AthletIA</span>
+    </h2>
+
+    <div class="d-flex justify-content-center align-items-center gap-3 mb-4 flex-wrap">
+
+        <button id="btnMisRutinas"
+            class="px-4 py-2 rounded-pill fw-bold border-0"
+            style="background:#25e2d7; color:#003135; box-shadow:0 0 10px rgba(0,255,240,.3); transition:.25s;"
+            onmouseover="this.style.background='#5ff1e7'; this.style.color='#00292b'; this.style.boxShadow='0 0 18px rgba(0,255,240,.45)'; this.style.transform='translateY(-2px)';"
+            onmouseout="this.style.background='#25e2d7'; this.style.color='#003135'; this.style.boxShadow='0 0 10px rgba(0,255,240,.3)'; this.style.transform='translateY(0)';">
+            💾 Mis Rutinas
+        </button>
+
+        <button id="btn-ver-guardadas"
+            class="px-4 py-2 rounded-pill fw-bold"
+            style="border:2px solid #25e2d7; background:transparent; color:#bffaf5; transition:.25s;"
+            onmouseover="this.style.background='#25e2d7'; this.style.color='#003135'; this.style.boxShadow='0 0 15px rgba(0,255,240,.25)'; this.style.transform='translateY(-2px)';"
+            onmouseout="this.style.background='transparent'; this.style.color='#bffaf5'; this.style.boxShadow='none'; this.style.transform='translateY(0)';">
+            📂 Rutinas Guardadas
+        </button>
+
+        <button id="btnTendencias"
+            class="px-4 py-2 rounded-pill fw-bold"
+            style="border:2px solid #25e2d7; background:transparent; color:#bffaf5; transition:.25s;"
+            onmouseover="this.style.background='#25e2d7'; this.style.color='#003135'; this.style.boxShadow='0 0 15px rgba(0,255,240,.25)'; this.style.transform='translateY(-2px)';"
+            onmouseout="this.style.background='transparent'; this.style.color='#bffaf5'; this.style.boxShadow='none'; this.style.transform='translateY(0)';">
+            🔥 Tendencias
+        </button>
+    </div>
+
+
+    <div id="kpi-container" class="p-3 mb-4 bg-dark rounded text-center shadow"
+        style="background:rgba(4,35,42,0.92); border:1px solid rgba(37,226,215,0.2); box-shadow:0 0 18px rgba(0,0,0,0.45);">
+
+        <h5 class="mb-2 text-info">📊 Progreso Mensual</h5>
+
+        <div class="d-flex justify-content-around flex-wrap gap-2 small">
+            <div><strong>Periodo:</strong> <span id="kpi-rango"></span></div>
+            <div><strong>Total:</strong> <span id="kpi-total"></span></div>
+            <div><strong>Completadas:</strong> <span id="kpi-completadas"></span></div>
+            <div><strong>Pendientes:</strong> <span id="kpi-pendientes"></span></div>
+            <div><strong>Cumplimiento:</strong> <span id="kpi-cumplimiento" class="text-success"></span>%</div>
+        </div>
+
+        <div class="progress mt-3"
+            style="height: 12px; background:rgba(0,0,0,0.45); border-radius:999px; overflow:hidden;">
+            <div id="kpi-barra" class="progress-bar bg-success" style="width: 0%; transition: width 1s ease;"></div>
+        </div>
+
+    </div>
+
+
+    <div id="calendar" class="p-3 rounded"></div>
+</div>
+
+
+<div class="mt-4">
+    <div class="card border-0 rounded-4 shadow-lg mx-auto"
+        style="max-width: 980px;
+               background: radial-gradient(circle at top left, rgba(95,241,229,0.18), transparent 55%),
+                           radial-gradient(circle at bottom right, rgba(16,185,129,0.18), transparent 55%),
+                           rgba(2,25,32,0.96);
+               border:1px solid rgba(37,226,215,0.2);
+               backdrop-filter: blur(14px);">
+
+        <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+                <div>
+                    <h5 class="mb-1 text-info">📈 Evolución diaria de tus rutinas</h5>
+                    <p class="mb-0 text-muted small">Visualiza cuántas rutinas completas cada día del mes.</p>
+                </div>
+
+                <span class="badge rounded-pill"
+                      style="background:rgba(37,226,215,0.12); border:1px solid rgba(37,226,215,0.6); color:#bffaf5;">
+                      AthletIA Performance
+                </span>
+            </div>
+
+            <div style="position:relative; height:280px; width:100%;">
+                <canvas id="graficoKPI"></canvas>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mt-3 small text-muted">
+                <span>🟢 Más puntos = mayor constancia.</span>
+                <span>Meta recomendada: 3 días por semana.</span>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div id="sidebar-rutinas" class="athletia-sidebar">
+    <div class="athletia-sidebar-header">
+        <h4 id="sidebar-title">💾 Mis Rutinas Guardadas</h4>
+        <button id="cerrar-sidebar" class="btn-cerrar">×</button>
+    </div>
+
+    <div id="lista-rutinas-guardadas" class="athletia-sidebar-content">
+        <p class="text-muted">Cargando rutinas...</p>
+    </div>
+</div>
+
+<div id="sidebar-overlay" class="athletia-sidebar-overlay"></div>
+
+<div id="sidebarTendencias" class="athletia-sidebar">
+    <div class="athletia-sidebar-header d-flex justify-content-between align-items-center mb-3">
+        <h4>🔥 Rutinas en Tendencia</h4>
+        <button class="btn-cerrar" onclick="cerrarSidebarTendencias()">&times;</button>
+    </div>
+
+    <div id="listaTendencias"></div>
+</div>
+
+<div class="modal fade" id="modalEditarRutina" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="
+        background:#0d0d0d;
+        color:#e8fdf8;
+        border-radius:18px;
+        border:1px solid rgba(37,226,215,.25);
+        box-shadow:0 0 25px rgba(0,255,200,0.15);
+    ">
+      <div class="modal-header border-0">
+        <h3 class="modal-title fw-bold" id="titulo-editar"></h3>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <label class="fw-bold mb-1">Nombre:</label>
+        <input type="text" id="editar-nombre" class="form-control mb-3"
+               style="background:#072225; color:#dff; border:1px solid #25e2d7;">
+
+        <label class="fw-bold mb-1">Descripción:</label>
+        <textarea id="editar-descripcion" class="form-control mb-4"
+                  style="background:#072225; color:#dff; border:1px solid #25e2d7; height: 130px;"></textarea>
+
+        <hr class="text-secondary">
+
+        <h4 class="text-center mb-3">Ejercicios</h4>
+
+        <div id="lista-ejercicios-rutina"></div>
+
+        <div class="text-center mt-3">
+          <button class="btn btn-primary px-4" onclick="abrirSelectorEjercicios()">
+            Agregar ejercicio
+          </button>
+        </div>
+
+      </div>
+
+      <div class="modal-footer border-0 d-flex justify-content-between">
+        <button class="btn px-4"
+                style="background:#00c896; color:#003135; font-weight:600;"
+                onclick="guardarCambiosEdicion()">
+          Guardar cambios
+        </button>
+
+        <button class="btn btn-secondary px-4" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalSelectorEjercicios" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content"
+         style="background:#0b0b0b; color:#e8fdf8; border-radius:20px; border:1px solid rgba(37,226,215,0.2);">
+
+      <div class="modal-header border-0 pb-0">
+        <h4 class="modal-title fw-bold text-info">
+          🏋️ Agregar Ejercicio
+        </h4>
+        <button type="button" class="btn-close btn-close-white" onclick="cerrarSelectorEjercicios()"></button>
+      </div>
+
+      <div class="modal-body pt-2">
+        
+        <div class="row g-2 mb-3">
+          <div class="col-md-4">
+            <select id="filtro-musculo" class="form-select glass-input">
+              <option value="">Músculo (Todos)</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <select id="filtro-tipo" class="form-select glass-input">
+              <option value="">Tipo (Todos)</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <select id="filtro-nivel" class="form-select glass-input">
+              <option value="">Nivel (Todos)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="contenedor-ejercicios" class="ejercicios-grid-container custom-scroll">
+            <div class="text-center w-100 py-5 text-muted">Cargando...</div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer border-0 pt-0">
+        <button class="btn btn-sm btn-secondary px-4 rounded-pill" onclick="cerrarSelectorEjercicios()">
+          Cerrar
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===========================
+   1. UTILIDADES Y VARIABLES GLOBALES
+=========================== */
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrfToken = getCookie('csrftoken');
+
+// Listeners estáticos
+document.getElementById("btn-ver-guardadas").addEventListener("click", cargarRutinasGuardadas);
+document.getElementById("cerrar-sidebar").addEventListener("click", cerrarSidebar);
+document.getElementById("sidebar-overlay").addEventListener("click", cerrarSidebar);
+document.getElementById("btnMisRutinas").addEventListener("click", cargarMisRutinas);
+// Listeners para filtros de ejercicios
+document.getElementById("filtro-musculo").addEventListener("change", renderSelectorEjercicios);
+document.getElementById("filtro-tipo").addEventListener("change", renderSelectorEjercicios);
+document.getElementById("filtro-nivel").addEventListener("change", renderSelectorEjercicios);
+
+// Variables Globales
+let rutinaEditandoId = null;
+let calendario = null;
+let graficoKPI = null;
+let ejerciciosEditando = [];    // Para el modal de edición de rutina
+let listaEjerciciosFull = [];   // Librería completa (Optimización)
+let ejerciciosListos = false;   // Flag de carga
+let cargandoEjercicios = false; // Flag de proceso
+
+/* ===========================
+   2. CALENDARIO UNIFICADO (Init, Google, Drag&Drop)
+=========================== */
+document.addEventListener("DOMContentLoaded", function () {
+  const calendarioEl = document.getElementById("calendar");
+
+  // A. Cargas en segundo plano
+  cargarKPI();            
+  preCargarEjercicios(); // Inicia la carga silenciosa de ejercicios
+
+  // B. Loader visual
+  const loader = document.createElement("div");
+  loader.id = "calendar-loader";
+  loader.innerHTML = `
+    <div class="spinner-border text-info" role="status"></div>
+    <p class="mt-3 text-muted">Cargando tus rutinas...</p>
+  `;
+  calendarioEl.appendChild(loader);
+
+  // C. Configuración FullCalendar
+  calendario = new FullCalendar.Calendar(calendarioEl, {
+    initialView: "dayGridMonth",
+    height: "auto",
+    locale: "es",
+    
+    // Habilitar interacción (Drag & Drop)
+    editable: true, 
+    droppable: true,
+    eventStartEditable: true, 
+    eventDurationEditable: false,
+
+    buttonText: { today: "Hoy", month: "Mes", week: "Semana", day: "Día" },
+    headerToolbar: { left: "prev,next today", center: "title", right: "dayGridMonth" },
+
+    // Fuente de eventos
+    events: async function (fetchInfo, successCallback, failureCallback) {
+      try {
+        const respuesta = await fetch("{% url 'ia:obtener_calendario' %}");
+        const datos = await respuesta.json();
+
+        const eventos = datos.map(e => ({
+            id: e.id,
+            title: e.title,
+            start: e.start,
+            notas: e.extendedProps?.notas || e.notas || "",
+            completada: e.extendedProps?.completada || e.completada,
+            ejercicios: e.extendedProps?.ejercicios || [],
+            rutina_id: e.extendedProps?.rutina_id || e.rutina_id || null,
+            propietario: e.extendedProps?.propietario || "",
+            es_mia: e.extendedProps?.es_mia || false,
+            vigente: e.extendedProps?.vigente !== undefined ? e.extendedProps.vigente : true,
+            color: e.color,
+            textColor: e.textColor
+        }));
+
+        if(loader) loader.remove();
+        successCallback(eventos);
+      } catch (error) {
+        if(loader) loader.innerHTML = "<p class='text-danger'>Error al cargar rutinas.</p>";
+        failureCallback(error);
+      }
+    },
+
+    // Renderizado (Tooltips)
+    eventDidMount: function (info) {
+      const props = info.event.extendedProps;
+      const estadoTexto = props.completada ? "Completada" : "Pendiente";
+      const badgeClass = props.completada ? "bg-success" : "bg-warning text-dark";
+      const notas = props.notas ? `<div class="mt-1 small text-muted" style="font-style:italic;">"${props.notas}"</div>` : "";
+
+      const tooltipContent = `
+        <div class="text-start">
+            <strong class="d-block mb-1 text-white">${info.event.title}</strong>
+            <span class="badge ${badgeClass}">${estadoTexto}</span>
+            ${notas}
+        </div>
+      `;
+
+      new bootstrap.Tooltip(info.el, {
+        title: tooltipContent,
+        html: true,
+        placement: 'top',
+        trigger: 'hover',
+        container: 'body', 
+        customClass: 'athletia-tooltip-bs'
+      });
+    },
+
+    // EVENTO: Mover Rutina (Drag & Drop)
+    eventDrop: function(info) {
+        const idEvento = info.event.id;
+        const nuevaFecha = info.event.startStr;
+
+        const Toast = Swal.mixin({
+            toast: true, position: 'top-end', showConfirmButton: false, timer: 2000,
+            background: '#0b1416', color: '#fff'
+        });
+
+        fetch("{% url 'ia:mover_rutina_calendario' %}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRFToken": csrfToken },
+            body: JSON.stringify({ id: idEvento, nueva_fecha: nuevaFecha })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                Toast.fire({ icon: 'success', title: 'Rutina movida' });
+                cargarKPI(); 
+            } else {
+                info.revert(); // Revertir si falla
+                Swal.fire({ icon: 'error', title: 'Error', text: data.error, background: "#0e0e0e", color: "#fff" });
+            }
+        })
+        .catch(err => {
+            info.revert();
+            Swal.fire({ icon: 'error', title: 'Error de conexión', background: "#0e0e0e", color: "#fff" });
+        });
+    },
+
+    // EVENTO: Click en Rutina (Modal Detalle + Google)
+    eventClick: function (info) {
+      const props = info.event.extendedProps;
+      const ejercicios = props.ejercicios || [];
+      
+      // 1. Verificamos si ya se agendó en esta sesión (memoria temporal)
+      const yaAgendado = props.google_agendado || false;
+
+      const ejerciciosHTML = ejercicios.length
+        ? `<div class="athletia-ejercicios-grid">
+            ${ejercicios.map(e => `
+              <div class="athletia-ej-card">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <span style="font-size:1.2rem;">🏋️</span>
+                  <span class="fw-bold text-info">${e.nombre}</span>
+                </div>
+                <div class="small text-muted">${e.descripcion || "Sin descripción."}</div>
+              </div>`).join("")}
+          </div>`
+        : `<p class="text-muted text-center mt-3">No hay ejercicios registrados.</p>`;
+
+      // 2. Botón dinámico según estado
+      const botonGoogleHTML = yaAgendado
+        ? `<button class="btn btn-sm btn-success rounded-pill fw-bold" disabled style="opacity:1; cursor: default; border:none; color:#fff;">
+             <i class="bi bi-check-circle-fill"></i> Ya agendado
+           </button>`
+        : `<button id="btnGoogleCalendar" class="btn btn-sm btn-outline-light rounded-pill fw-bold" 
+                   style="border-color: #4285F4; color: #4285F4;">
+             <i class="bi bi-google"></i> Agendar en Google
+           </button>`;
+
+      Swal.fire({
+        title: info.event.title,
+        html: `
+          <div class="text-start" style="font-size: 0.95rem;">
+            <div class="mb-2">
+                <span class="text-muted">Fecha:</span> <strong class="text-white">${info.event.startStr}</strong>
+            </div>
+            <div class="mb-3">
+                <span class="text-muted">Estado:</span> 
+                <span class="${props.completada ? 'text-success' : 'text-warning'} fw-bold">
+                    ${props.completada ? "Completada" : "Pendiente"}
+                </span>
+            </div>
+            
+            <label class="text-muted small fw-bold mb-1">NOTAS DEL DÍA</label>
+            <textarea id="notaEdit" class="form-control glass-input mb-3" rows="2" placeholder="Escribe aquí...">${props.notas || ""}</textarea>
+            
+            <div class="form-check mb-3">
+              <input type="checkbox" id="chkCompletar" class="form-check-input" ${props.completada ? "checked" : ""}>
+              <label for="chkCompletar" class="form-check-label text-white">Marcar como completada</label>
+            </div>
+            
+            <hr style="border-color:rgba(255,255,255,0.1);">
+            <h6 class="text-center text-info mb-3">Ejercicios</h6>
+            ${ejerciciosHTML}
+            
+            <div class="d-flex justify-content-center gap-2 mt-4 flex-wrap">
+                ${botonGoogleHTML}
+
+                <button id="btnCompartirMuro" class="btn btn-sm btn-outline-info rounded-pill fw-bold">
+                  Compartir en Muro
+                </button>
+            </div>
+            
+            ${props.es_mia ? `
+                <div class="text-center mt-2">
+                  <button id="btnToggleRutina" class="btn btn-sm btn-outline-warning rounded-pill">
+                      ${props.vigente ? "Desactivar" : "Activar"}
+                  </button>
+                </div>
+            ` : ``}
+          </div>
+        `,
+        width: 800,
+        showCancelButton: true,
+        confirmButtonText: "Guardar cambios",
+        cancelButtonText: "Cerrar",
+        background: "#0b1416",
+        color: "#fff",
+        confirmButtonColor: "#25e2d7",
+        cancelButtonColor: "#d63031",
+        
+        didOpen: () => {
+            // A. Lógica Google Calendar
+            const btnGoogle = document.getElementById("btnGoogleCalendar");
+            
+            // Solo añadimos el evento onclick si el botón no estaba ya agendado
+            if(btnGoogle) {
+                btnGoogle.onclick = () => {
+                    // BLOQUEO INMEDIATO AL CLIC
+                    btnGoogle.disabled = true;
+                    btnGoogle.style.opacity = "0.5"; 
+                    btnGoogle.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Conectando...';
+
+                    fetch("{% url 'ia:sincronizar_rutina_google' %}", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "X-CSRFToken": csrfToken },
+                        body: JSON.stringify({ id: info.event.id })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.auth_required) {
+                            Swal.fire({
+                                title: "Conectar con Google",
+                                text: "Necesitamos permiso para acceder a tu calendario.",
+                                icon: "info",
+                                showCancelButton: true,
+                                confirmButtonText: "Conectar ahora",
+                                background: "#0b1416", color: "#fff"
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = "{% url 'ia:iniciar_google_auth' %}?rutina_id=" + info.event.id;
+                                } else {
+                                    // Restaurar botón si cancela
+                                    btnGoogle.disabled = false;
+                                    btnGoogle.style.opacity = "1";
+                                    btnGoogle.innerHTML = '<i class="bi bi-google"></i> Agendar en Google';
+                                }
+                            });
+                        } else if (data.success) {
+                            Swal.fire({
+                                icon: "success", title: "¡Agendado!",
+                                text: "Sincronizado con Google Calendar.",
+                                footer: `<a href="${data.link}" target="_blank" style="color:#25e2d7">Ver evento</a>`,
+                                background: "#0b1416", color: "#fff"
+                            });
+                            
+                            // TRANSFORMACIÓN A VERDE (ÉXITO)
+                            btnGoogle.className = "btn btn-sm btn-success rounded-pill fw-bold";
+                            btnGoogle.style.borderColor = "transparent";
+                            btnGoogle.style.color = "#fff";
+                            btnGoogle.style.opacity = "1";
+                            btnGoogle.disabled = true; // Se queda bloqueado
+                            btnGoogle.innerHTML = '<i class="bi bi-check-circle-fill"></i> Ya agendado';
+                            
+                            // Guardamos en memoria del evento
+                            info.event.setExtendedProp("google_agendado", true);
+
+                        } else {
+                            Swal.fire("Error", data.error, "error");
+                            // Restaurar botón si hay error
+                            btnGoogle.disabled = false;
+                            btnGoogle.style.opacity = "1";
+                            btnGoogle.innerHTML = '<i class="bi bi-google"></i> Reintentar';
+                        }
+                    })
+                    .catch(() => {
+                        btnGoogle.disabled = false;
+                        btnGoogle.style.opacity = "1";
+                        btnGoogle.innerHTML = 'Error conexión';
+                    });
+                };
+            }
+
+            // B. Lógica Compartir
+            const btnShare = document.getElementById("btnCompartirMuro");
+            if (btnShare) {
+                if(props.rutina_id) {
+                    btnShare.onclick = () => compartirRutina(props.rutina_id, info.event.title.includes("IA"));
+                } else {
+                    btnShare.disabled = true;
+                }
+            }
+            
+            // C. Lógica Activar/Desactivar
+            const btnToggle = document.getElementById("btnToggleRutina");
+            if (btnToggle && props.es_mia && props.rutina_id) {
+                 let vigente = !!props.vigente;
+                 btnToggle.onclick = () => {
+                     btnToggle.disabled = true;
+                     fetch("/ia/rutina/toggle/", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", "X-CSRFToken": csrfToken },
+                        body: JSON.stringify({ rutina_id: props.rutina_id })
+                     })
+                     .then(r => r.json())
+                     .then(r => {
+                        btnToggle.disabled = false;
+                        if (r.success) {
+                            vigente = !!r.nuevo_estado;
+                            info.event.setExtendedProp("vigente", vigente);
+                            btnToggle.textContent = vigente ? "Desactivar" : "Activar";
+                            calendario.refetchEvents();
+                        }
+                     });
+                 };
+            }
+        },
+        preConfirm: () => ({
+          notas: document.getElementById("notaEdit").value,
+          completada: document.getElementById("chkCompletar").checked
+        })
+      }).then(result => {
+        if (result.value) {
+           fetch("{% url 'ia:actualizar_rutina_calendario' %}", {
+             method: "POST",
+             headers: { "Content-Type": "application/json", "X-CSRFToken": csrfToken },
+             body: JSON.stringify({
+               id: info.event.id,
+               notas: result.value.notas,
+               completada: result.value.completada
+             })
+           })
+           .then(res => res.json())
+           .then(data => {
+             if(data.success) {
+                info.event.setExtendedProp("completada", result.value.completada);
+                info.event.setExtendedProp("notas", result.value.notas);
+                info.event.setProp("color", result.value.completada ? "#00b894" : "#25e2d7");
+                cargarKPI();
+                Swal.fire({
+                    icon: 'success', title: 'Actualizado',
+                    showConfirmButton: false, timer: 1500,
+                    background: '#0b1416', color: '#fff'
+                });
+             }
+           });
+        }
+      });
+    }
+  });
+
+  calendario.render();
+});
+
+/* ===========================
+   3. OPTIMIZACIÓN DE CARGA DE EJERCICIOS
+=========================== */
+function preCargarEjercicios() {
+    if (ejerciciosListos || cargandoEjercicios) return;
+    cargandoEjercicios = true;
+
+    fetch("/ia/ejercicios/listar/")
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                listaEjerciciosFull = data.ejercicios;
+                ejerciciosListos = true;
+                populateFilters(); 
+            }
+            cargandoEjercicios = false;
+        })
+        .catch(err => {
+            console.error("Error precargando:", err);
+            cargandoEjercicios = false;
+        });
+}
+
+function populateFilters() {
+    const musc = new Set();
+    const tipos = new Set();
+    const niveles = new Set();
+
+    for(let i = 0; i < listaEjerciciosFull.length; i++) {
+        const e = listaEjerciciosFull[i];
+        if(e.musculo) musc.add(e.musculo);
+        if(e.tipo) tipos.add(e.tipo);
+        if(e.nivel) niveles.add(e.nivel);
+    }
+
+    const fill = (id, setValores) => {
+        const s = document.getElementById(id);
+        const opts = Array.from(setValores).sort().map(x => `<option value="${x}">${x}</option>`).join("");
+        s.innerHTML = `<option value="">Todos</option>` + opts;
+    };
+
+    fill("filtro-musculo", musc);
+    fill("filtro-tipo", tipos);
+    fill("filtro-nivel", niveles);
+}
+
+function renderSelectorEjercicios() {
+    const cont = document.getElementById("contenedor-ejercicios");
+    const mf = document.getElementById("filtro-musculo").value;
+    const tf = document.getElementById("filtro-tipo").value;
+    const nf = document.getElementById("filtro-nivel").value;
+
+    const filtrados = listaEjerciciosFull.filter(e =>
+        (!mf || e.musculo === mf) &&
+        (!tf || e.tipo === tf) &&
+        (!nf || e.nivel === nf)
+    );
+
+    if (filtrados.length === 0) {
+        cont.innerHTML = `<div class="text-center text-muted w-100 py-5" style="grid-column: 1 / -1;">No se encontraron resultados.</div>`;
+        return;
+    }
+
+    const html = filtrados.slice(0, 60).map(e => `
+      <div class="ejercicio-mini-card">
+        <div>
+            <h6>${e.nombre}</h6>
+            <p>${e.descripcion || ''}</p>
+            <div class="d-flex flex-wrap gap-1">
+                <span class="badge bg-dark border border-info text-info badge-mini">${e.musculo}</span>
+                <span class="badge bg-dark border border-warning text-warning badge-mini">${e.nivel}</span>
+            </div>
+        </div>
+        <button class="btn-add-mini"
+                onclick="agregarEjercicioEditar(${e.id}, '${e.nombre.replace(/'/g, "\\'")}', '${(e.descripcion||"").replace(/'/g, "\\'")}')">
+            + AGREGAR
+        </button>
+      </div>
+    `).join("");
+
+    cont.innerHTML = html;
+    cont.scrollTop = 0;
+}
+
+function abrirSelectorEjercicios() {
+    const modalEl = document.getElementById("modalSelectorEjercicios");
+    const modal = new bootstrap.Modal(modalEl);
+
+    if (!ejerciciosListos) {
+        document.getElementById("contenedor-ejercicios").innerHTML = `
+            <div class="text-center py-5 text-info" style="grid-column: 1 / -1;">
+                <div class="spinner-border mb-2" role="status"></div>
+                <p>Cargando librería de ejercicios...</p>
+            </div>`;
+        modal.show();
+        
+        preCargarEjercicios();
+        const check = setInterval(() => {
+            if (ejerciciosListos) {
+                clearInterval(check);
+                renderSelectorEjercicios();
+            }
+        }, 300);
+    } else {
+        renderSelectorEjercicios();
+        modal.show();
+    }
+}
+
+function cerrarSelectorEjercicios() {
+    const el = document.getElementById("modalSelectorEjercicios");
+    const modal = bootstrap.Modal.getInstance(el);
+    if (modal) modal.hide();
+}
+
+function agregarEjercicioEditar(id, nombre, descripcion) {
+    if (ejerciciosEditando.some(e => e.id === id)) {
+        const Toast = Swal.mixin({
+            toast: true, position: 'top-end', showConfirmButton: false, timer: 1000,
+            background: '#1a1a1a', color: '#fff'
+        });
+        Toast.fire({ icon: 'info', title: 'Ya agregado' });
+        return;
+    }
+
+    ejerciciosEditando.push({ id, nombre, descripcion });
+    renderEditarEjercicios(); 
+
+    const Toast = Swal.mixin({
+        toast: true, position: 'top-end', showConfirmButton: false, timer: 1000,
+        background: '#00b894', color: '#003135'
+    });
+    Toast.fire({ icon: 'success', title: 'Agregado' });
+}
+
+/* ===========================
+   4. FUNCIONES DE GESTIÓN (KPI, Rutinas, Sidebars)
+=========================== */
+function cargarKPI() {
+  fetch("{% url 'ia:obtener_kpi_mensual' %}")
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("kpi-rango").textContent = `${data.inicio_mes} - ${data.fin_mes}`;
+      document.getElementById("kpi-total").textContent = data.total;
+      document.getElementById("kpi-completadas").textContent = data.completadas;
+      document.getElementById("kpi-pendientes").textContent = data.pendientes;
+      document.getElementById("kpi-cumplimiento").textContent = data.cumplimiento;
+
+      const barra = document.getElementById("kpi-barra");
+      barra.style.width = `${data.cumplimiento}%`;
+      barra.className = "progress-bar";
+      if (data.cumplimiento < 50) barra.classList.add("bg-danger");
+      else if (data.cumplimiento < 80) barra.classList.add("bg-warning");
+      else barra.classList.add("bg-success");
+
+      const ctx = document.getElementById("graficoKPI");
+      if (ctx) {
+        const dias = Object.keys(data.dias_completados || {}).map(d => `Día ${d}`);
+        const valores = Object.values(data.dias_completados || {});
+        const labels = dias.length ? dias : ["Sin datos"];
+        const datos = valores.length ? valores : [0];
+
+        const gctx = ctx.getContext("2d");
+        const gradient = gctx.createLinearGradient(0, 0, 0, 260);
+        gradient.addColorStop(0, "rgba(95, 241, 229, 0.55)");
+        gradient.addColorStop(1, "rgba(95, 241, 229, 0.02)");
+
+        if (graficoKPI) graficoKPI.destroy();
+
+        graficoKPI = new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: labels,
+            datasets: [{
+              label: "Rutinas completadas",
+              data: datos,
+              fill: true,
+              backgroundColor: gradient,
+              borderColor: "rgba(95, 241, 229, 0.95)",
+              borderWidth: 2.5,
+              tension: 0.4,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              pointBackgroundColor: "#25e2d7",
+              pointBorderColor: "#041014",
+              pointBorderWidth: 1.5,
+              pointHitRadius: 10
+            }]
+          },
+          options: {
+            maintainAspectRatio: false,
+            layout: { padding: { top: 10, bottom: 0, left: 5, right: 10 } },
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: "rgba(3, 16, 22, 0.95)",
+                titleColor: "#5ff5e5",
+                bodyColor: "#e8fdf8",
+                borderWidth: 1,
+                borderColor: "rgba(95, 241, 229, 0.7)",
+                padding: 10,
+                displayColors: false,
+                callbacks: {
+                  title: (items) => items[0]?.label || "",
+                  label: (ctx) => ` Rutinas completadas: ${ctx.parsed.y}`
+                }
+              },
+              datalabels: {
+                color: "#bffaf5",
+                anchor: "end",
+                align: "top",
+                font: { weight: "bold", size: 11 },
+                formatter: valor => valor > 0 ? valor : ""
+              }
+            },
+            scales: {
+              x: {
+                ticks: { color: "#c3e7e5", font: { size: 11 } },
+                grid: { color: "rgba(255,255,255,0.04)" }
+              },
+              y: {
+                beginAtZero: true,
+                grace: "10%",
+                ticks: { color: "#9ec7c7", stepSize: 1, font: { size: 11 } },
+                grid: { color: "rgba(255,255,255,0.06)" }
+              }
+            },
+            animation: { duration: 1100, easing: "easeOutQuart" }
+          },
+          plugins: [ChartDataLabels]
+        });
+      }
+    })
+    .catch(err => console.error("Error al obtener KPI mensual:", err));
+}
+
+function cargarMisRutinas() {
+  fetch("{% url 'ia:mis_rutinas' %}")
+    .then(res => res.json())
+    .then(data => {
+      const contenedor = document.getElementById("lista-rutinas-guardadas");
+      const titulo = document.getElementById("sidebar-title");
+      titulo.textContent = "🏋️ Mis Rutinas";
+      contenedor.innerHTML = "";
+
+      if (!Array.isArray(data) || data.length === 0) {
+        contenedor.innerHTML = "<p class='text-muted text-center mt-3'>Aún no has creado rutinas.</p>";
+        abrirSidebar();
+        return;
+      }
+
+      data.forEach(r => {
+        contenedor.innerHTML += `
+          <div class="athletia-rutina-card">
+            <h6 class="fw-bold text-info">${r.nombre}</h6>
+            <p><b>Nivel:</b> ${r.nivel}</p>
+            <p class="small">${r.descripcion}</p>
+            <p class="small text-secondary">Creada el ${r.fecha}</p>
+            <p class="small ${r.vigente ? 'text-success' : 'text-danger'}">
+              Estado: ${r.vigente ? 'Activa' : 'Desactivada'}
+            </p>
+
+            <div class="mt-2 d-flex flex-wrap gap-1 justify-content-between">
+              <button class="btn btn-sm btn-outline-info" onclick="verDetalleRutina(${r.id})">Ver</button>
+              <button class="btn btn-sm btn-outline-warning" onclick="editarRutina(${r.id})">Editar</button>
+              <button class="btn btn-sm btn-outline-secondary" onclick="duplicarRutina(${r.id})">Duplicar</button>
+              <button class="btn btn-sm btn-outline-success" onclick="asignarAlCalendario(${r.id})">Asignar</button>
+              <button class="btn btn-sm ${r.vigente ? 'btn-outline-danger' : 'btn-outline-success'}"
+                      onclick="toggleRutina(${r.id}, ${r.vigente})">
+                  ${r.vigente 
+                      ? '<i class="bi bi-x-circle"></i> Desactivar'
+                      : '<i class="bi bi-check-circle"></i> Activar'
+                  }
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      abrirSidebar();
+    })
+    .catch(() => {
+      Swal.fire("Error", "No se pudieron cargar tus rutinas.", "error");
+    });
+}
+
+function cargarRutinasGuardadas() {
+  fetch("{% url 'ia:obtener_rutinas_guardadas' %}")
+    .then(res => res.json())
+    .then(data => {
+      const contenedor = document.getElementById("lista-rutinas-guardadas");
+      const titulo = document.getElementById("sidebar-title");
+      titulo.textContent = "💾 Mis Rutinas Guardadas";
+      contenedor.innerHTML = "";
+
+      if (!Array.isArray(data) || data.length === 0) {
+        contenedor.innerHTML = "<p class='text-muted text-center mt-3'>No tienes rutinas guardadas aún.</p>";
+        abrirSidebar();
+        return;
+      }
+
+      data.forEach(r => {
+        const card = document.createElement("div");
+        card.className = "athletia-rutina-card";
+        card.innerHTML = `
+          <h6 class="fw-bold text-info">${r.nombre}</h6>
+          <p class="mb-1"><b>Nivel:</b> ${r.nivel}</p>
+          <p class="small text-muted">${r.descripcion}</p>
+          <p class="text-secondary small">Guardada el ${r.fecha_guardado}</p>
+          <div class="d-flex flex-wrap gap-1 justify-content-between mt-2">
+            <button class="btn btn-sm btn-outline-info" onclick="verDetalleRutina(${r.id})">Detalles</button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="duplicarRutina(${r.id})">Duplicar</button>
+            <button class="btn btn-sm btn-outline-success" onclick="asignarAlCalendario(${r.id})">Asignar</button>
+            <button class="btn btn-sm btn-outline-danger" onclick="eliminarRutinaGuardada(${r.id})">Quitar</button>
+          </div>
+        `;
+        contenedor.appendChild(card);
+      });
+      abrirSidebar();
+    })
+    .catch(() => {
+      Swal.fire("Error", "No se pudieron cargar las rutinas guardadas.", "error");
+    });
+}
+
+// Tendencias
+document.getElementById("btnTendencias").addEventListener("click", function () {
+  fetch("{% url 'ia:obtener_tendencias' %}")
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        const cont = document.getElementById("listaTendencias");
+        cont.innerHTML = "";
+        if (!data.tendencias || data.tendencias.length === 0) {
+          cont.innerHTML = `<p class="text-muted text-center mt-3">No hay rutinas en tendencia.</p>`;
+        } else {
+          data.tendencias.forEach(r => {
+            cont.innerHTML += `
+              <div class="athletia-rutina-card fade-in-event">
+                <h6>${r.nombre}</h6>
+                <p class="nivel-${r.nivel.toLowerCase()}"><b>Nivel:</b> ${r.nivel}</p>
+                <p>${r.descripcion || "Sin descripción"}</p>
+                <small>${r.asignaciones} asignaciones esta semana</small>
+                <div class="mt-2 d-flex justify-content-between">
+                    <button class="btn btn-sm btn-outline-success" onclick="asignarAlCalendario(${r.id})">Asignar</button>
+                </div>
+              </div>`;
+          });
+        }
+        abrirSidebarTendencias();
+      } else {
+        Swal.fire("Error", data.error || "No se pudieron cargar las tendencias", "error");
+      }
+    })
+    .catch(() => Swal.fire("Error", "Error al conectar con el servidor", "error"));
+});
+
+function verDetalleRutina(id) {
+  fetch(`/ia/rutina/ver/${id}/`)
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        Swal.fire("Error", "No se pudo cargar la rutina", "error");
+        return;
+      }
+      const r = data.rutina;
+      const ejerciciosHTML = r.ejercicios.map(e => `
+        <div class="athletia-ej-card mb-2 p-2" style="border-bottom: 1px solid #444;">
+          <b>${e.nombre}</b><br>
+          <small>${e.descripcion}</small><br>
+          <span class="badge bg-info">${e.musculo}</span>
+          <span class="badge bg-warning">${e.nivel}</span>
+        </div>
+      `).join("");
+
+      Swal.fire({
+        title: `${r.nombre}`,
+        html: `
+          <p><b>Descripción:</b> ${r.descripcion}</p>
+          <p><b>Nivel:</b> ${r.nivel}</p>
+          <p><b>Total ejercicios:</b> ${r.total_ejercicios}</p>
+          <hr>
+          <h5>Ejercicios</h5>
+          ${ejerciciosHTML}
+        `,
+        width: 700,
+        background: "#0e0e0e",
+        color: "#fff"
+      });
+    })
+    .catch(() => {
+      Swal.fire("Error", "No se pudo obtener la rutina", "error");
+    });
+}
+
+function duplicarRutina(id) {
+    Swal.fire({
+        title: "¿Duplicar rutina?",
+        text: "Se creará una copia editable en tus rutinas.",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sí, duplicar",
+        background: "#0e0e0e", color: "#fff",
+    }).then(res => {
+        if (!res.isConfirmed) return;
+        fetch("/ia/rutina/duplicar/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRFToken": csrfToken },
+            body: JSON.stringify({ rutina_id: id })
+        })
+        .then(r => r.json())
+        .then(r => {
+            if (r.success) {
+                Swal.fire({
+                    icon: "success", title: "Duplicada",
+                    html: `La rutina fue duplicada como:<br><b>${r.nueva_rutina_nombre}</b>`,
+                }).then(() => {
+                    cargarMisRutinas();
+                    if (calendario) {
+                      calendario.refetchEvents();
+                      cargarKPI();
+                    }
+                });
+            } else {
+                Swal.fire("Error", r.error, "error");
+            }
+        });
+    });
+}
+
+function toggleRutina(id, vigenteActual) {
+    const accion = vigenteActual ? "desactivar" : "activar";
+    Swal.fire({
+        title: `¿Deseas ${accion} esta rutina?`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: `Sí, ${accion}`,
+        background: "#0e0e0e", color: "#fff",
+    }).then(res => {
+        if (!res.isConfirmed) return;
+        fetch("/ia/rutina/toggle/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRFToken": csrfToken },
+            body: JSON.stringify({ rutina_id: id })
+        })
+        .then(r => r.json())
+        .then(r => {
+            Swal.fire({
+                icon: r.success ? "success" : "error",
+                title: r.success ? "Listo" : "Error",
+                text: r.message || r.error || "",
+                background: "#0e0e0e", color: "#fff"
+            }).then(() => {
+                if (r.success) {
+                    cargarMisRutinas();
+                    if (calendario) {
+                      calendario.refetchEvents();
+                      cargarKPI();
+                    }
+                }
+            });
+        });
+    });
+}
+
+function eliminarRutinaGuardada(id) {
+    Swal.fire({
+        title: "Quitar de tus guardadas",
+        text: "Esta rutina dejará de aparecer en tu lista.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Quitar",
+        background: "#0e0e0e", color: "#fff", confirmButtonColor: "#d63031",
+    }).then(res => {
+        if (!res.isConfirmed) return;
+        fetch("{% url 'ia:eliminar_rutina_guardada' %}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRFToken": csrfToken },
+            body: JSON.stringify({ rutina_id: id })
+        })
+        .then(r => r.json())
+        .then(r => {
+            Swal.fire({
+                icon: r.success ? "success" : "error",
+                title: r.success ? "Eliminada" : "Error",
+                text: r.message || r.error || "",
+                background: "#0e0e0e", color: "#fff",
+            }).then(() => {
+                if (r.success) cargarRutinasGuardadas();
+            });
+        });
+    });
+}
+
+function asignarAlCalendario(id) {
+  Swal.fire({
+    title: "Asignar rutina",
+    html: `
+        <p style="color:#ccc; margin-bottom:15px;">¿A qué fecha deseas agregarla?</p>
+        <input type="date" id="swal-input-fecha" class="swal2-input" 
+               style="background:#151515; color:#25e2d7; border:1px solid #25e2d7; color-scheme: dark; width: 80%;"
+               onclick="try{this.showPicker()}catch(e){}">
+    `,
+    showCancelButton: true, confirmButtonText: "Asignar", background: "#0e0e0e", color: "#fff", confirmButtonColor: "#25e2d7",
+    didOpen: () => {
+        const hoy = new Date().toISOString().split('T')[0];
+        document.getElementById('swal-input-fecha').value = hoy;
+    },
+    preConfirm: () => {
+        const fecha = document.getElementById('swal-input-fecha').value;
+        if (!fecha) Swal.showValidationMessage('Debes seleccionar una fecha');
+        return fecha;
+    }
+  }).then(result => {
+    if (!result.isConfirmed || !result.value) return;
+    const fechaSeleccionada = result.value;
+
+    const realizarPeticionAsignacion = (reemplazar = false) => {
+        Swal.fire({ title: 'Asignando...', didOpen: () => Swal.showLoading(), background: "#0e0e0e", color: "#fff" });
+        fetch("{% url 'ia:asignar_rutina_guardada' %}", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-CSRFToken": csrfToken },
+            body: JSON.stringify({ rutina_id: id, fecha: fechaSeleccionada, reemplazar: reemplazar })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.requires_confirm) {
+                Swal.fire({
+                    title: "Conflicto de agenda",
+                    text: data.message || "Ya tienes una rutina este día. ¿Reemplazar?",
+                    icon: "warning", showCancelButton: true, confirmButtonText: "Sí, reemplazar", background: "#0e0e0e", color: "#fff"
+                }).then(confirmResult => {
+                    if (confirmResult.isConfirmed) realizarPeticionAsignacion(true);
+                });
+                return;
+            }
+            if (data.success) {
+                Swal.fire({ icon: "success", title: "¡Listo!", text: data.message, timer: 2000, showConfirmButton: false, background: "#0e0e0e", color: "#fff" });
+                if (calendario) calendario.refetchEvents();
+                cargarKPI();
+                cerrarSidebar();
+                cerrarSidebarTendencias();
+            } else {
+                Swal.fire("Error", data.error || "No se pudo asignar.", "error");
+            }
+        });
+    };
+    realizarPeticionAsignacion(false);
+  });
+}
+
+function compartirRutina(rutinaId, esIA = false) {
+  Swal.fire({
+    title: esIA ? "Compartir rutina generada por AthletIA" : "Compartir tu rutina",
+    text: "Se publicará en el Muro con el detalle de ejercicios.",
+    icon: "question", showCancelButton: true, confirmButtonText: "Sí, compartir", background: "#1d1d1d", color: "#fff"
+  }).then(result => {
+    if (!result.isConfirmed) return;
+    fetch("/muro/compartir-rutina/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-CSRFToken": csrfToken },
+      body: JSON.stringify({ rutina_id: rutinaId, es_ia: esIA })
+    })
+    .then(res => res.json())
+    .then(data => {
+      Swal.fire({
+        icon: data.success ? "success" : "error",
+        title: data.success ? "Publicado en el Muro" : "Error",
+        text: data.message || data.error || "",
+        background: "#1d1d1d", color: "#fff"
+      });
+    })
+    .catch(() => {
+      Swal.fire({ icon: "error", title: "Error", text: "No se pudo compartir.", background: "#1d1d1d", color: "#fff" });
+    });
+  });
+}
+
+function editarRutina(id) {
+    fetch(`/ia/rutina/ver/${id}/`)
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                Swal.fire("Error", "No se pudo cargar la rutina", "error");
+                return;
+            }
+            const r = data.rutina;
+            rutinaEditandoId = id;
+            ejerciciosEditando = [...r.ejercicios];
+            document.getElementById("titulo-editar").innerText = `Editar ${r.nombre}`;
+            document.getElementById("editar-nombre").value = r.nombre;
+            document.getElementById("editar-descripcion").value = r.descripcion || "";
+            renderEditarEjercicios();
+            const modal = new bootstrap.Modal(document.getElementById("modalEditarRutina"));
+            modal.show();
+        });
+}
+
+function renderEditarEjercicios() {
+    const cont = document.getElementById("lista-ejercicios-rutina");
+    if (!cont) return;
+    cont.innerHTML = "";
+    if (!Array.isArray(ejerciciosEditando) || ejerciciosEditando.length === 0) {
+        cont.innerHTML = `<p class="text-center text-muted mt-2">No hay ejercicios añadidos.</p>`;
+        return;
+    }
+    ejerciciosEditando.forEach((e, i) => {
+        cont.innerHTML += `
+        <div class="d-flex justify-content-between align-items-center mb-3 p-2 border-bottom"
+             style="background:rgba(4,35,42,0.3); border-radius:10px;">
+            <div>
+                <b>${e.nombre}</b><br>
+                <small class="text-muted">${e.descripcion || ""}</small>
+            </div>
+            <button class="btn btn-sm btn-danger" onclick="eliminarEjercicioEditar(${i})">X</button>
+        </div>
+        `;
+    });
+}
+
+function eliminarEjercicioEditar(index) {
+    ejerciciosEditando.splice(index, 1);
+    renderEditarEjercicios();
+}
+
+function guardarCambiosEdicion() {
+    fetch(`/ia/rutina/editar/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-CSRFToken": csrfToken },
+        body: JSON.stringify({
+            rutina_id: rutinaEditandoId,
+            nombre: document.getElementById("editar-nombre").value,
+            descripcion: document.getElementById("editar-descripcion").value,
+            ejercicios: ejerciciosEditando
+        })
+    })
+    .then(res => res.json())
+    .then(r => {
+        if (!r.success) {
+            Swal.fire("Error", r.error, "error");
+            return;
+        }
+        Swal.fire("Éxito", r.message, "success");
+        const modal = bootstrap.Modal.getInstance(document.getElementById("modalEditarRutina"));
+        modal.hide();
+        cargarMisRutinas();
+        if (calendario) calendario.refetchEvents();
+        cargarKPI();
+    });
+}
+
+function abrirSidebar() {
+  document.getElementById("sidebar-rutinas").classList.add("activo");
+  document.getElementById("sidebar-overlay").classList.add("activo");
+}
+function cerrarSidebar() {
+  document.getElementById("sidebar-rutinas").classList.remove("activo");
+  document.getElementById("sidebar-overlay").classList.remove("activo");
+}
+function abrirSidebarTendencias() {
+  document.getElementById("sidebarTendencias").classList.add("activo");
+}
+function cerrarSidebarTendencias() {
+  document.getElementById("sidebarTendencias").classList.remove("activo");
+}
+</script>
+{% endblock %}

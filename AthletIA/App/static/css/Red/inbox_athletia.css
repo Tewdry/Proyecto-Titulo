@@ -1,0 +1,125 @@
+/* ==========================================================
+   CONTENEDOR GENERAL
+========================================================== */
+.inbox-wrapper {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 10px;
+}
+
+.inbox-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 25px;
+    text-align: center;
+    color: #5ff5e5; /* título turquesa AthletIA */
+    text-shadow: 0 0 8px rgba(95, 245, 229, 0.3);
+}
+
+/* ==========================================================
+   LISTA DE CONVERSACIONES
+========================================================== */
+.inbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* ==========================================================
+   ITEM DE CONVERSACIÓN
+========================================================== */
+.inbox-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 16px 22px;
+    border-radius: 18px;
+    text-decoration: none;
+
+    background: rgba(0, 22, 30, 0.92); /* glass negro azulado */
+    border: 1px solid rgba(0, 255, 200, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 255, 200, 0.05);
+
+    backdrop-filter: blur(6px);
+    transition: 0.25s ease;
+}
+
+.inbox-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 22px rgba(0, 255, 200, 0.15);
+}
+
+/* ==========================================================
+   AVATAR
+========================================================== */
+.inbox-avatar-wrapper {
+    margin-right: 16px;
+}
+
+.inbox-avatar {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    object-fit: cover;
+
+    border: 2px solid #25e2d7;
+    box-shadow: 0 0 15px rgba(37, 226, 215, .4);
+}
+
+/* ==========================================================
+   TEXTOS CENTRALES
+========================================================== */
+.inbox-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.inbox-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #e8fdf8; /* blanco suave */
+}
+
+.inbox-lastmsg {
+    font-size: 0.95rem;
+    margin-top: 3px;
+    color: #9ec7c7; /* suave y legible */
+}
+
+/* ==========================================================
+   META (hora + badge)
+========================================================== */
+.inbox-meta {
+    text-align: right;
+    min-width: 120px;
+}
+
+.inbox-date {
+    font-size: 0.83rem;
+    color: #78b9b9; /* más visible */
+    margin-bottom: 6px;
+}
+
+/* Badge de mensajes sin leer */
+.inbox-badge {
+    background: #ff4b6b;
+    color: #fff;
+    padding: 5px 12px;
+    border-radius: 14px;
+    font-size: 0.78rem;
+    font-weight: bold;
+    display: inline-block;
+    box-shadow: 0 0 10px rgba(255, 75, 107, 0.4);
+}
+
+/* ==========================================================
+   ESTADO VACÍO
+========================================================== */
+.inbox-empty {
+    text-align: center;
+    color: #8bbdbd;
+    font-size: 1.1rem;
+    margin-top: 25px;
+}

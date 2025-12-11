@@ -1,0 +1,55 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'css/Home/autenticacion.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="login-bg d-flex align-items-center justify-content-center">
+  <div class="login-container">
+
+    <div class="text-center mb-4">
+      <a href="{% url 'base' %}">
+        <img src="/media/logo.png" alt="AthletIA" class="logo-login mb-3">
+      </a>
+      <h2 class="fw-bold text-primary">Iniciar Sesión</h2>
+      <p class="text-muted">Accede a tu cuenta AthletIA 🏋️‍♂️</p>
+    </div>
+
+    <!-- SweetAlert usa estos mensajes -->
+    {% if messages %}
+      <div id="django-messages" style="display:none;">
+        {% for message in messages %}
+          <div class="msg" data-type="{{ message.tags }}" data-text="{{ message }}"></div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="POST" class="login-form">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="username" class="form-label fw-semibold">Usuario</label>
+        <input type="text" id="username" name="username" class="form-control" placeholder="Tu nombre de usuario" required>
+      </div>
+
+      <div class="mb-4">
+        <label for="password" class="form-label fw-semibold">Contraseña</label>
+        <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+      </div>
+
+      <button type="submit" class="btn btn-athletia w-100">Entrar</button>
+    </form>
+
+    <p class="text-center mt-3 mb-0 text-muted">
+      ¿No tienes cuenta?
+      <a href="{% url 'registro' %}" class="fw-bold text-athletia">Regístrate</a>
+    </p>
+  </div>
+</div>
+
+<script src="{% static 'js/login_validacion.js' %}"></script>
+
+{% endblock %}
